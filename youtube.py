@@ -3,7 +3,6 @@ from youtube_html import *
 import time
 import os
 
-url = "https://www.youtube.com/feeds/videos.xml?channel_id=UC6irqcoPrFw8GPXVYKLsMtw"
 tps = time.localtime()
 tm_year, tm_mon, tm_mday = tps.tm_year, tps.tm_mon, tps.tm_mday
 url_data = []
@@ -36,7 +35,6 @@ for i in data_sub:
 passe = time.time()
 for url in url_data:
 	nb = 0
-	print(url)
 	while nb!=5:
 		try:
 			data = urlopen(url).read().decode()
@@ -53,6 +51,8 @@ for url in url_data:
 
 print(time.time() - passe)
 fch = sorted(os.listdir('data/'))
-for i in range(len(fch)):
-	data = open('data/' + fch[0 - i], 'r').read()
-	open('sub.html', 'a').write(data)
+for i in range(7):
+	fch_in = sorted(os.listdir('data/' + fch[-1-i]))
+	for a in range(len(fch_in)):
+		data = open('data/' + fch[-1-i] + '/' + fch_in[-1-a], 'r').read()
+		open('sub.html', 'a').write(data)
