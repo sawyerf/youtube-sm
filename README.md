@@ -1,4 +1,4 @@
 # Abonnements-youtube
 Screenshots
 ---
-![index] (/index.pnj)
+![index](/index.pnj)
