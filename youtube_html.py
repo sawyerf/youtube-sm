@@ -1,5 +1,6 @@
 from urllib.request import *
 import os 
+import time
 
 def html_process(i):
 	url = i.split('<yt:videoId>')[1].split('</yt:videoId>')[0]
@@ -8,8 +9,12 @@ def html_process(i):
 	channel = i.split('<name>')[1].split('</name>')[0]
 	date = i.split('<published>')[1].split('+')[0].split('T')
 	try:
-		if url in open('data/' + date[0] + '/' + date[1], 'r+').read():
-			return
+		data = open('data/' + date[0] + '/' + date[1], 'r+').read()
+		if url in data:
+			if 'https://i.ytimg.com/vi/PF06Tk4z2bo/hqdefault.jpg?sqp=-oaymwEWCMQBEG5IWvKriqkDCQgBFQAAiEIYAQ==&rs=AOn4CLBGqMLakE2aELko2V5i7N48o2sECw' in data:
+				os.remove('data/' + date[0] + '/' + date[1])
+			else:
+				return
 	except:
 		try:
 			os.mkdir('data/' + date[0])
@@ -45,7 +50,6 @@ def html_process(i):
 """.format(url, image, url, title, url_channel, channel, date[0]))
 
 
-
 def html_init():
 	try:
 		os.mkdir('cache')
@@ -65,4 +69,5 @@ def html_init():
 		<title>Abonnements</title>
 	</head>
 	<body>
-""")
+<!-- {} -->
+""".format(time.ctime()))

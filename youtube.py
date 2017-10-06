@@ -1,5 +1,6 @@
 from urllib.request import *
 from youtube_html import *
+from process_swy import *
 import time
 import os
 
@@ -8,36 +9,36 @@ tm_year, tm_mon, tm_mday = tps.tm_year, tps.tm_mon, tps.tm_mday
 url_data = []
 
 html_init()
-if len(str(tm_mon)) == 1:
-	if tm_mon==1:
-		tm_year = str(tm_year - 1)
-		tm_mon = '12'
-	else:
-		tm_year = str(tm_year)
-		tm_mon = '0' + str(tm_mon - 1)
-elif len(str(tm_mday)) == 1:
-	tm_mday = '0' + str(tm_mday)
+if tm_mon == 1:
+	tm_mon = 12
+	tm_year -= 1
 else:
-	if tm_mon == 1:
-		tm_year = str(tm_year - 1)
-		tm_mon = '12'
-	else:
-		tm_mon = str(tm_mon - 1)
+	tm_mon -= 1
 tm_mday = str(tm_mday)
+tm_mon = str(tm_mon)
+tm_year = str(tm_year)
+if len(tm_mday) == 1:
+	tm_mday = '0' + tm_mday
+elif len(tm_mon) == 1:
+	tm_mon = '0' + tm_mon
+
 lcl_tps = int(tm_year + tm_mon + tm_mday + '000000')
 
+try:
+	data_sub = open('sub.swy', 'r').read().split('\n')
+except:
+	generate_swy()
+	data_sub = open('sub.swy', 'r').read().split('\n')
 
-data_sub = open('subscription_manager', 'r').read().split('xmlUrl="')
-del data_sub[0]
 for i in data_sub:
-	url_data.append(i.split('"')[0])
+	url_data.append(i.split('\t')[0])
 
 passe = time.time()
 for url in url_data:
 	nb = 0
 	while nb!=5:
 		try:
-			data = urlopen(url).read().decode()
+			data = urlopen('https://www.youtube.com/feeds/videos.xml?channel_id=' +  url).read().decode()
 		except:
 			nb += 1
 		else:
@@ -49,7 +50,8 @@ for url in url_data:
 		if lcl_tps <= date:
 			html_process(i)
 
-print(time.time() - passe)
+open('log', 'a').write(str(time.time() - passe) + '\n')
+
 fch = sorted(os.listdir('data/'))
 for i in range(7):
 	fch_in = sorted(os.listdir('data/' + fch[-1-i]))
