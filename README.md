@@ -1,7 +1,7 @@
 # Abonnements-youtube
 
-Requirements
----
+## Requirements
+- Python 3
 
 
 ## Screenshots
