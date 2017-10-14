@@ -6,6 +6,7 @@ import time
 import os
 
 url_data = []
+nb_new = 0
 
 html_init()
 lcl_tps = lcl_time()
@@ -34,9 +35,13 @@ for url in url_data:
 	for i in linfo:
 		date = int(i.split("<published>")[1].split("</published>")[0].replace('-', '').replace('+00:00', '').replace('T', '').replace(':', ''))
 		if lcl_tps <= date:
-			html_process(i)
+			dvid = html_process(i)
+			if dvid:
+				nb_new += 1
+			else:
+				break
 
-open('log', 'a').write(str(time.time() - passe) + '\n')
+open('log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("%H%M") + '\n')
 
 fch = sorted(os.listdir('data/'))
 for i in range(7):
@@ -44,3 +49,4 @@ for i in range(7):
 	for a in range(len(fch_in)):
 		data = open('data/' + fch[-1-i] + '/' + fch_in[-1-a], 'r').read()
 		open('sub.html', 'a').write(data)
+open('sub.html', 'a').write('</body></html>')

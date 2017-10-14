@@ -1,4 +1,5 @@
 import time
+import os
 
 def lcl_time():
 	tps = time.localtime()
@@ -16,4 +17,5 @@ def lcl_time():
 	elif len(tm_mon) == 1:
 		tm_mon = '0' + tm_mon
 	return int(tm_year + tm_mon + tm_mday + '000000')
+
 	
