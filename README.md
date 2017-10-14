@@ -7,7 +7,7 @@
 ``` python3 youtube.py ```
 4. if you want to add a sub. Append the id channel and the name channel in ` sub.swy`
 
-like this: ```channel_id	name ```
+  like this: ```channel_id	name ```
 
 ## Requirements
 - Python 3
