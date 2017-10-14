@@ -1,6 +1,6 @@
 # Abonnements-youtube
 
-## how does it run
+## How does it run
 1. Recup your subscriprion files in youtube
 2. Put this file in the directory
 3. run the script:
