@@ -3,6 +3,7 @@ import os
 import time
 
 def html_process(i):
+	dvid = True
 	url = i.split('<yt:videoId>')[1].split('</yt:videoId>')[0]
 	url_channel = i.split('<yt:channelId>')[1].split('</yt:channelId>')[0]
 	title = i.split('<media:title>')[1].split('</media:title>')[0]
@@ -13,8 +14,11 @@ def html_process(i):
 		if url in data:
 			if 'https://i.ytimg.com/vi/PF06Tk4z2bo/hqdefault.jpg?sqp=-oaymwEWCMQBEG5IWvKriqkDCQgBFQAAiEIYAQ==&rs=AOn4CLBGqMLakE2aELko2V5i7N48o2sECw' in data:
 				os.remove('data/' + date[0] + '/' + date[1])
+				dvid = False
 			else:
-				return
+				return False
+		else:
+			pass
 	except:
 		try:
 			os.mkdir('data/' + date[0])
@@ -42,13 +46,17 @@ def html_process(i):
 		image = 'https://i.ytimg.com/vi/PF06Tk4z2bo/hqdefault.jpg?sqp=-oaymwEWCMQBEG5IWvKriqkDCQgBFQAAiEIYAQ==&rs=AOn4CLBGqMLakE2aELko2V5i7N48o2sECw'
 	open('data/' + date[0] + '/' + date[1], 'a').write("""<!--NEXT -->
 <div class="video">
-<a class="left" href="https://www.youtube.com/watch?v={}"> <img src="{}" ></a>
-<a href="https://www.youtube.com/watch?v={}"><h4>{}</h4> </a>
-<a href="https://www.youtube.com/channel/{}"> <p>{}</p> </a>
-<p>{}</p>
-<p class="clear"></p></div>
+	<a class="left" href="https://www.youtube.com/watch?v={}"> <img src="{}" ></a>
+	<a href="https://www.youtube.com/watch?v={}"><h4>{}</h4> </a>
+	<a href="https://www.youtube.com/channel/{}"> <p>{}</p> </a>
+	<p>{}</p>
+	<p class="clear"></p>
+</div>
 """.format(url, image, url, title, url_channel, channel, date[0]))
-
+	if dvid:
+		return True
+	else:
+		return False
 
 def html_init():
 	try:
@@ -65,7 +73,8 @@ def html_init():
 	open('sub.html', 'w').write("""<html>
 	<head>
 		<meta charset="utf-8" />
-		<link rel="stylesheet" href="style_sub.css" />
+		<link rel="stylesheet" href="sub.css" />
+		<link rel="stylesheet" media="screen and (max-width: 1081px)" href="sub_mobile.css"/>
 		<title>Abonnements</title>
 	</head>
 	<body>
