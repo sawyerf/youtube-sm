@@ -1,4 +1,4 @@
-# Abonnements-youtube
+# Youtube_subscription_manager
 
 ## Usage
 1. Recover your subscriprion file in youtube
