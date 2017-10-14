@@ -9,7 +9,7 @@
     - `sub.html` is the html file with the last videos
     - `sub.swy` is a list of yours subscriptions
     - `log` is a registre with the time taken by the script, the number of videos found and the hour
-- If you want to add a channel. Append the id channel and the name channel in ` sub.swy`
+- If you want to add a channel. Append the channel id and the username in ` sub.swy`
     - like this: ```channel_id	name ```
 
 ## Requirements
