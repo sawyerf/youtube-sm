@@ -1,7 +1,7 @@
 # Abonnements-youtube
 
 ## How does it run
-1. Recover your subscriprion files in youtube
+1. Recover your subscriprion file in youtube
 2. Put this file in the directory
 3. Run the script:
 ``` python3 youtube.py ```
