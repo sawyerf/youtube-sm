@@ -13,4 +13,4 @@
 
 
 ## Screenshots
-<p align="center" width=380px height=180px> <img src="./screenshot/index.pnj" alt="Phone screen"></p>
+<p><img src="./screenshot/index.pnj" alt="Phone screen" width=405px height=620px></p>
