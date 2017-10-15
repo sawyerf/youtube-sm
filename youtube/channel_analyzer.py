@@ -6,7 +6,7 @@ def old(url_data):
 	for url in url_data:
 		linfo = xml_recup(url)
 		if linfo == False:
-			continue
+			print(url, 'channel dead')
 		else:
 			tps_vd = int(linfo[0].split("<published>")[1].split("</published>")[0].replace('-', '').replace('+00:00', '').replace('T', '').replace(':', ''))
 			if lcl > tps_vd:
