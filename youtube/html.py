@@ -8,14 +8,16 @@ def xml_recup(url):
 	while True:
 		try:
 			data = urlopen('https://www.youtube.com/feeds/videos.xml?channel_id=' +  url).read().decode()
-		except:
+		except :
 			nb += 1
-			if nb == 5:
+			if nb == 3:
 				return False
 		else:
 			break
 	linfo = data.split("<entry>")
 	del linfo[0]
+	if linfo == []:
+		return None
 	return linfo
 
 def html_start(url_data, min_date):
@@ -67,26 +69,7 @@ def html_process(i):
 			os.mkdir('data/' + date[0])
 		except:
 			pass
-	try:
-		data = open('cache/' + url_channel, 'r').read()
-	except:
-		req = Request('https://www.youtube.com/channel/' + url_channel + '/videos', headers={'User-Agent':'Mozilla/5.0'})
-		nb = 0
-		while nb != 5:
-			try:
-				data = urlopen(req).read().decode()
-			except:
-				nb += 1
-			else:
-				break
-		open('cache/' + url_channel, 'w').write(data)
-	
-	image = i.split('<media:thumbnail url="')[1].split('"')[0]
-	image = 'https://i.y' + image.split('.y')[1]
-	try:
-		image = image + data.split(image)[1].split('"')[0]
-	except:
-		image = 'https://i.ytimg.com/vi/PF06Tk4z2bo/hqdefault.jpg?sqp=-oaymwEWCMQBEG5IWvKriqkDCQgBFQAAiEIYAQ==&rs=AOn4CLBGqMLakE2aELko2V5i7N48o2sECw'
+	image = 'https://i.ytimg.com/vi/' + url  + '/mqdefault.jpg'
 	open('data/' + date[0] + '/' + date[1], 'a').write("""<!--NEXT -->
 <div class="video">
 	<a class="left" href="https://www.youtube.com/watch?v={}"> <img src="{}" ></a>
@@ -103,16 +86,9 @@ def html_process(i):
 
 def html_init():
 	try:
-		os.mkdir('cache')
-	except:
-		pass
-	try:
 		os.mkdir('data')
 	except:
 		pass
-	fch = os.listdir('cache/')
-	for i in fch:
-		os.remove('cache/' + i)
 	open('sub.html', 'w').write("""<html>
 	<head>
 		<meta charset="utf-8" />
