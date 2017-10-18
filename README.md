@@ -14,8 +14,8 @@
 
 ## Commands
 ```
- -d Show the channel who are dead or who have not videos
- -o [nb de mois]  Show the channel who didn't posted video on their channel
+    -d Show the channel who are dead or who have not videos
+    -o [nb de mois]  Show the channel who didn't posted video on their channel
 ```
 
 ## Requirements
