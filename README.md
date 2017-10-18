@@ -12,6 +12,12 @@
 - If you want to add a channel. Append the channel id and the name in ` sub.swy`
     - like this: ```channel_id	name ```
 
+## Commands
+```
+ -d Show the channel who are dead or who have not videos
+ -o [nb de mois]  Show the channel who didn't posted video on their channel
+```
+
 ## Requirements
 - Python 3
 
