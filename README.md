@@ -1,7 +1,7 @@
 # Youtube_subscription_manager
 
 ## Description
-Youtube_subscription_manager is a program to analysis yours subscriptions (create a html file with the last videos releases, find the dead channel, etc)
+Youtube_subscription_manager is a program to analyze yours subscriptions (create a html file with the last videos releases, find the dead channel, etc)
 
 ## Usage
 1. Recover your subscriprion file in youtube
