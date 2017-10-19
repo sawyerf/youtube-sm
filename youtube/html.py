@@ -92,8 +92,8 @@ def html_init():
 	open('sub.html', 'w').write("""<html>
 	<head>
 		<meta charset="utf-8" />
-		<link rel="stylesheet" href="sub.css" />
-		<link rel="stylesheet" media="screen and (max-width: 1081px)" href="sub_mobile.css"/>
+		<link rel="stylesheet" href="css/sub.css" />
+		<link rel="stylesheet" media="screen and (max-width: 1081px)" href="css/sub_mobile.css"/>
 		<title>Abonnements</title>
 	</head>
 	<body>
