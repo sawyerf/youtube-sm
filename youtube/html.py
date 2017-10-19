@@ -26,6 +26,8 @@ def html_start(url_data, min_date):
 		linfo = xml_recup(url)
 		if linfo == False:
 			continue
+		elif linfo == None:
+			continue
 		for i in linfo:
 			date = int(i.split("<published>")[1].split("</published>")[0].replace('-', '').replace('+00:00', '').replace('T', '').replace(':', ''))
 			if min_date <= date:
