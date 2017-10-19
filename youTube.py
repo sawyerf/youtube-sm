@@ -14,8 +14,8 @@ if not os.path.exists('sub.swy'):
 data_sub = open('sub.swy', 'r').read().split('\n')
 for i in data_sub:
 	url_data.append(i.split('\t')[0])
-
-if sys.argv==None:
+del sys.argv[0]
+if sys.argv==[]:
 	html_init()
 	min_date = lcl_time()
 	passe = time.time()
