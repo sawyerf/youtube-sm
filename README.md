@@ -13,13 +13,13 @@ Youtube_subscription_manager is a program to analyze yours subscriptions (create
     - `sub.swy` is a list of yours subscriptions
     - `log` is a registre with the time taken by the script, the number of videos found and the hour
 - If you want to add a channel. Append the channel id and the name in ` sub.swy`
-    - like this: ```channel_id	name ```
+    - like this: ```channel_id  name ```
 
 ## Commands
-```	
+```
 -h                  Print the help text and exit
 -n [file]           To change use an other xml file for yours subscriptions
--m [mode] 	        The type of file do you want (html, raw)
+-m [mode]           The type of file do you want (html, raw)
 -t [nb of days]     Numbers of days of subscriptions do you want in your file
 -d                  Show the dead channels + those who posted no videos
 -o [nb of months]   Show the channels who didn't post videos in nb of months + dead
