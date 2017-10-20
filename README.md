@@ -28,7 +28,7 @@ Youtube_subscription_manager is a program to analyze yours subscriptions (create
 ## Type of file
 - raw :
 ```
-{date}     {video_id}     {channel_id}     {title}     {channel}     {pic}
+{date}     {video_id}     {channel_id}     {title}     {channel}     {link_pic}
 ```
 - list :
 ```
