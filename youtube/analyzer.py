@@ -66,8 +66,9 @@ def info_recup(i, mode):
 		open('sub_raw', 'a').write(date[0] + '\t' + url + '\t' + url_channel + '\t' + title + '\t' + channel + '\t' + image + '\n')
 		return True
 	elif mode == 'list':
-		open('sub_list', 'a').write('https://www.youtube.com/watch?v=' + url + '\n')
+		open('sub_list', 'a').write(date[0] + ' https://www.youtube.com/watch?v=' + url + '\n')
 		return True
+
 def generate_data_html(url, url_channel, title, channel, date, image):
 	try:
 		data = open('data/' + date[0] + '/' + date[1], 'r+').read()
@@ -102,9 +103,30 @@ def html_end(count=7):
 			open('sub.html', 'a').write(data)
 	open('sub.html', 'a').write('</body></html>')
 
-def raw_end():
+def raw_end(count=7):
+	nb = 0
 	linfo = sorted(open('sub_raw', 'r').read().split('\n'))
+	for i in range(len(linfo)):
+		if linfo[-1-i][:10] != linfo[-2-i][:10]:
+			nb += 1
+			if nb == count:
+				nb = i
+				break
 	os.remove('sub_raw')
 	fichier = open('sub_raw', 'a')
-	for i in linfo:
-		fichier.write(i + '\n')
+	for i in range(nb):
+		fichier.write(linfo[-1-i] + '\n')
+
+def list_end(count=7):
+	nb = 0
+	linfo = sorted(open('sub_list', 'r').read().split('\n'))
+	for i in range(len(linfo)):
+		if linfo[-1-i][:10] != linfo[-2-i][:10]:
+			nb += 1
+			if nb == count:
+				nb = i
+				break
+	os.remove('sub_list')
+	fichier = open('sub_list', 'a')
+	for i in range(nb):
+		fichier.write(linfo[-1-i][11:] + '\n')

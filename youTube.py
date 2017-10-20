@@ -94,5 +94,7 @@ if analyze:
 	if mode == 'html':
 		html_end(count)
 	elif mode ==  'raw':
-		raw_end()
+		raw_end(count)
+	elif mode == 'list':
+		list_end(count)
 	open('log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("    %H%M") + '\n')	
