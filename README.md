@@ -26,6 +26,14 @@ Youtube_subscription_manager is a program to analyze yours subscriptions (create
 ```
 
 ## Type of file
+- raw :
+```
+{date}     {video_id}     {channel_id}     {title}     {channel}     {pic}
+```
+- list :
+```
+https://www.youtube.com/watch?v={video_id}
+```
 - html :
 ```
 <!--NEXT -->
@@ -36,14 +44,6 @@ Youtube_subscription_manager is a program to analyze yours subscriptions (create
 	<p>{date}</p>
 	<p class="clear"></p>
 </div>
-```
-- raw :
-```
-{date}     {video_id}     {channel_id}     {title}     {channel}     {pic}
-```
-- list :
-```
-https://www.youtube.com/watch?v={video_id}
 ```
 
 ## Requirements
