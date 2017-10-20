@@ -19,7 +19,7 @@ Youtube_subscription_manager is a program to analyze yours subscriptions (create
 ```
 -h                  Print the help text and exit
 -n [file]           To use an other xml file for yours subscriptions
--m [mode]           The type of file do you want (html, raw)
+-m [mode]           The type of file do you want (html, raw, list)
 -t [nb of days]     Numbers of days of subscriptions do you want in your file
 -d                  Show the dead channels + those who posted no videos
 -o [nb of months]   Show the channels who didn't post videos in nb of months + dead
