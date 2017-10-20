@@ -25,9 +25,29 @@ Youtube_subscription_manager is a program to analyze yours subscriptions (create
 -o [nb of months]   Show the channels who didn't post videos in nb of months + dead
 ```
 
+## Type of file
+- html :
+```
+<!--NEXT -->
+<div class="video">
+	<a class="left" href="https://www.youtube.com/watch?v={video_id}"> <img src="{link_pic}" ></a>
+	<a href="https://www.youtube.com/watch?v={video_id}"><h4>{title}</h4> </a>
+	<a href="https://www.youtube.com/channel/{channel_id}"> <p>{channel}</p> </a>
+	<p>{date}</p>
+	<p class="clear"></p>
+</div>
+```
+- raw :
+```
+{date}     {video_id}     {channel_id}     {title}     {channel}     {pic}
+```
+- list :
+```
+https://www.youtube.com/watch?v={video_id}
+```
+
 ## Requirements
 - Python 3
-
 
 ## Screenshots
 <p><img src="./screenshot/index.pnj" alt="Phone screen" width=405px height=720px></p>
