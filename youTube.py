@@ -6,10 +6,10 @@ import time
 import os
 import sys
 
-def swy():
+def swy(sub_file='subscription_manager'):
 	url_data = []
 	if not os.path.exists('sub.swy'):
-		generate_swy()
+		generate_swy(sub_file)
 	data_sub = open('sub.swy', 'r').read().split('\n')
 	for i in data_sub:
 		url_data.append(i.split('\t')[0])
@@ -18,7 +18,9 @@ def swy():
 
 url_data = []
 analyze = False
-
+mode = 'html'
+count = 7
+sub_file = 'subscription_manager'
 #commands
 del sys.argv[0]
 if sys.argv==[]:
@@ -70,10 +72,15 @@ else:
 			except:
 				print('[!] Numbers of day invalid')
 				exit()
-	
+		elif sys.argv[arg] == '-n':
+			analyze = True
+			if os.path.exists(sys.argv[arg + 1]):
+				sub_file = sys.argv[arg + 1]
+			else:
+				print('[!] File not found')
 if analyze:
 	passe = time.time()
-	url_data = swy()
+	url_data = swy(sub_file)
 	if mode == 'raw':
 		if os.path.exists('sub_raw'):
 			os.remove('sub_raw')
