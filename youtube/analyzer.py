@@ -64,7 +64,10 @@ def info_recup(i, mode):
 		return generate_data_html(url, url_channel, title, channel, date, image)
 	elif mode == 'raw':
 		open('sub_raw', 'a').write(date[0] + '\t' + url + '\t' + url_channel + '\t' + title + '\t' + channel + '\t' + image + '\n')
-
+		return True
+	elif mode == 'list':
+		open('sub_list', 'a').write('https://www.youtube.com/watch?v=' + url + '\n')
+		return True
 def generate_data_html(url, url_channel, title, channel, date, image):
 	try:
 		data = open('data/' + date[0] + '/' + date[1], 'r+').read()

@@ -60,7 +60,7 @@ else:
 			dead(url_data)
 		elif sys.argv[arg] == '-m':
 			analyze = True
-			if sys.argv[arg + 1] in ['html', 'raw']:
+			if sys.argv[arg + 1] in ['html', 'raw', 'list']:
 				mode = sys.argv[arg + 1]
 			else:
 				print('[!] Mode file invalid')
@@ -78,15 +78,21 @@ else:
 				sub_file = sys.argv[arg + 1]
 			else:
 				print('[!] File not found')
+
 if analyze:
 	passe = time.time()
 	url_data = swy(sub_file)
-	if mode == 'raw':
+	if mode == 'html':
+		html_init()
+	elif mode == 'raw':
 		if os.path.exists('sub_raw'):
 			os.remove('sub_raw')
-	html_init()
+	elif mode == 'list':
+		if os.path.exists('sub_list'):
+			os.remove('sub_list')
 	nb_new = analyzer_sub(url_data, lcl_time(), mode)	
 	if mode == 'html':
 		html_end(count)
 	elif mode ==  'raw':
 		raw_end()
+	open('log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("    %H%M") + '\n')	
