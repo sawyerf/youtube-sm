@@ -1,8 +1,8 @@
 from urllib.request import *
 
 
-def generate_swy():
-	data = open('subscription_manager', 'r').read()
+def generate_swy(sub_file):
+	data = open(sub_file, 'r').read()
 	liste = data.split('<outline')
 	del liste[:2]
 	for i in liste:
