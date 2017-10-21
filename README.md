@@ -8,8 +8,8 @@ Youtube_subscription_manager is a program to analyze yours subscriptions (create
 2. Put this file in the directory
 3. Run the script:
 ``` python3 youTube.py ```
-4. Three files are generate `sub.html` or `sub_raw`, `sub.swy` and `log`
-    - `sub.html` or `sub_raw` is the file with the last videos
+4. Three files are generate `sub_[type]`, `sub.swy` and `log`
+    - `sub_[type]` is the file with the last videos
     - `sub.swy` is a list of yours subscriptions
     - `log` is a registre with the time taken by the script, the number of videos found and the hour
 - If you want to add a channel. Append the channel id and the name in ` sub.swy`
