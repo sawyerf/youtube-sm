@@ -1,5 +1,5 @@
 from youtube.time import *
-from youtube.html import xml_recup
+from youtube.analyzer import xml_recup
 
 def old(url_data, min_tps=12):
 	lcl = lcl_time(min_tps)
