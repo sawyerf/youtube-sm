@@ -30,7 +30,7 @@ if sys.argv==[]:
 	nb_new = analyzer_sub(url_data, lcl_time())
 	html_end()
 	open('log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("%H%M") + '\n')
-elif sys.argv == ['-h']:
+elif sys.argv == ['-h'] OR sys.argv == ['-?'] OR sys.argv == ['--help']:
 	print("""
 Usage: python3 youTube.py [OPTIONS]
 
