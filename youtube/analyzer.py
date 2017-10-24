@@ -75,7 +75,7 @@ def info_recup(i, mode):
 
 def generate_data_html(url, url_channel, title, channel, date, image):
 	try:
-		data = open('data/' + date[0] + '/' + date[1], 'r+').read()
+		data = open('data/' + date[0] + '/' + date[1].replace(':', ''), 'r+').read()
 		if url in data:
 			return False
 	except:
@@ -83,7 +83,7 @@ def generate_data_html(url, url_channel, title, channel, date, image):
 			os.mkdir('data/' + date[0])
 		except:
 			pass
-	open('data/' + date[0] + '/' + date[1], 'a').write("""<!--NEXT -->
+	open('data/' + date[0] + '/' + date[1].replace(':', ''), 'a', encoding='utf-8').write("""<!--NEXT -->
 <div class="video">
 	<a class="left" href="https://www.youtube.com/watch?v={}"> <img src="{}" ></a>
 	<a href="https://www.youtube.com/watch?v={}"><h4>{}</h4> </a>
@@ -103,8 +103,8 @@ def html_end(count=7):
 	for i in range(count):
 		fch_in = sorted(os.listdir('data/' + fch[-1-i]))
 		for a in range(len(fch_in)):
-			data = open('data/' + fch[-1-i] + '/' + fch_in[-1-a], 'r').read()
-			open('sub.html', 'a').write(data)
+			data = open('data/' + fch[-1-i] + '/' + fch_in[-1-a], 'r', encoding='utf-8').read()
+			open('sub.html', 'a', encoding='utf-8').write(data)
 	open('sub.html', 'a').write('</body></html>')
 
 def raw_end(count=7):
