@@ -51,5 +51,10 @@ https://www.youtube.com/watch?v={video_id}
 ## Requirements
 - Python 3
 
+## Compatible
+- Linux
+- Windows
+- MacOS (I don't known)
+
 ## Screenshots
 <p><img src="./screenshot/index.pnj" alt="Phone screen" width=405px height=720px></p>
