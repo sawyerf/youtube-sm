@@ -12,8 +12,6 @@ Youtube_subscription_manager is a program to analyze yours subscriptions (create
     - `sub_[type]` is the file with the last videos
     - `sub.swy` is a list of yours subscriptions
     - `log` is a registre with the time taken by the script, the number of videos found and the hour
-- If you want to add a channel. Append the channel id and the name in ` sub.swy`
-    - like this: ```channel_id  name ```
 
 ## Commands
 ```
