@@ -25,6 +25,8 @@ Youtube_subscription_manager is a program to analyze yours subscriptions (create
 -o  [nb of months]  Show the channels who didn't post videos in nb of months + dead
 -a  [id]            To append a channel or a playlist at the end of sub.swy
 -af [file]          To append a file with list of channel or a playlist in sub.swy
+-l  [id]            If you want to analyze only one channel or playlist
+-r		    To remove the cache before analyze
 ```
 
 ## Type of file
