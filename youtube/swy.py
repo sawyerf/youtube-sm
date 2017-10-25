@@ -16,5 +16,5 @@ def add_sub(subs):
 			data = urlopen('https://www.youtube.com/feeds/videos.xml?channel_id=' + i).read().decode().split('<name>')[1].split('</name>')[0]
 		elif i[:2] == 'PL':
 			data = urlopen('https://www.youtube.com/feeds/videos.xml?playlist_id=' + i).read().decode().split('<title>')[1].split('</title>')[0]
-		open('sub.swy', 'a').write(i + '\t' +  data)
+		open('sub.swy', 'a').write(i + '\t' +  data + '\n')
 
