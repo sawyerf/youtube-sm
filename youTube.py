@@ -18,6 +18,7 @@ def swy(sub_file='subscription_manager'):
 
 url_data = []
 analyze = False
+analyze_only_one = False
 mode = 'html'
 count = 7
 sub_file = 'subscription_manager'
@@ -37,12 +38,14 @@ Usage: python3 youTube.py [OPTIONS]
 Options:
 	-h			Print this help text and exit
 	-n  [file]		To use an other xml file for yours subscriptions
-	-m  [mode] 		The type of file do you want (html, raw)
+	-m  [mode] 		The type of file do you want (html, raw, list)
 	-t  [nb of days]	Numbers of days of subscriptions do you want in your file
 	-d			Show the dead channels + those who posted no videos
 	-o  [nb of months]	Show the channels who didn't post videos in nb of months + dead channels
 	-a  [id]		To append a channel or a playlist at the end of sub.swy
 	-af [file]		To append a file with list of channel or a playlist in sub.swy
+	-l  [id]		If you want to analyze only one channel or playlist
+	-r			To remove the cache before analyze
 """, end='')
 else:
 	for arg in range(len(sys.argv)):
@@ -62,7 +65,7 @@ else:
 			print('[*]Start of analysis')
 			dead(url_data)
 		elif sys.argv[arg] == '-m':
-			analyze = True
+			analyze = True	
 			if sys.argv[arg + 1] in ['html', 'raw', 'list']:
 				mode = sys.argv[arg + 1]
 			else:
@@ -81,6 +84,7 @@ else:
 				sub_file = sys.argv[arg + 1]
 			else:
 				print('[!] File not found')
+				exit()
 		elif sys.argv[arg] == '-a':
 			if sys.argv[arg + 1][:2] in ['UC', 'PL']:
 				from youtube.swy import add_sub
@@ -93,10 +97,25 @@ else:
 				add_sub(open(sys.argv[arg + 1], 'r').read().list('\n'))
 			else:
 				print('[!] File not found')
-			
+				exit()
+		elif sys.argv[arg] == '-l':
+			analyze = True
+			analyze_only_one = True
+			if sys.argv[arg + 1][:2] in ['UC', 'PL']:
+				url_data = [sys.argv[arg + 1]]
+			else:
+				print('[!] Id is not available')
+		elif sys.argv[arg] == '-r':
+			from shutil import rmtree
+			if os.path.exists('data'):
+				rmtree('data')
+			else:
+				print('[!] Data do not exist')
+
 if analyze:
 	passe = time.time()
-	url_data = swy(sub_file)
+	if not analyze_only_one:
+		url_data = swy(sub_file)
 	if mode == 'html':
 		html_init()
 	elif mode == 'raw':
