@@ -103,6 +103,9 @@ else:
 			analyze_only_one = True
 			if sys.argv[arg + 1][:2] in ['UC', 'PL']:
 				url_data = [sys.argv[arg + 1]]
+				from shutil import rmtree
+				if os.path.exists('data'):
+					rmtree('data')
 			else:
 				print('[!] Id is not available')
 		elif sys.argv[arg] == '-r':
