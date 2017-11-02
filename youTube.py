@@ -44,6 +44,7 @@ Options:
 	-o  [nb of months]	Show the channels who didn't post videos in nb of months + dead channels
 	-a  [id]		To append a channel or a playlist at the end of sub.swy
 	-af [file]		To append a file with list of channel or a playlist in sub.swy
+	-ax [file]		To append a xml file in sub.swy
 	-l  [id]		If you want to analyze only one channel or playlist
 	-r			To remove the cache before analyze
 """, end='')
@@ -79,9 +80,10 @@ else:
 				print('[!] Numbers of day invalid')
 				exit()
 		elif sys.argv[arg] == '-n':
-			analyze = True
 			if os.path.exists(sys.argv[arg + 1]):
-				sub_file = sys.argv[arg + 1]
+				if os.path.exists('sub.swy'):
+					os.remove('sub.swy')
+				generate_swy(sys.argv[arg + 1])
 			else:
 				print('[!] File not found')
 				exit()
@@ -98,14 +100,17 @@ else:
 			else:
 				print('[!] File not found')
 				exit()
+		elif sys.argv[arg] == '-ax':
+			if os.path.exists(sys.argv[arg + 1]):
+				generate_swy(sys.argv[arg + 1])
+			else:
+				print('[!] File not found')
+				exit()
 		elif sys.argv[arg] == '-l':
 			analyze = True
 			analyze_only_one = True
 			if sys.argv[arg + 1][:2] in ['UC', 'PL']:
 				url_data = [sys.argv[arg + 1]]
-				from shutil import rmtree
-				if os.path.exists('data'):
-					rmtree('data')
 			else:
 				print('[!] Id is not available')
 		elif sys.argv[arg] == '-r':
@@ -127,7 +132,7 @@ if analyze:
 	elif mode == 'list':
 		if os.path.exists('sub_list'):
 			os.remove('sub_list')
-	nb_new = analyzer_sub(url_data, lcl_time(), mode)	
+	nb_new = analyzer_sub(url_data, lcl_time(1000), mode)	
 	if mode == 'html':
 		html_end(count)
 	elif mode ==  'raw':
