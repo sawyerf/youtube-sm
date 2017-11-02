@@ -132,7 +132,7 @@ if analyze:
 	elif mode == 'list':
 		if os.path.exists('sub_list'):
 			os.remove('sub_list')
-	nb_new = analyzer_sub(url_data, lcl_time(1000), mode)	
+	nb_new = analyzer_sub(url_data, lcl_time(), mode)	
 	if mode == 'html':
 		html_end(count)
 	elif mode ==  'raw':
