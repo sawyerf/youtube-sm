@@ -4,8 +4,12 @@ def lcl_time(nb_month=1):
 	tps = localtime()
 	tm_year, tm_mon, tm_mday = tps.tm_year, tps.tm_mon, tps.tm_mday
 	if tm_mon <= nb_month:
-		tm_mon = 12 - (nb_month - tm_mon)
-		tm_year -= 1
+		if nb_month >= 12:
+			tm_year -= int(nb_month/12)
+			tm_mon -= (nb_month % 12)
+		else:
+			tm_mon = 12 + (tm_mon - nb_month)
+			tm_year -= 1
 	else:
 		tm_mon -= nb_month
 	tm_mday = str(tm_mday)
