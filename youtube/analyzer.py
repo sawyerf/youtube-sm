@@ -67,10 +67,10 @@ def info_recup(i, mode):
 	if mode == 'html':
 		return generate_data_html(url, url_channel, title, channel, date, image)
 	elif mode == 'raw':
-		open('sub_raw', 'a').write(date[0] + '\t' + url + '\t' + url_channel + '\t' + title + '\t' + channel + '\t' + image + '\n')
+		open('sub_raw', 'a', encoding='utf8').write(date[0] + '\t' + url + '\t' + url_channel + '\t' + title + '\t' + channel + '\t' + image + '\n')
 		return True
 	elif mode == 'list':
-		open('sub_list', 'a').write(date[0] + ' https://www.youtube.com/watch?v=' + url + '\n')
+		open('sub_list', 'a', encoding='utf8').write(date[0] + ' https://www.youtube.com/watch?v=' + url + '\n')
 		return True
 
 def generate_data_html(url, url_channel, title, channel, date, image):
@@ -117,7 +117,7 @@ def raw_end(count=7):
 				nb = i
 				break
 	os.remove('sub_raw')
-	fichier = open('sub_raw', 'a')
+	fichier = open('sub_raw', 'a', encoding='utf8')
 	for i in range(nb):
 		fichier.write(linfo[-1-i] + '\n')
 
@@ -134,6 +134,6 @@ def list_end(count=7):
 					nb = i
 					break
 	os.remove('sub_list')
-	fichier = open('sub_list', 'a')
+	fichier = open('sub_list', 'a', encoding='utf8')
 	for i in range(nb):
 		fichier.write(linfo[-1-i][11:] + '\n')
