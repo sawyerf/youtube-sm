@@ -1,6 +1,8 @@
-from urllib.request import *
 import os 
 import time
+import socket
+from threading import Thread
+
 
 def html_init():
 	try:
@@ -18,39 +20,49 @@ def html_init():
 <!-- {} -->
 """.format(time.ctime()))
 
-def analyzer_sub(url_data, min_date, mode='html'):
-	nb_new = 0
+def init(url_data, min_date, mode='html'): 
+	threads = []
 	for url in url_data:
-		linfo = xml_recup(url)
-		if linfo == False or linfo == None:
-			continue
-		for i in linfo:
-			date = int(i.split("<published>")[1].split("</published>")[0].replace('-', '').replace('+00:00', '').replace('T', '').replace(':', ''))
-			if min_date <= date:
-				dvid = info_recup(i, mode)
-				if dvid:
-					nb_new += 1
-				else:
-					break
+		thr = Thread(target=analyzer_sub, args=(url, min_date, mode,))
+		threads.append(thr)
+		thr.start()
+	for i in threads:
+		i.join()
+
+def analyzer_sub(url, min_date, mode):
+	linfo = xml_recup(url)
+	nb_new = 0
+	if linfo == False or linfo == None:
+		return 0
+	for i in linfo:
+		date = int(i.split("<published>")[1].split("</published>")[0].replace('-', '').replace('+00:00', '').replace('T', '').replace(':', ''))
+		if min_date <= date:
+			dvid = info_recup(i, mode)
+			if dvid:
+				nb_new += 1
 			else:
-				break
-	return nb_new
+				return 0
 
 def xml_recup(url):
 	nb = 0
+	data = b""
 	if url[:2] == 'UC':
-		url_xml = 'https://www.youtube.com/feeds/videos.xml?channel_id='
+		url_xml = b'GET /feeds/videos.xml?channel_id=' + url.encode()
 	elif url[:2] == 'PL':
-		url_xml = 'https://www.youtube.com/feeds/videos.xml?playlist_id='
+		url_xml = b'GET /feeds/videos.xml?playlist_id=' + url.encode()
+	else:
+		return None
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	sock.connect(("youtube.com", 80))
+	sock.send(url_xml + b" HTTP/1.0\r\nHost: www.youtube.com\r\n\r\n")
 	while True:
-		try:
-			data = urlopen(url_xml +  url).read().decode()
-		except :
-			nb += 1
-			if nb == 3:
-				return False
-		else:
+		raw_data = sock.recv(1024)
+		if raw_data == b"":
 			break
+		else:
+			data += raw_data
+	sock.close()
+	data = data.decode('utf8')
 	linfo = data.split("<entry>")
 	del linfo[0]
 	if linfo == []:
@@ -75,7 +87,7 @@ def info_recup(i, mode):
 
 def generate_data_html(url, url_channel, title, channel, date, image):
 	try:
-		data = open('data/' + date[0] + '/' + date[1].replace(':', ''), 'r+').read()
+		data = open('data/' + date[0] + '/' + date[1].replace(':', ''), 'rb+').read().decode("utf8")
 		if url in data:
 			return False
 	except:
