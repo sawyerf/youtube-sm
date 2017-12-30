@@ -1,4 +1,3 @@
-from urllib.request import *
 from youtube.analyzer import *
 from youtube.swy import *
 from youtube.time import *
@@ -10,7 +9,7 @@ def swy(sub_file='subscription_manager'):
 	url_data = []
 	if not os.path.exists('sub.swy'):
 		generate_swy(sub_file)
-	data_sub = open('sub.swy', 'r').read().split('\n')
+	data_sub = open('sub.swy', 'rb').read().decode("utf8").split('\n')
 	for i in data_sub:
 		url_data.append(i.split('\t')[0])
 	return url_data
@@ -28,7 +27,7 @@ if sys.argv==[]:
 	passe = time.time()
 	url_data = swy()
 	html_init()
-	nb_new = analyzer_sub(url_data, lcl_time())
+	nb_new = init(url_data, lcl_time())
 	html_end()
 	open('log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("%H%M") + '\n')
 elif sys.argv == ['-h']:
@@ -132,7 +131,7 @@ if analyze:
 	elif mode == 'list':
 		if os.path.exists('sub_list'):
 			os.remove('sub_list')
-	nb_new = analyzer_sub(url_data, lcl_time(), mode)	
+	nb_new = init(url_data, lcl_time(), mode)	
 	if mode == 'html':
 		html_end(count)
 	elif mode ==  'raw':
