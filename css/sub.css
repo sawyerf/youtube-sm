@@ -9,15 +9,38 @@
 	clear: both;
 }
 
-a 
+*
 {
-	text-decoration: none;
-	color: black;
+	font-family: Arial;
+}
+
+div
+{
+	margin-left: 27%;
+	margin-right: 27%;
 }
 
 img
 {
 	width: 280px;
 	height: 157px;
-	
+	margin-right: 7px;
+}
+
+h4
+{
+	line-height: 18px;
+	font-size: 18px;
+}
+
+p
+{
+	color: grey;
+	line-height: 7px;
+}
+
+a 
+{
+	text-decoration: none;
+	color: black;
 }
