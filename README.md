@@ -59,3 +59,4 @@ https://www.youtube.com/watch?v={video_id}
 
 ## Screenshots
 <p><img src="./screenshot/index.jpg" alt="Phone screen" width=405px height=720px></p>
+<p><img src="./screenshot/index_pc.jpg" alt="PC screen" width=720px height=405px></p>
