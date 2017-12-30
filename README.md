@@ -58,4 +58,4 @@ https://www.youtube.com/watch?v={video_id}
 - MacOS (I don't known)
 
 ## Screenshots
-<p><img src="./screenshot/index.pnj" alt="Phone screen" width=405px height=720px></p>
+<p><img src="./screenshot/index.jpg" alt="Phone screen" width=405px height=720px></p>
