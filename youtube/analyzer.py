@@ -149,3 +149,4 @@ def list_end(count=7):
 	fichier = open('sub_list', 'a', encoding='utf8')
 	for i in range(nb):
 		fichier.write(linfo[-1-i][11:] + '\n')
+

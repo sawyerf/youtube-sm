@@ -2,7 +2,7 @@ from urllib.request import *
 
 
 def generate_swy(sub_file):
-	data = open(sub_file, 'r').read()
+	data = open(sub_file, 'r', encoding="utf8").read()
 	liste = data.split('<outline')
 	del liste[:2]
 	for i in liste:

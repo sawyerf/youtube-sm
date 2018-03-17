@@ -38,8 +38,50 @@ def dead(url_data):
 		i.join()
 
 def thread_dead(url):
-		linfo = xml_recup(url)
-		if linfo == False:
-			print('[channel dead]\t', url)
-		elif linfo == None:
-			print('[  no video  ]\t', url)
+	linfo = xml_recup(url)
+	if linfo == False:
+		print('[channel dead]\t', url)
+	elif linfo == None:
+		print('[  no video  ]\t', url)
+
+
+def stats(subs):
+	for sub in subs:
+		threads = []
+		thr = Thread(target=stat, args=(sub, subs[sub],))
+		threads.append(thr)
+		thr.start()
+	for i in threads:		
+		i.join()
+
+def stat(sub, name):
+	data = xml_recup(sub)
+	if data == None or data == False:
+		return
+	marks = 0
+	views = 0
+	count_marks = 0
+	for i in data:
+		mark, view = recup_stats(i)
+		if mark != None:
+			marks += mark
+			count_marks += 1
+		views += view
+	marks = marks / (count_marks / 2)
+	try:
+		print(str(marks)[:4], "for", name, '(', views, 'views )')
+	except:
+		print(name.encode())
+		return
+
+def recup_stats(data):
+	raw = data.split("<media:community>")[1].split("</media:community>")[0]
+	try:
+		mark = float(data.split("average=\"")[1].split("\"")[0])
+	except:
+		mark = None
+	try:
+		view = int(data.split("views=\"")[1].split("\"")[0])
+	except:
+		view = 0
+	return mark, view

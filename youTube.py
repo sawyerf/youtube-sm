@@ -5,15 +5,31 @@ import time
 import os
 import sys
 
-def swy(sub_file='subscription_manager'):
-	url_data = []
+def swy(sub_file='subscription_manager', liste=True):
 	if not os.path.exists('sub.swy'):
 		generate_swy(sub_file)
 	data_sub = open('sub.swy', 'rb').read().decode("utf8").split('\n')
-	for i in data_sub:
-		url_data.append(i.split('\t')[0])
+	if liste:
+		url_data = []
+		for i in data_sub:
+			url_data.append(i.split('\t')[0])
+	else:
+		url_data = dict()
+		for i in data_sub:
+			ch = i.split('\t')
+			try:
+				url_data[ch[0]] = ch[1]	
+			except:
+				pass
 	return url_data
 
+def check_id(id):
+	print(id[:2])
+	if id[:2] == 'UC' or id[:2] == 'PL':
+		return True
+	else:
+		return False
+	
 
 url_data = []
 analyze = False
@@ -46,6 +62,7 @@ Options:
 	-ax [file]		To append a xml file in sub.swy
 	-l  [id]		If you want to analyze only one channel or playlist
 	-r			To remove the cache before analyze
+	-s  [id/all]		To have the stat of the channel(s)
 """, end='')
 else:
 	for arg in range(len(sys.argv)):
@@ -118,6 +135,16 @@ else:
 				rmtree('data')
 			else:
 				print('[!] Data do not exist')
+		elif sys.argv[arg] == '-s':
+			if check_id(sys.argv[arg+1]):
+				from youtube.channel_analyzer import stat
+				stat(sys.argv[arg+1])
+			elif sys.argv[arg+1] == 'all':
+				from youtube.channel_analyzer import stats
+				subs = swy(liste=False)
+				stats(subs)
+			else:
+				print("[!] Id is not available")
 
 if analyze:
 	passe = time.time()
