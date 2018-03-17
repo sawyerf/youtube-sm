@@ -1,6 +1,6 @@
-from youtube.analyzer import *
-from youtube.swy import *
-from youtube.time import *
+from src.analyzer import *
+from src.swy import *
+from src.time import *
 import time
 import os
 import sys
@@ -67,7 +67,7 @@ Options:
 else:
 	for arg in range(len(sys.argv)):
 		if sys.argv[arg] == '-o':
-			from youtube.channel_analyzer import *
+			from src.channel_analyzer import *
 			url_data = swy()
 			print('[*]Start of analysis')
 			try:
@@ -77,7 +77,7 @@ else:
 			else:
 				old(url_data, min_tps)
 		elif sys.argv[arg] == '-d':
-			from youtube.channel_analyzer import *
+			from src.channel_analyzer import *
 			url_data = swy()
 			print('[*]Start of analysis')
 			dead(url_data)
@@ -105,13 +105,13 @@ else:
 				exit()
 		elif sys.argv[arg] == '-a':
 			if sys.argv[arg + 1][:2] in ['UC', 'PL']:
-				from youtube.swy import add_sub
+				from src.swy import add_sub
 				add_sub([sys.argv[arg + 1]])
 			else:
 				print('[!] Id is not available')
 		elif sys.argv[arg] == '-af':
 			if os.path.exists(sys.argv[arg + 1]):
-				from youtube.swy import add_sub
+				from src.swy import add_sub
 				add_sub(open(sys.argv[arg + 1], 'r').read().list('\n'))
 			else:
 				print('[!] File not found')
@@ -137,10 +137,10 @@ else:
 				print('[!] Data do not exist')
 		elif sys.argv[arg] == '-s':
 			if check_id(sys.argv[arg+1]):
-				from youtube.channel_analyzer import stat
+				from src.channel_analyzer import stat
 				stat(sys.argv[arg+1])
 			elif sys.argv[arg+1] == 'all':
-				from youtube.channel_analyzer import stats
+				from src.channel_analyzer import stats
 				subs = swy(liste=False)
 				stats(subs)
 			else:

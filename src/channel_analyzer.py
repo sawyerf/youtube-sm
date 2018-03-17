@@ -1,5 +1,5 @@
-from youtube.time import *
-from youtube.analyzer import xml_recup
+from src.time import *
+from src.analyzer import xml_recup
 from threading import Thread
 
 def old(url_data, min_tps=12):
