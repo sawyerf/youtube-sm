@@ -5,26 +5,7 @@ import time
 import os
 import sys
 
-def swy(sub_file='subscription_manager', liste=True):
-	if not os.path.exists('sub.swy'):
-		generate_swy(sub_file)
-	data_sub = open('sub.swy', 'rb').read().decode("utf8").split('\n')
-	if liste:
-		url_data = []
-		for i in data_sub:
-			url_data.append(i.split('\t')[0])
-	else:
-		url_data = dict()
-		for i in data_sub:
-			ch = i.split('\t')
-			try:
-				url_data[ch[0]] = ch[1]	
-			except:
-				pass
-	return url_data
-
 def check_id(id):
-	print(id[:2])
 	if id[:2] == 'UC' or id[:2] == 'PL':
 		return True
 	else:
@@ -37,15 +18,21 @@ analyze_only_one = False
 mode = 'html'
 count = 7
 sub_file = 'subscription_manager'
+#path
+system = os.uname().sysname
+if system == 'Linux':
+	path = os.environ['HOME'] + '/.cache/youtube/'
+else:
+	path = ''
 #commands
 del sys.argv[0]
 if sys.argv==[]:
 	passe = time.time()
-	url_data = swy()
-	html_init()
-	nb_new = init(url_data, lcl_time())
-	html_end()
-	open('log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("%H%M") + '\n')
+	url_data = swy(path=path)
+	html_init(path)
+	nb_new = init(url_data, lcl_time(), path=path)
+	html_end(path=path)
+	open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("%H%M") + '\n')
 elif sys.argv == ['-h']:
 	print("""
 Usage: python3 youTube.py [OPTIONS]
@@ -68,7 +55,7 @@ else:
 	for arg in range(len(sys.argv)):
 		if sys.argv[arg] == '-o':
 			from src.channel_analyzer import *
-			url_data = swy()
+			url_data = swy(path=path)
 			print('[*]Start of analysis')
 			try:
 				min_tps = int(sys.argv[arg + 1])
@@ -78,7 +65,7 @@ else:
 				old(url_data, min_tps)
 		elif sys.argv[arg] == '-d':
 			from src.channel_analyzer import *
-			url_data = swy()
+			url_data = swy(path=path)
 			print('[*]Start of analysis')
 			dead(url_data)
 		elif sys.argv[arg] == '-m':
@@ -99,26 +86,24 @@ else:
 			if os.path.exists(sys.argv[arg + 1]):
 				if os.path.exists('sub.swy'):
 					os.remove('sub.swy')
-				generate_swy(sys.argv[arg + 1])
+				generate_swy(sys.argv[arg + 1], path)
 			else:
 				print('[!] File not found')
 				exit()
 		elif sys.argv[arg] == '-a':
 			if sys.argv[arg + 1][:2] in ['UC', 'PL']:
-				from src.swy import add_sub
-				add_sub([sys.argv[arg + 1]])
+				add_sub([sys.argv[arg + 1]], path)
 			else:
 				print('[!] Id is not available')
 		elif sys.argv[arg] == '-af':
 			if os.path.exists(sys.argv[arg + 1]):
-				from src.swy import add_sub
-				add_sub(open(sys.argv[arg + 1], 'r').read().list('\n'))
+				add_sub(open(sys.argv[arg + 1], 'r').read().list('\n'), path)
 			else:
 				print('[!] File not found')
 				exit()
 		elif sys.argv[arg] == '-ax':
 			if os.path.exists(sys.argv[arg + 1]):
-				generate_swy(sys.argv[arg + 1])
+				generate_swy(sys.argv[arg + 1], path)
 			else:
 				print('[!] File not found')
 				exit()
@@ -141,7 +126,7 @@ else:
 				stat(sys.argv[arg+1])
 			elif sys.argv[arg+1] == 'all':
 				from src.channel_analyzer import stats
-				subs = swy(liste=False)
+				subs = swy(path=path, liste=False)
 				stats(subs)
 			else:
 				print("[!] Id is not available")
@@ -149,7 +134,7 @@ else:
 if analyze:
 	passe = time.time()
 	if not analyze_only_one:
-		url_data = swy(sub_file)
+		url_data = swy(sub_file, path=path)
 	if mode == 'html':
 		html_init()
 	elif mode == 'raw':
@@ -158,11 +143,11 @@ if analyze:
 	elif mode == 'list':
 		if os.path.exists('sub_list'):
 			os.remove('sub_list')
-	nb_new = init(url_data, lcl_time(), mode)	
+	nb_new = init(url_data, lcl_time(), path, mode)	
 	if mode == 'html':
-		html_end(count)
+		html_end(count, path)
 	elif mode ==  'raw':
 		raw_end(count)
 	elif mode == 'list':
 		list_end(count)
-	open('log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("    %H%M") + '\n')	
+	open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("    %H%M") + '\n')	
