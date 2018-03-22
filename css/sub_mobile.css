@@ -1,33 +1,40 @@
-a
+.left
 {
-	text-decoration: none;
-	color: black;
+	float:left;
 }
-
-p
+.clear
 {
-	line-height: 10px;
-	font-size: 1.9em;
+	clear: both;
 }
-
-h4
+*
 {
-	line-height: 35px;
-	font-size: 30px;
+	font-family: Arial;
+}
+div
+{
+	margin-left: 0%;
+	margin-right: 0%;
+	margin: 10px 0px 10px 0px;
 }
 img
 {
 	width: 380px;
 	height: 214px;
-	margin: 0px 10px 0px 10px;
 }
-.left
+h4
 {
-	float:left;
+	line-height: 30px;
+	font-size: 30px;
+	margin: 0px 0px -10px 0px;
 }
-
-.clear
+p
 {
-	clear: both;
+	color: grey;
+	line-height: 5px;
+	font-size: 1.9em;
 }
-
+a
+{
+	text-decoration: none;
+	color: black;
+}

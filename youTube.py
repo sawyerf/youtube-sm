@@ -19,11 +19,16 @@ mode = 'html'
 count = 7
 sub_file = 'subscription_manager'
 #path
-system = os.uname().sysname
-if system == 'Linux':
-	path = os.environ['HOME'] + '/.cache/youtube/'
-else:
+if os.name == 'nt':
 	path = ''
+else:
+	system = os.uname().sysname
+	if system == 'Linux':
+		path = os.environ['HOME'] + '/.cache/youtube_sm/'
+		try:
+			os.makedirs(path + 'data/')
+		except:
+			pass
 #commands
 del sys.argv[0]
 if sys.argv==[]:
@@ -34,8 +39,7 @@ if sys.argv==[]:
 	html_end(path=path)
 	open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("%H%M") + '\n')
 elif sys.argv == ['-h']:
-	print("""
-Usage: python3 youTube.py [OPTIONS]
+	print("""Usage: python3 youTube.py [OPTIONS]
 
 Options:
 	-h			Print this help text and exit

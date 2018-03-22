@@ -30,10 +30,6 @@ def xml_recup(url):
 	return linfo
 
 def html_init(path):
-	try:
-		os.makedirs(path + 'data/')
-	except:
-		pass
 	open('sub.html', 'w').write("""<html>
 	<head>
 		<meta charset="utf-8" />
