@@ -26,6 +26,7 @@ Youtube_subscription_manager is a program to analyze yours subscriptions (create
 -ax [file]	    To append a xml file in sub.swy
 -l  [id]            If you want to analyze only one channel or playlist
 -r		    To remove the cache before analyze
+-s  [id/all]        To have the stat of the channel(s)
 ```
 
 ## Type of file
