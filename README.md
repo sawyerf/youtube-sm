@@ -3,17 +3,17 @@
 ## Description
 Youtube_subscription_manager is a program to analyze yours subscriptions (create a html file with the last videos releases, find the dead channel, etc)
 
+## Installation
+1. Clone the project: `git clone https://github.com/sawyerf/Youtube_suscription_manager.git`
+2. Go in the folder: `cd Youtube_subscription_manager`
+3. Execute the setup: `sudo python3 setup.py install` 
+4. Recover your subscriprion file in youtube and go !!!
+
 ## Usage
-1. Recover your subscriprion file in youtube
-2. Put this file in the directory
-3. Run the script:
-``` python3 youTube.py ```
-4. Three files are generate `sub_[type]`, `sub.swy` and `log`
-    - `sub_[type]` is the file with the last videos
-    - `sub.swy` is a list of yours subscriptions
-    - `log` is a registre with the time taken by the script, the number of videos found and the hour
+```youtube-sm [OPTIONS]```
 
 ## Commands
+
 ```
 -h                  Print the help text and exit
 -n  [file]          To use an other xml file for yours subscriptions
@@ -55,6 +55,7 @@ https://www.youtube.com/watch?v={video_id}
 
 ## Compatible
 - Linux
+- Android (Termux)
 - Windows
 - MacOS (I don't known)
 
