@@ -10,7 +10,9 @@ Youtube_subscription_manager is a program to analyze yours subscriptions (create
 4. Recover your subscriprion file in youtube and go !!!
 
 ## Usage
-```youtube-sm [OPTIONS]```
+```
+youtube-sm [OPTIONS]
+```
 
 ## Commands
 
