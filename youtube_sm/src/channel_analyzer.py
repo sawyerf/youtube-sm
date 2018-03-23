@@ -1,4 +1,4 @@
-from .time import *
+from .time import lcl_time
 from .analyzer import xml_recup
 from threading import Thread
 
@@ -51,7 +51,7 @@ def stats(subs):
 		thr = Thread(target=stat, args=(sub, subs[sub],))
 		threads.append(thr)
 		thr.start()
-	for i in threads:		
+	for i in threads:
 		i.join()
 
 def stat(sub, name):
