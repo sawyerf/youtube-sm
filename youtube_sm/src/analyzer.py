@@ -1,9 +1,10 @@
-import os 
+import os
 import time
 import socket
 from threading import Thread
 
 def xml_recup(url):
+	"""Return a list of informations of each video"""
 	nb = 0
 	data = b""
 	if url[:2] == 'UC':
@@ -30,6 +31,7 @@ def xml_recup(url):
 	return linfo
 
 def html_init(path):
+	"""To init the html file"""
 	open('sub.html', 'w').write("""<html>
 	<head>
 		<meta charset="utf-8" />
@@ -52,6 +54,7 @@ def init(urls, min_date, path='', mode='html'):
 		i.join()
 
 class Analyzer(Thread):
+	"""It's a group of fonctions to recup the videos informations"""
 	def __init__(self, mode='', url='', min_date='', path=''):
 		self.mode = mode
 		self.url = url
@@ -63,10 +66,10 @@ class Analyzer(Thread):
 		self.channel = ""
 		self.date = []
 		self.image = ""
-	
+
 	def Thread(self):
 		Thread.__init__(self)
-	
+
 	def run(self):
 		self.analyzer_sub()
 
@@ -170,4 +173,3 @@ def list_end(count=7):
 	fichier = open('sub_list', 'a', encoding='utf8')
 	for i in range(nb):
 		fichier.write(linfo[-1-i][11:] + '\n')
-
