@@ -54,7 +54,9 @@ def stats(subs):
 	for i in threads:
 		i.join()
 
-def stat(sub, name):
+
+def stat(sub, name=''):
+	"""Print the mark and the views of a channel"""
 	data = xml_recup(sub)
 	if data == None or data == False:
 		return
@@ -68,11 +70,11 @@ def stat(sub, name):
 			count_marks += 1
 		views += view
 	marks = marks / (count_marks / 2)
+	prin = str(marks)[:4] + " for " + name + ' (' + str(views) + ' views)'
 	try:
-		print(str(marks)[:4], "for", name, '(', views, 'views )')
+		print(prin)
 	except:
-		print(name.encode())
-		return
+		print(prin.encode())
 
 def recup_stats(data):
 	raw = data.split("<media:community>")[1].split("</media:community>")[0]

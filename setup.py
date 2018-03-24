@@ -10,7 +10,7 @@ else:
 
 setup(
 	name='youtube_sm',
-	version='1.0',
+	version='1.0.1',
 	author='Sawyerf',
 	author_email='sawyer.flink@protonmail.ch',
 	description='Youtube subscription manager',
