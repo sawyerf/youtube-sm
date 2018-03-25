@@ -170,19 +170,19 @@ Options:
 						add_file = sys.argv[arg + 1]
 						if not os.path.exists(add_file):
 							exit('[!] File Not Found (' + add_file + ')')
-						if add_file[len(add_file) - 4] == '.swy':
-							with open(add_file, 'r') as file:
-								with open(path + 'sub.swy', 'a') as sub_file:
+						if add_file[len(add_file) - 4:] == '.swy':
+							with open(add_file, 'rb') as file:
+								with open(path + 'sub.swy', 'a', encoding='utf8') as sub_file:
 									nb_line = 1
 									while True:
-										line = file.readline()
+										line = file.readline().decode('utf8')
 										if '\t' in line:
 											sub_file.write(line)
 										else:
 											if line == '':
-												pass
+												break
 											else:
-												print('[!] No tabs in line ' + nb_line)
+												print('[!] No tabs in line ' + str(nb_line))
 						else:
 							url_data = swy(add_file, path=path)
 					else:
@@ -197,7 +197,7 @@ Options:
 		if not analyze_only_one:
 			url_data = swy(sub_file, path=path)
 		if mode == 'html':
-			html_init()
+			html_init(path)
 		elif mode == 'raw':
 			if os.path.exists('sub_raw'):
 				os.remove('sub_raw')
