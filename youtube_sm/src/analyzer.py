@@ -145,14 +145,22 @@ def html_end(count=7, path=''):
 
 def raw_end(count=7):
 	nb = 0
-	linfo = sorted(open('sub_raw', 'r').read().split('\n'))
+	linfo = sorted(open('sub_raw', 'rb').read().decode('utf8').replace('\r', '').split('\n'))
 	for i in range(len(linfo)):
-		if linfo[-1-i][:10] != linfo[-2-i][:10]:
-			nb += 1
-			if nb == count:
-				nb = i
-				break
+		if linfo[i] == '':
+			continue
+		try:
+			if linfo[-1-i][:10] != linfo[-2-i][:10]:
+				nb += 1
+				if nb == count:
+					nb = i
+					break
+		except IndexError:
+			break
+		except:
+			pass
 	os.remove('sub_raw')
+	time.sleep(0.01)
 	fichier = open('sub_raw', 'a', encoding='utf8')
 	for i in range(nb):
 		fichier.write(linfo[-1-i] + '\n')

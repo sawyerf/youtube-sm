@@ -45,6 +45,7 @@ youtube-sm [OPTIONS]
 --af   [file]          To append a file with list of channel or a playlist in sub.swy
 --ax   [file]          To append a xml file in sub.swy
 --cat                  To view your subs
+--css                  Import the css files
 ```
 
 ## Type of File

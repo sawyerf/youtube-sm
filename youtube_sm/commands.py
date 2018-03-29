@@ -24,6 +24,7 @@ def main():
 	analyze_only_one = False
 	mode = 'html'
 	count = 7
+	all_time = False
 	sub_file = 'subscription_manager'
 	#path
 	if os.name == 'nt':
@@ -48,20 +49,21 @@ def main():
 		print("""Usage: youtube-sm [OPTIONS]
 
 Options:
-   -h                  Print this help text and exit
-   -n  [file]          To use an other xml file for yours subscriptions
-   -m  [mode]          The type of file do you want (html, raw, list)
-   -t  [nb of days]    Numbers of days of subscriptions do you want in your file
-   -d                  Show the dead channels + those who posted no videos
-   -o  [nb of months]  Show the channels who didn't post videos in nb of months + dead channels
-   -l  [id]            If you want to analyze only one channel or playlist
-   -r                  To remove the cache before analyze
-   -s  [id/all]        To have the stat of the channel(s)
-   -a  [id]            To append a channel or a playlist at the end of sub.
-   --init [file]       Remove all your subs and the cache and init with your subscription file.
-   --af [file]         To append a file with list of channel or a playlist in sub.swy
-   --ax [file]         To append a xml file in sub.swy
-   --cat               To read 'sub.swy'
+   -h                     Print this help text and exit
+   -n     [file]          To use an other xml file for yours subscriptions
+   -m     [mode]          The type of file do you want (html, raw, list)
+   -t     [nb of days]    Numbers of days of subscriptions do you want in your file
+   -d                     Show the dead channels + those who posted no videos
+   -o     [nb of months]  Show the channels who didn't post videos in nb of months + dead channels
+   -l     [id]            If you want to analyze only one channel or playlist
+   -r                     To remove the cache before analyze
+   -s     [id/all]        To have the stat of the channel(s)
+   -a     [id]            To append a channel or a playlist at the end of sub.
+   --init [file]          Remove all your subs and the cache and init with your subscription file.
+   --af   [file]          To append a file with list of channel or a playlist in sub.swy
+   --ax   [file]          To append a xml file in sub.swy
+   --cat                  To read 'sub.swy'
+   --css                  Import the css files
 """, end='')
 	else:
 		for arg in range(len(sys.argv)):
@@ -93,6 +95,8 @@ Options:
 					analyze = True
 					try:
 						count = int(sys.argv[arg + 1])
+						if count == -1:
+							all_time = True
 					except:
 						print('[!] Numbers of day invalid')
 						exit()
@@ -119,6 +123,10 @@ Options:
 					from shutil import rmtree
 					if os.path.exists(path + 'data'):
 						rmtree(path + 'data')
+						try:
+							os.makedirs(path + 'data/')
+						except:
+							pass
 					else:
 						print('[!] Data do not exist')
 				elif sys.argv[arg] == '-s':
@@ -156,6 +164,13 @@ Options:
 									print(line, end='')
 								except:
 									print(line.encode())
+				elif sys.argv[arg] == '--css':
+					try:
+						os.mkdir('css')
+					except:
+						pass
+					open('css/sub.css', 'a', encoding='utf8').write(".left\n{\n	float: left;\n	\n}\n.clear\n{\n	clear: both;\n}\n*\n{\n	font-family: Arial;\n}\n\ndiv\n{\n	margin: 10px 27% 10px 27%;\n}\nimg\n{\n	width: 280px;\n	height: 157px;\n	margin-right: 7px;\n}\nh4\n{\n	line-height: 18px;\n	font-size: 18px;\n	margin: 0px 0px -5px 0px;\n}\np\n{\n	color: grey;\n	line-height: 7px;\n}\na\n{\n	text-decoration: none;\n	color: black;\n}\n")
+					open('css/sub_mobile.css', 'a', encoding='utf8').write(".left\n{\n	float:left;\n}\n.clear\n{\n	clear: both;\n}\n*\n{\n	font-family: Arial;\n}\ndiv\n{\n	margin-left: 0%;\n	margin-right: 0%;\n	margin: 10px 0px 10px 0px;\n}\nimg\n{\n	width: 380px;\n	height: 214px;\n}\nh4\n{\n	line-height: 30px;\n	font-size: 30px;\n	margin: 0px 0px -10px 0px;\n}\np\n{\n	color: grey;\n	line-height: 5px;\n	font-size: 1.9em;\n}\na\n{\n	text-decoration: none;\n	color: black;\n}")
 				elif sys.argv[arg] == '--init':
 					from shutil import rmtree
 					if os.path.exists(path):
@@ -171,18 +186,16 @@ Options:
 						if not os.path.exists(add_file):
 							exit('[!] File Not Found (' + add_file + ')')
 						if add_file[len(add_file) - 4:] == '.swy':
-							with open(add_file, 'rb') as file:
-								with open(path + 'sub.swy', 'a', encoding='utf8') as sub_file:
-									nb_line = 1
-									while True:
-										line = file.readline().decode('utf8')
-										if '\t' in line:
-											sub_file.write(line)
-										else:
-											if line == '':
-												break
-											else:
-												print('[!] No tabs in line ' + str(nb_line))
+							with open(add_file, 'rb') as file, open(path + 'sub.swy', 'a', encoding='utf8') as sub_file:
+								nb_line = 1
+								while True:
+									line = file.readline().decode('utf8')
+									if '\t' in line:
+										sub_file.write(line)
+									elif line == '':
+										break
+									else:
+										print('[!] No tabs in line ' + str(nb_line))
 						else:
 							url_data = swy(add_file, path=path)
 					else:
@@ -198,17 +211,16 @@ Options:
 			url_data = swy(sub_file, path=path)
 		if mode == 'html':
 			html_init(path)
+			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode)
+			html_end(count, path)
 		elif mode == 'raw':
 			if os.path.exists('sub_raw'):
 				os.remove('sub_raw')
+			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode)
+			raw_end(count)
 		elif mode == 'list':
 			if os.path.exists('sub_list'):
 				os.remove('sub_list')
-		nb_new = init(url_data, lcl_time(), path, mode)
-		if mode == 'html':
-			html_end(count, path)
-		elif mode ==  'raw':
-			raw_end(count)
-		elif mode == 'list':
+			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode)
 			list_end(count)
 		open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("    %H%M") + '\n')
