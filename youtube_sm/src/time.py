@@ -1,6 +1,8 @@
 from time import localtime
 
-def lcl_time(nb_month=1):
+def lcl_time(nb_month=1, all_time=False):
+	if all_time:
+		return 0
 	tps = localtime()
 	tm_year, tm_mon, tm_mday = tps.tm_year, tps.tm_mon, tps.tm_mday
 	if tm_mon <= nb_month:
@@ -20,5 +22,3 @@ def lcl_time(nb_month=1):
 	elif len(tm_mon) == 1:
 		tm_mon = '0' + tm_mon
 	return int(tm_year + tm_mon + tm_mday + '000000')
-
-	
