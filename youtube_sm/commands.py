@@ -18,10 +18,46 @@ def check_id(id):
 	else:
 		return False
 
+def init_command():
+	from shutil import rmtree
+	if os.path.exists(path):
+		rmtree(path)
+	try:
+		os.makedirs(path + 'data/')
+	except:
+		exit('[*] Error We Can\'t Create The Folder')
+	else:
+		print('[*] Data File Create')
+	if len(sys.argv) != arg + 1:
+		add_file = sys.argv[arg + 1]
+		if not os.path.exists(add_file):
+			exit('[!] File Not Found (' + add_file + ')')
+		if add_file[len(add_file) - 4:] == '.swy':
+			with open(add_file, 'rb') as file, open(path + 'sub.swy', 'a', encoding='utf8') as sub_file:
+				nb_line = 1
+				while True:
+					line = file.readline().decode('utf8')
+					if '\t' in line:
+						sub_file.write(line)
+					elif line == '':
+						break
+					else:
+						print('[!] No tabs in line ' + str(nb_line))
+		else:
+			url_data = swy(add_file, path=path)
+	else:
+		if os.path.exists('subscription_manager'):
+			url_data = swy('subscription_manager', path=path)
+		else:
+			exit('[!] File Not Found (subscription_manager)')
+	print('[*] Subs append to sub.swy')
+	exit('[*] Done')
+
 def main():
 	url_data = []
 	analyze = False
 	analyze_only_one = False
+	loading = False
 	mode = 'html'
 	count = 7
 	all_time = False
@@ -64,6 +100,7 @@ Options:
    --ax   [file]          To append a xml file in sub.swy
    --cat                  To read 'sub.swy'
    --css                  Import the css files
+   --loading              To print a progress bar
 """, end='')
 	else:
 		for arg in range(len(sys.argv)):
@@ -172,55 +209,26 @@ Options:
 					open('css/sub.css', 'a', encoding='utf8').write(".left\n{\n	float: left;\n	\n}\n.clear\n{\n	clear: both;\n}\n*\n{\n	font-family: Arial;\n}\n\ndiv\n{\n	margin: 10px 27% 10px 27%;\n}\nimg\n{\n	width: 280px;\n	height: 157px;\n	margin-right: 7px;\n}\nh4\n{\n	line-height: 18px;\n	font-size: 18px;\n	margin: 0px 0px -5px 0px;\n}\np\n{\n	color: grey;\n	line-height: 7px;\n}\na\n{\n	text-decoration: none;\n	color: black;\n}\n")
 					open('css/sub_mobile.css', 'a', encoding='utf8').write(".left\n{\n	float:left;\n}\n.clear\n{\n	clear: both;\n}\n*\n{\n	font-family: Arial;\n}\ndiv\n{\n	margin-left: 0%;\n	margin-right: 0%;\n	margin: 10px 0px 10px 0px;\n}\nimg\n{\n	width: 380px;\n	height: 214px;\n}\nh4\n{\n	line-height: 30px;\n	font-size: 30px;\n	margin: 0px 0px -10px 0px;\n}\np\n{\n	color: grey;\n	line-height: 5px;\n	font-size: 1.9em;\n}\na\n{\n	text-decoration: none;\n	color: black;\n}")
 				elif sys.argv[arg] == '--init':
-					from shutil import rmtree
-					if os.path.exists(path):
-						rmtree(path)
-					try:
-						os.makedirs(path + 'data/')
-					except:
-						exit('[*] Error We Can\'t Create The Folder')
-					else:
-						print('[*] Data File Create')
-					if len(sys.argv) != arg + 1:
-						add_file = sys.argv[arg + 1]
-						if not os.path.exists(add_file):
-							exit('[!] File Not Found (' + add_file + ')')
-						if add_file[len(add_file) - 4:] == '.swy':
-							with open(add_file, 'rb') as file, open(path + 'sub.swy', 'a', encoding='utf8') as sub_file:
-								nb_line = 1
-								while True:
-									line = file.readline().decode('utf8')
-									if '\t' in line:
-										sub_file.write(line)
-									elif line == '':
-										break
-									else:
-										print('[!] No tabs in line ' + str(nb_line))
-						else:
-							url_data = swy(add_file, path=path)
-					else:
-						if os.path.exists('subscription_manager'):
-							url_data = swy('subscription_manager', path=path)
-						else:
-							exit('[!] File Not Found (subscription_manager)')
-					print('[*] Subs append to sub.swy')
-					exit('[*] Done')
+					init_command()
+				elif sys.argv[arg] == '--loading':
+					loading = True
+					analyze = True
 	if analyze:
 		passe = time.time()
 		if not analyze_only_one:
 			url_data = swy(sub_file, path=path)
 		if mode == 'html':
 			html_init(path)
-			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode)
+			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading)
 			html_end(count, path)
 		elif mode == 'raw':
 			if os.path.exists('sub_raw'):
 				os.remove('sub_raw')
-			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode)
+			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading)
 			raw_end(count)
 		elif mode == 'list':
 			if os.path.exists('sub_list'):
 				os.remove('sub_list')
-			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode)
+			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading)
 			list_end(count)
 		open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("    %H%M") + '\n')

@@ -46,6 +46,7 @@ youtube-sm [OPTIONS]
 --ax   [file]          To append a xml file in sub.swy
 --cat                  To view your subs
 --css                  Import the css files
+--loading              To print a progress bar
 ```
 
 ## Type of File
