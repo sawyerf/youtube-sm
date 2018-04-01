@@ -3,6 +3,18 @@ import time
 import socket
 from threading import Thread
 
+
+def progress_bar(xmin, xmax):
+	load = ''
+	pc = (xmin/xmax)
+	for i in range(int(pc*40)):
+		load += '█'
+	for i in range(int(40 - pc*40 + (pc*40)%1)):
+		load += ' '
+	print(str(pc*100)[:3] + ' %|' + load + '| ' + str(xmin) + ' analyzed', end='\r')
+	if pc == 1:
+		print()
+
 def xml_recup(url):
 	"""Return a list of informations of each video"""
 	nb = 0
@@ -43,8 +55,9 @@ def html_init(path):
 <!-- {} -->
 """.format(time.ctime()))
 
-def init(urls, min_date, path='', mode='html'):
+def init(urls, min_date, path='', mode='html', loading=False):
 	threads = []
+	ending = 0
 	for url in urls:
 		thr = Analyzer(mode, url, min_date, path)
 		thr.Thread()
@@ -52,6 +65,9 @@ def init(urls, min_date, path='', mode='html'):
 		thr.start()
 	for i in threads:
 		i.join()
+		ending += 1
+		if loading:
+			progress_bar(ending, len(threads))
 
 class Analyzer(Thread):
 	"""It's a group of fonctions to recup the videos informations"""
