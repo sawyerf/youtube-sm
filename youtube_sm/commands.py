@@ -18,7 +18,7 @@ def check_id(id):
 	else:
 		return False
 
-def init_command():
+def init_command(path, arg):
 	from shutil import rmtree
 	if os.path.exists(path):
 		rmtree(path)
@@ -209,7 +209,7 @@ Options:
 					open('css/sub.css', 'a', encoding='utf8').write(".left\n{\n	float: left;\n	\n}\n.clear\n{\n	clear: both;\n}\n*\n{\n	font-family: Arial;\n}\n\ndiv\n{\n	margin: 10px 27% 10px 27%;\n}\nimg\n{\n	width: 280px;\n	height: 157px;\n	margin-right: 7px;\n}\nh4\n{\n	line-height: 18px;\n	font-size: 18px;\n	margin: 0px 0px -5px 0px;\n}\np\n{\n	color: grey;\n	line-height: 7px;\n}\na\n{\n	text-decoration: none;\n	color: black;\n}\n")
 					open('css/sub_mobile.css', 'a', encoding='utf8').write(".left\n{\n	float:left;\n}\n.clear\n{\n	clear: both;\n}\n*\n{\n	font-family: Arial;\n}\ndiv\n{\n	margin-left: 0%;\n	margin-right: 0%;\n	margin: 10px 0px 10px 0px;\n}\nimg\n{\n	width: 380px;\n	height: 214px;\n}\nh4\n{\n	line-height: 30px;\n	font-size: 30px;\n	margin: 0px 0px -10px 0px;\n}\np\n{\n	color: grey;\n	line-height: 5px;\n	font-size: 1.9em;\n}\na\n{\n	text-decoration: none;\n	color: black;\n}")
 				elif sys.argv[arg] == '--init':
-					init_command()
+					init_command(path, arg)
 				elif sys.argv[arg] == '--loading':
 					loading = True
 					analyze = True

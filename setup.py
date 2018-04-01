@@ -1,11 +1,7 @@
 from setuptools import setup, find_packages
-from os import name
 
 params = dict()
-#if name == 'nt':
 params['entry_points'] = {'console_scripts': ['youtube-sm = youtube_sm.commands:main']}
-#else:
-#	params['scripts'] = 'bin/youtube-sm'
 
 setup(
 	name='youtube_sm',
