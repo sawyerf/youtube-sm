@@ -1,8 +1,17 @@
 import os
 import time
 import socket
+import ssl
 from threading import Thread
 
+def type_id(id):
+	"""True = Channel; False = Playlist"""
+	if id[:2] == 'UC':
+		return True
+	elif id[:2] == 'PL':
+		return False
+	else:
+		return True
 
 def progress_bar(xmin, xmax):
 	load = ''
@@ -15,7 +24,7 @@ def progress_bar(xmin, xmax):
 	if pc == 1:
 		print()
 
-def xml_recup(url):
+def xml_recup(url, method=''):
 	"""Return a list of informations of each video"""
 	nb = 0
 	data = b""
@@ -42,6 +51,32 @@ def xml_recup(url):
 		return None
 	return linfo
 
+def download_page(url_id, type_id=True):
+	"""Return a list of informations of each video"""
+	data = b''
+	if type_id:
+		url = b'GET /channel/' + url_id.encode() + b'/videos'
+	else:
+		url = b'GET /playlist?list=' + url_id.encode()
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	ssock = ssl.wrap_socket(sock, ssl_version=ssl.PROTOCOL_TLSv1)
+	ssock.connect(('youtube.com', 443))
+	ssock.write(url + b' HTTP/1.0\r\nHost: www.youtube.com\r\n\r\n')
+	while True:
+		raw_data = ssock.recv(1000)
+		data += raw_data
+		if b'</html>' in data[-20:] or raw_data == b'':
+			break
+	ssock.close()
+	data = data.decode('utf8')
+	if type_id: #channel
+		linfo = data.split('<div class="yt-lockup-content">')
+	else: #playlist
+		linfo = data.split('<div class="playlist-video-description">')
+		del linfo[0]
+		linfo[-1] = linfo[-1].split('<span class="vertical-align"></span>')[0]
+	return linfo
+
 def html_init(path):
 	"""To init the html file"""
 	open('sub.html', 'w').write("""<html>
@@ -55,11 +90,11 @@ def html_init(path):
 <!-- {} -->
 """.format(time.ctime()))
 
-def init(urls, min_date, path='', mode='html', loading=False):
+def init(urls, min_date, path='', mode='html', loading=False, method=0):
 	threads = []
 	ending = 0
 	for url in urls:
-		thr = Analyzer(mode, url, min_date, path)
+		thr = Analyzer(mode, url, min_date, method, path)
 		thr.Thread()
 		threads.append(thr)
 		thr.start()
@@ -71,12 +106,16 @@ def init(urls, min_date, path='', mode='html', loading=False):
 
 class Analyzer(Thread):
 	"""It's a group of fonctions to recup the videos informations"""
-	def __init__(self, mode='', url='', min_date='', path=''):
+	def __init__(self, mode='', url_id='', min_date='', method=0, path=''):
 		self.mode = mode
-		self.url = url
+		# self.method is the way you're going to recv the data (0 -> RSS, 1 -> https://youtube.com/channel/{id}/videos) 
+		self.method = method
+		self.id = url_id
 		self.path_cache = path
 		self.min_date = min_date
+		self.type = self._type_id()
 		#all the var user in class
+		self.url = ""
 		self.url_channel = ""
 		self.title = ""
 		self.channel = ""
@@ -89,27 +128,58 @@ class Analyzer(Thread):
 	def run(self):
 		self.analyzer_sub()
 
+	def _type_id(self):
+		return type_id(self.id)
+
+	def _download_page(self):
+		if self.method == 0:
+			return xml_recup(self.id)
+		elif self.method == 1:
+			return download_page(self.id)
+		else:
+			return None
+
 	def analyzer_sub(self):
-		linfo = xml_recup(self.url)
-		nb_new = 0
+		linfo = self._download_page()
 		if linfo == False or linfo == None:
 			return 0
-		for i in linfo:
-			date = int(i.split("<published>")[1].split("</published>")[0].replace('-', '').replace('+00:00', '').replace('T', '').replace(':', ''))
-			if self.min_date <= date:
-				dvid = self.info_recup(i)
-				if dvid:
-					nb_new += 1
-				else:
-					return 0
+		if self.method == 0:
+			for i in linfo:
+				date = int(i.split("<published>")[1].split("</published>")[0].replace('-', '').replace('+00:00', '').replace('T', '').replace(':', ''))
+				if self.min_date <= date:
+					dvid = self.info_recup(i)
+		elif self.method == 1:
+			self.channel = linfo[0].split('<title>')[1].split('\n')[0]
+			del linfo[0]
+			for i in linfo:
+				lol = self.info_recup_html(i)
+		else:
+			return
 
-	def info_recup(self, i):
+	def date_process(self, raw_date):
+		"""Return a conform date"""
+		return raw_date.split(' ')
+
+	def info_recup_html(self, i):
+		"""Recup the informations of the html page"""
+		if self.type: #Channel
+			self.url = i.split('href="/watch?v=')[1].split('" rel')[0]
+			self.url_channel = 'https://youtube.com/channel/{}'.format(self.id)
+			self.title = i.split('dir="ltr" title="')[1].split('"')[0]
+			self.date = self.date_process(i.split('</li><li>')[1].split('</li>')[0])
+			self.image = 'https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url)
+			return self.generate_data_html()
+		else: #Playlist
+			pass
+
+	def info_recup_rss(self, i):
+		"""Recup the informations of the rss page"""
 		self.url = i.split('<yt:videoId>')[1].split('</yt:videoId>')[0]
 		self.url_channel = i.split('<yt:channelId>')[1].split('</yt:channelId>')[0]
 		self.title = i.split('<media:title>')[1].split('</media:title>')[0]
 		self.channel = i.split('<name>')[1].split('</name>')[0]
 		self.date = i.split('<published>')[1].split('+')[0].split('T')
-		self.image = 'https://i.ytimg.com/vi/' + self.url  + '/mqdefault.jpg'
+		self.image = 'https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url)
 		if self.mode == 'html':
 			return self.generate_data_html()
 		elif self.mode == 'raw':
