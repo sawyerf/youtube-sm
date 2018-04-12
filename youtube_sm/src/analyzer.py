@@ -188,11 +188,16 @@ def list_end(count=7):
 		nb = len(linfo)
 	else:
 		for i in range(len(linfo)):
-			if linfo[-1-i][:10] != linfo[-2-i][:10]:
-				nb += 1
-				if nb == count:
-					nb = i
-					break
+			try:
+				if linfo[-1-i][:10] != linfo[-2-i][:10]:
+					nb += 1
+					if nb == count:
+						nb = i
+						break
+			except IndexError:
+				break
+			except:
+				pass
 	os.remove('sub_list')
 	fichier = open('sub_list', 'a', encoding='utf8')
 	for i in range(nb):
