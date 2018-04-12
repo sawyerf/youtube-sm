@@ -58,6 +58,7 @@ def main():
 	analyze = False
 	analyze_only_one = False
 	loading = False
+	method = 0
 	mode = 'html'
 	count = 7
 	all_time = False
@@ -201,6 +202,9 @@ Options:
 									print(line, end='')
 								except:
 									print(line.encode())
+				elif sys.argv[arg] == '--all':
+					method = 1
+					analyze = True
 				elif sys.argv[arg] == '--css':
 					try:
 						os.mkdir('css')
@@ -219,16 +223,16 @@ Options:
 			url_data = swy(sub_file, path=path)
 		if mode == 'html':
 			html_init(path)
-			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading)
+			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
 			html_end(count, path)
 		elif mode == 'raw':
 			if os.path.exists('sub_raw'):
 				os.remove('sub_raw')
-			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading)
+			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
 			raw_end(count)
 		elif mode == 'list':
 			if os.path.exists('sub_list'):
 				os.remove('sub_list')
-			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading)
+			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
 			list_end(count)
 		open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("    %H%M") + '\n')
