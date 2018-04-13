@@ -80,6 +80,19 @@ This 3 files are generate in:
 - Windows: `C:\Users\<name>\.youtube_sm\`.
 - Linux:   `/home/<name>/.cache/youtube_sm/.`.
 
+|          |        all         |  RSS   |
+|:--------:|:------------------:|:------:|
+|          | Channel | Playlist |  RSS   |
+|:--------:|:--------:|:-------:|:------:|
+|channel id| ✔ | ✔ | ✔ |
+| video id | ✔ | ✔ | ✔ |
+|name ch/vi| ✔ | ✔ | ✔ |
+|   Date   | ～ | ✖ | ✔ |
+|   Durée  | ✔ | ✖ | ✖ |
+|   Views  | ✔ | ✔ | ✔ |
+|   Like   | ✖ | ✖ | ✔ |
+
+
 ## Requirements
 - Python 3
 
