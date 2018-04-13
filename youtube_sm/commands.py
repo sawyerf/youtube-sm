@@ -58,7 +58,7 @@ def main():
 	analyze = False
 	analyze_only_one = False
 	loading = False
-	method = 0
+	method = '0'
 	mode = 'html'
 	count = 7
 	all_time = False
@@ -203,7 +203,7 @@ Options:
 								except:
 									print(line.encode())
 				elif sys.argv[arg] == '--all':
-					method = 1
+					method = '1'
 					analyze = True
 				elif sys.argv[arg] == '--css':
 					try:
@@ -224,7 +224,7 @@ Options:
 		if mode == 'html':
 			html_init(path)
 			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
-			html_end(count, path)
+			html_end(count, path, method)
 		elif mode == 'raw':
 			if os.path.exists('sub_raw'):
 				os.remove('sub_raw')

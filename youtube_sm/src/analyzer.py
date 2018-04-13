@@ -13,16 +13,25 @@ def type_id(id):
 	else:
 		return True
 
-def progress_bar(xmin, xmax):
-	load = ''
-	pc = (xmin/xmax)
-	for i in range(int(pc*40)):
-		load += '█'
-	for i in range(int(40 - pc*40 + (pc*40)%1)):
-		load += ' '
-	print(str(pc*100)[:3] + ' %|' + load + '| ' + str(xmin) + ' analyzed', end='\r')
-	if pc == 1:
-		print()
+class Progress():
+	def __init__(self, xmax=0):
+		self.xmin = 0
+		self.xmax = xmax
+
+	def add(self):
+		self.xmin += 1
+		self.progress_bar()
+
+	def progress_bar(self):
+		load = ''
+		pc = (self.xmin/self.xmax)
+		for i in range(int(pc*40)):
+			load += '█'
+		for i in range(int(40 - pc*40 + (pc*40)%1)):
+			load += ' '
+		print('{} %|{}| {}/{} analyzed'.format(str(pc*100)[:3], load, str(self.xmin), str(self.xmax)), end='\r')
+		if pc == 1:
+			print()
 
 def xml_recup(url, method=''):
 	"""Return a list of informations of each video"""
@@ -58,12 +67,24 @@ def download_page(url_id, type_id=True):
 		url = b'GET /channel/' + url_id.encode() + b'/videos'
 	else:
 		url = b'GET /playlist?list=' + url_id.encode()
-	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	ssock = ssl.wrap_socket(sock, ssl_version=ssl.PROTOCOL_TLSv1)
-	ssock.connect(('youtube.com', 443))
-	ssock.write(url + b' HTTP/1.0\r\nHost: www.youtube.com\r\n\r\n')
+	for i in range(3):
+		try:
+			sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			ssock = ssl.wrap_socket(sock, ssl_version=ssl.PROTOCOL_TLSv1)
+			ssock.connect(('youtube.com', 443))
+			ssock.write(url + b' HTTP/1.0\r\nHost: www.youtube.com\r\nAccept-Language: en\r\n\r\n')
+		except:
+			if i == 2:
+				return None
+		else:
+			break
 	while True:
-		raw_data = ssock.recv(1000)
+		try:
+			raw_data = ssock.recv(1000)
+		except ConnectionResetError:
+			return None
+		except:
+			break
 		data += raw_data
 		if b'</html>' in data[-20:] or raw_data == b'':
 			break
@@ -93,20 +114,25 @@ def html_init(path):
 def init(urls, min_date, path='', mode='html', loading=False, method=0):
 	threads = []
 	ending = 0
+	if loading:
+		prog = Progress(len(threads))
 	for url in urls:
-		thr = Analyzer(mode, url, min_date, method, path)
+		if loading:
+			thr = Analyzer(mode, url, min_date, method, path, prog)
+		else:
+			thr = Analyzer(mode, url, min_date, method, path)
 		thr.Thread()
 		threads.append(thr)
 		thr.start()
+	if loading:
+		prog.xmax = len(threads)
+		prog.progress_bar()
 	for i in threads:
 		i.join()
-		ending += 1
-		if loading:
-			progress_bar(ending, len(threads))
 
 class Analyzer(Thread):
 	"""It's a group of fonctions to recup the videos informations"""
-	def __init__(self, mode='', url_id='', min_date='', method=0, path=''):
+	def __init__(self, mode='', url_id='', min_date='', method='0', path='', prog=None):
 		self.mode = mode
 		# self.method is the way you're going to recv the data (0 -> RSS, 1 -> https://youtube.com/channel/{id}/videos) 
 		self.method = method
@@ -121,6 +147,8 @@ class Analyzer(Thread):
 		self.channel = ""
 		self.date = []
 		self.image = ""
+		#Progress
+		self.prog = prog
 
 	def Thread(self):
 		Thread.__init__(self)
@@ -132,9 +160,9 @@ class Analyzer(Thread):
 		return type_id(self.id)
 
 	def _download_page(self):
-		if self.method == 0:
+		if self.method == '0':
 			return xml_recup(self.id)
-		elif self.method == 1:
+		elif self.method == '1':
 			return download_page(self.id)
 		else:
 			return None
@@ -142,33 +170,47 @@ class Analyzer(Thread):
 	def analyzer_sub(self):
 		linfo = self._download_page()
 		if linfo == False or linfo == None:
-			return 0
-		if self.method == 0:
+			return
+		try:
+			os.mkdir(self.path_cache + 'data/' + self.method)
+		except:
+			pass
+		if self.method == '0':
 			for i in linfo:
 				date = int(i.split("<published>")[1].split("</published>")[0].replace('-', '').replace('+00:00', '').replace('T', '').replace(':', ''))
 				if self.min_date <= date:
-					dvid = self.info_recup(i)
-		elif self.method == 1:
-			self.channel = linfo[0].split('<title>')[1].split('\n')[0]
+					self.info_recup_rss(i)
+					self.write()
+		elif self.method == '1':
+			try:
+				self.channel = linfo[0].split('<title>')[1].split('\n')[0]
+			except IndexError:
+				pass
+			except:
+				pass
 			del linfo[0]
 			for i in linfo:
-				lol = self.info_recup_html(i)
-		else:
-			return
+				try:
+					self.info_recup_html(i)
+				except:
+					pass
+				else:
+					self.write()
+		if self.prog != None:
+			self.prog.add()
 
 	def date_process(self, raw_date):
 		"""Return a conform date"""
-		return raw_date.split(' ')
+		return [raw_date, 'dk']
 
 	def info_recup_html(self, i):
 		"""Recup the informations of the html page"""
 		if self.type: #Channel
 			self.url = i.split('href="/watch?v=')[1].split('" rel')[0]
-			self.url_channel = 'https://youtube.com/channel/{}'.format(self.id)
+			self.url_channel = self.id
 			self.title = i.split('dir="ltr" title="')[1].split('"')[0]
 			self.date = self.date_process(i.split('</li><li>')[1].split('</li>')[0])
 			self.image = 'https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url)
-			return self.generate_data_html()
 		else: #Playlist
 			pass
 
@@ -180,6 +222,8 @@ class Analyzer(Thread):
 		self.channel = i.split('<name>')[1].split('</name>')[0]
 		self.date = i.split('<published>')[1].split('+')[0].split('T')
 		self.image = 'https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url)
+		
+	def write(self):
 		if self.mode == 'html':
 			return self.generate_data_html()
 		elif self.mode == 'raw':
@@ -197,15 +241,15 @@ class Analyzer(Thread):
 
 	def generate_data_html(self):
 		try:
-			data = open(self.path_cache + 'data/' + self.date[0] + '/' + self.date[1].replace(':', ''), 'rb+').read().decode("utf8")
+			data = open(self.path_cache + 'data/' + self.method + '/' + self.date[0] + '/' + self.date[1].replace(':', ''), 'rb+').read().decode("utf8")
 			if self.url in data:
 				return False
 		except:
 			try:
-				os.mkdir(self.path_cache + 'data/' + self.date[0])
+				os.mkdir(self.path_cache + 'data/' + self.method + '/' + self.date[0])
 			except:
 				pass
-		open(self.path_cache + 'data/' + self.date[0] + '/' + self.date[1].replace(':', ''), 'a', encoding='utf-8').write("""<!--NEXT -->
+		open(self.path_cache + 'data/' + self.method + '/' + self.date[0] + '/' + self.date[1].replace(':', ''), 'a', encoding='utf-8').write("""<!--NEXT -->
 	<div class="video">
 		<a class="left" href="https://www.youtube.com/watch?v={}"> <img src="{}" ></a>
 		<a href="https://www.youtube.com/watch?v={}"><h4>{}</h4> </a>
@@ -216,16 +260,16 @@ class Analyzer(Thread):
 	""".format(self.url, self.image, self.url, self.title, self.url_channel, self.channel, self.date[0]))
 		return True
 
-def html_end(count=7, path=''):
-	fch = sorted(os.listdir(path + 'data/'))
+def html_end(count=7, path='', method='0'):
+	fch = sorted(os.listdir(path + 'data/' + method + '/'))
 	if len(fch) < count:
 		count = len(fch)
 	elif count == -1:
 		count = len(fch)
 	for i in range(count):
-		fch_in = sorted(os.listdir(path + 'data/' + fch[-1-i]))
+		fch_in = sorted(os.listdir(path + 'data/' + method + '/' + fch[-1-i]))
 		for a in range(len(fch_in)):
-			data = open(path + 'data/' + fch[-1-i] + '/' + fch_in[-1-a], 'r', encoding='utf-8').read()
+			data = open(path + 'data/' + method + '/' + fch[-1-i] + '/' + fch_in[-1-a], 'r', encoding='utf-8').read()
 			open('sub.html', 'a', encoding='utf-8').write(data)
 	open('sub.html', 'a').write('</body></html>')
 
