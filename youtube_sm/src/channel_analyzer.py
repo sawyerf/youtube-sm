@@ -1,5 +1,5 @@
 from .time import lcl_time
-from .analyzer import xml_recup
+from .sock import xml_recup
 from threading import Thread
 
 def old(url_data, min_tps=12):

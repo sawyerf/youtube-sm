@@ -99,6 +99,7 @@ Options:
    --init [file]          Remove all your subs and the cache and init with your subscription file.
    --af   [file]          To append a file with list of channel or a playlist in sub.swy
    --ax   [file]          To append a xml file in sub.swy
+   --all                  To recover yours subs in the common page web (more videos)
    --cat                  To read 'sub.swy'
    --css                  Import the css files
    --loading              To print a progress bar

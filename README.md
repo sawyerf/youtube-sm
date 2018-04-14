@@ -6,6 +6,7 @@
 - [Commands](#commands)
 - [Type of File](#type-of-file)
 - [Cache](#cache)
+- [HTML & RSS](#HTML-&-RSS)
 - [Requirements](#requirements)
 - [Compatible](#compatible)
 - [Screenshots](#screenshots)
@@ -44,6 +45,7 @@ youtube-sm [OPTIONS]
 --init [file]          Remove all your subs and the cache and init with your subscription file.
 --af   [file]          To append a file with list of channel or a playlist in sub.swy
 --ax   [file]          To append a xml file in sub.swy
+--all                  To recover yours subs in the common page web (more videos)
 --cat                  To view your subs
 --css                  Import the css files
 --loading              To print a progress bar
@@ -80,17 +82,22 @@ This 3 files are generate in:
 - Windows: `C:\Users\<name>\.youtube_sm\`.
 - Linux:   `/home/<name>/.cache/youtube_sm/.`.
 
-|          |        all         |  RSS   |
-|:--------:|:------------------:|:------:|
-|          | Channel | Playlist |  RSS   |
-|:--------:|:--------:|:-------:|:------:|
-|channel id| ✔ | ✔ | ✔ |
-| video id | ✔ | ✔ | ✔ |
-|name ch/vi| ✔ | ✔ | ✔ |
-|   Date   | ～ | ✖ | ✔ |
-|   Durée  | ✔ | ✖ | ✖ |
-|   Views  | ✔ | ✔ | ✔ |
-|   Like   | ✖ | ✖ | ✔ |
+## HTML & RSS
+With youtube-sm you can recover yours subscriptions with two method:
+- RSS (default): you recover the subs in the in a XML page.
+- HTML (with --all): you recover yours subs in a usual HTML page.
+
+They are two choice because we can't recover the same informations and with not the same time. 
+So the default way is more adapt to recover only the newest videos and the html method is more adapt to recover all the videos of a playlist or to recover the last 30 videos.
+
+|            |   *HTML*  |   *HTML*   |   *RSS*   |
+|:----------:|:-------:|:--------:|:-------:|
+|            | **Channel** | **Playlist** |   **Both**   |
+|  Execution |   slow  |   slow   |   Fast  |
+|   Number   |30 videos|100 videos|15 videos|
+|    Date    | **~** | ✖ | ✔ |
+|  Like Rate | ✖ | ✖ | ✔ |
+|    Views   | ✔ | ✖ | ✔ |
 
 
 ## Requirements
