@@ -6,7 +6,7 @@
 - [Commands](#commands)
 - [Type of File](#type-of-file)
 - [Cache](#cache)
-- [HTML & RSS](#HTML-&-RSS)
+- [HTML & RSS](#html--rss)
 - [Requirements](#requirements)
 - [Compatible](#compatible)
 - [Screenshots](#screenshots)
