@@ -1,6 +1,6 @@
 # Youtube_subscription_manager
 
-[![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)][http://pypi.python.org/pypi/youtube-sm/]
+[![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)](http://pypi.python.org/pypi/youtube-sm/)
 
 - [Description](#description)
 - [Installation](#installation)
