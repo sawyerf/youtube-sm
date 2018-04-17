@@ -5,7 +5,7 @@ params['entry_points'] = {'console_scripts': ['youtube-sm = youtube_sm.commands:
 
 setup(
 	name='youtube_sm',
-	version='1.0.3',
+	version='1.1.0',
 	author='Sawyerf',
 	author_email='sawyer.flink@protonmail.ch',
 	description='Youtube subscription manager',

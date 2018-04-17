@@ -1,5 +1,6 @@
-from urllib.request import *
 from os.path import exists
+from .sock import download_xml
+from .tools import type_id
 
 def generate_swy(sub_file, path=''):
 	"""Add sub in sub.swy"""
@@ -18,10 +19,14 @@ def generate_swy(sub_file, path=''):
 def add_sub(subs, path=''):
 	"""Add a list of subs in sub.swy"""
 	for i in subs:
-		if i[:2] == 'UC':
-			data = urlopen('https://www.youtube.com/feeds/videos.xml?channel_id=' + i).read().decode().split('<name>')[1].split('</name>')[0]
-		elif i[:2] == 'PL':
-			data = urlopen('https://www.youtube.com/feeds/videos.xml?playlist_id=' + i).read().decode().split('<title>')[1].split('</title>')[0]
+		tid = type_id(i)
+		data = download_xml(i, type_id=tid, split=False)
+		if data == None:
+			continue
+		if tid:
+			data = data.split('<name>')[1].split('</name>')[0]
+		else:
+			data = data.split('<title>')[1].split('</title>')[0]
 		open(path + 'sub.swy', 'a', encoding='utf8').write(i + '\t' +  data + '\n')
 
 
@@ -43,3 +48,4 @@ def swy(sub_file='subscription_manager', path='', liste=True):
 			except:
 				pass
 	return url_data
+
