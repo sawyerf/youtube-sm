@@ -1,5 +1,7 @@
 # Youtube_subscription_manager
 
+[![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)][http://pypi.python.org/pypi/youtube-sm/]
+
 - [Description](#description)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -88,7 +90,8 @@ With youtube-sm you can recover yours subscriptions with two method:
 - HTML (with --all): you recover yours subs in a usual HTML page.
 
 They are two choice because we can't recover the same informations and with not the same time. 
-So the default way is more adapt to recover only the newest videos and the html method is more adapt to recover all the videos of a playlist or to recover the last 30 videos.
+So the default way is more adapt to recover only the newest videos and the html method is more
+ adapt to recover all the videos of a playlist or to recover the last 30 videos of channel.
 
 |            |   *HTML*  |   *HTML*   |   *RSS*   |
 |:----------:|:-------:|:--------:|:-------:|
