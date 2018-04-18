@@ -48,7 +48,7 @@ youtube-sm [OPTIONS]
 -d                     Show the dead channels + those who posted no videos
 -o     [nb of months]  Show the channels who didn't post videos in [nb of months] + dead channels
 -l     [id]            Choose to analyze only one channel or playlist
--r                     Remove the cache running the program
+-r                     Remove the cache
 -s     [id/all]        Outputs the stats of the selected channel(s)
 -a     [id]            Choose to append a channel or a playlist at the end of sub.
 --init [file]          Remove all your subs and the cache and init with your subscription file.
