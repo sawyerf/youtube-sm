@@ -3,8 +3,8 @@ import time
 
 from threading import Thread
 from .sock import (
-	xml_recup,
-	download_page)
+	download_xml,
+	download_html)
 from .tools import (
 	Progress,
 	type_id)
@@ -25,6 +25,7 @@ def html_init(path):
 """.format(time.ctime()))
 
 def init(urls, min_date, path='', mode='html', loading=False, method=0):
+	"""Run all the analyze in a thread"""
 	threads = []
 	ending = 0
 	nb = len(urls)
@@ -58,6 +59,8 @@ def init(urls, min_date, path='', mode='html', loading=False, method=0):
 	if loading and prog.xmin != prog.xmax:
 		prog.xmin = prog.xmax
 		prog.progress_bar()
+
+
 class Analyzer(Thread):
 	"""It's a group of fonctions to recup the videos informations"""
 	def __init__(self, mode='', url_id='', min_date='', method='0', path='', prog=None):
@@ -91,13 +94,15 @@ class Analyzer(Thread):
 
 	def _download_page(self):
 		if self.method == '0':
-			return xml_recup(self.id)
+			return download_xml(self.id, self.type)
 		elif self.method == '1':
-			return download_page(self.id, self.type)
+			return download_html(self.id, self.type)
 		else:
 			return None
 
 	def analyzer_sub(self):
+		"""Recover all the videos of a channel or a playlist
+		and add the informations in $HOME/.cache/youtube_sm/data/."""
 		linfo = self._download_page()
 		if linfo == False or linfo == None:
 			return
@@ -112,7 +117,7 @@ class Analyzer(Thread):
 					self.info_recup_rss(i)
 					self.write()
 		elif self.method == '1':
-			if self.type:
+			if self.type: #Channel
 				try:
 					self.channel = linfo[0].split('<title>')[1].split('\n')[0]
 				except IndexError:
@@ -122,14 +127,23 @@ class Analyzer(Thread):
 				del linfo[0]
 			for i in linfo:
 				try:
-					self.info_recup_html(i)				
+					self.info_recup_html(i)
 				except:
 					pass
 				else:
 					self.write()
 
+	def _url(self, i):
+		if self.method == '0':
+			self.url = i.split('<yt:videoId>')[1].split('</yt:videoId>')[0]
+		elif self.method == '1':
+			if self.type:
+				self.url = i.split('href="/watch?v=')[1].split('" rel')[0]
+			else:
+				self.url = i.split('data-video-id="')[1].split('"')[0]
+
 	def info_recup_html(self, i):
-		"""Recup the informations of the html page"""
+		"""Recover the informations of the html page"""
 		if self.type: #Channel
 			self.url = i.split('href="/watch?v=')[1].split('" rel')[0]
 			self.url_channel = self.id
@@ -147,7 +161,7 @@ class Analyzer(Thread):
 			self.data_file = ['Playlist/', self.id]
 
 	def info_recup_rss(self, i):
-		"""Recup the informations of the rss page"""
+		"""Recover the informations of a rss page"""
 		self.url = i.split('<yt:videoId>')[1].split('</yt:videoId>')[0]
 		self.url_channel = i.split('<yt:channelId>')[1].split('</yt:channelId>')[0]
 		self.title = i.split('<media:title>')[1].split('</media:title>')[0]
@@ -156,6 +170,7 @@ class Analyzer(Thread):
 		self.date = self.data_file[0]
 
 	def write(self):
+		"""Write the information in a file"""
 		if self.mode == 'html':
 			return self.generate_data_html()
 		elif self.mode == 'raw':
@@ -164,17 +179,36 @@ class Analyzer(Thread):
 			return self.append_list()
 
 	def append_raw(self):
-		open('sub_raw', 'a', encoding='utf8').write(self.date + '\t' + self.url + '\t' + self.url_channel + '\t' + self.title + '\t' + self.channel + '\thttps://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url) + '\n')
+		"""Append the informations wich are been recover 
+		in the file 'sub_raw'."""
+		if self.method == '0':
+			var = self.date + '\t' + self.url + '\t' + self.url_channel + '\t' + self.title + '\t' + self.channel + '\thttps://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url) + '\n'
+			if len(var) > 300:
+				return False
+			open('sub_raw', 'a', encoding='utf8').write(var)
+		elif self.method == '1':
+			var = self.url + '\t' + self.url_channel + '\t' + self.title + '\t' + self.channel + '\thttps://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url) + '\n'
+			if len(var) > 300:
+				return False
+			open('sub_raw', 'a', encoding='utf8').write(var)
+		var = ""
 		return True
 
 	def append_list(self):
-		if self.type == False and self.method == '1':
-			open('sub_list', 'a', encoding='utf8').write('https://www.youtube.com/watch?v=' + self.url + '\n')
-		else:
+		""""Append the informations wich are been recover
+		in the file 'sub_raw'. The date is add to sort the
+		videos, it is deleted"""
+		if len(self.url) != 11:
+			return False 
+		if self.method == '0':
 			open('sub_list', 'a', encoding='utf8').write(self.date + ' https://www.youtube.com/watch?v=' + self.url + '\n')
+		elif self.method == '1':
+			open('sub_list', 'a', encoding='utf8').write('https://www.youtube.com/watch?v=' + self.url + '\n')
 		return True
 
 	def generate_data_html(self):
+		"""Append the informations wich are been recover
+		in a file in '.../data/[date]/.' """
 		try:
 			data = open(self.path_cache + 'data/' + self.method + '/' + self.data_file[0], 'rb+').read().decode("utf8")
 			if self.url in data:
@@ -200,6 +234,9 @@ class Analyzer(Thread):
 		return True
 
 def html_end(count=7, path='', method='0'):
+	"""Recover the file in '.../data/.' with all the
+	informations, sort by date and add the informations
+	in './sub.html'. """
 	fch = sorted(os.listdir(path + 'data/' + method + '/'))
 	if len(fch) < count:
 		count = len(fch)
@@ -213,8 +250,11 @@ def html_end(count=7, path='', method='0'):
 	open('sub.html', 'a').write('</body></html>')
 
 def raw_end(count=7):
+	"""Sorted the videos by date"""
 	nb = 0
 	linfo = sorted(open('sub_raw', 'rb').read().decode('utf8').replace('\r', '').split('\n'))
+	if count == -1:
+		nb = len(linfo)	
 	for i in range(len(linfo)):
 		if linfo[i] == '':
 			continue
@@ -232,13 +272,15 @@ def raw_end(count=7):
 	time.sleep(0.01)
 	fichier = open('sub_raw', 'a', encoding='utf8')
 	for i in range(nb):
-		fichier.write(linfo[-1-i] + '\n')
+		try:
+			fichier.write(linfo[-1-i] + '\n')
+		except IndexError:
+			continue
 
-def list_end(count=7):	
+def list_end(count=7):
+	"""Sorted the videos by date"""
 	nb = 0
 	linfo = sorted(open('sub_list', 'r').read().split('\n'))
-	if not ' ' in linfo[-1]:
-		return
 	if count == -1:
 		nb = len(linfo)
 	else:
@@ -257,3 +299,4 @@ def list_end(count=7):
 	fichier = open('sub_list', 'a', encoding='utf8')
 	for i in range(nb):
 		fichier.write(linfo[-1-i][11:] + '\n')
+
