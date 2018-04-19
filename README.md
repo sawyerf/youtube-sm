@@ -27,13 +27,13 @@ It can gather informations about every video in a playlist, a channel or your su
 
 ## Usage
 
-1. Download your subscriptions configuration from youtube.com ([https://www.youtube.com/subscription_manager?action_takeout=1](here))
+1. Download your subscriptions configuration from youtube.com ([here](https://www.youtube.com/subscription_manager?action_takeout=1))
 2. Once this is done, you may load it by using the following command :
 
-`youtube-sm --init [file]`
-
+```
+youtube-sm --init [file]
+```
 3. Finally, you can start using the program using the commands shown below :
-
 ```
 youtube-sm [OPTIONS]
 ```
