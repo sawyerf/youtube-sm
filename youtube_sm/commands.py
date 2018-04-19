@@ -63,6 +63,7 @@ def main():
 	mode = 'html'
 	count = 7
 	all_time = False
+	output = ''
 	sub_file = 'subscription_manager'
 	#path
 	if os.name == 'nt':
@@ -87,23 +88,24 @@ def main():
 		print("""Usage: youtube-sm [OPTIONS]
 
 Options:
-   -h  --help             Print this help text and exit
-   -n     [file]          To use an other xml file for yours subscriptions
-   -m     [mode]          The type of file do you want (html, raw, list)
-   -t     [nb of days]    Numbers of days of subscriptions do you want in your file
+   -h                     Print this help text and exit
+   -n     [file]          Use an other xml file for your subscriptions
+   -m     [mode]          Choose the type of the output (html, raw, list)
+   -t     [nb of days]    Choose how far in the past do you want the program to look for videos
    -d                     Show the dead channels + those who posted no videos
-   -o     [nb of months]  Show the channels who didn't post videos in nb of months + dead channels
-   -l     [id]            If you want to analyze only one channel or playlist
-   -r                     To remove the cache before analyze
-   -s     [id/all]        To have the stat of the channel(s)
-   -a     [id]            To append a channel or a playlist at the end of sub.
+   -o     [nb of months]  Show the channels who didn't post videos in [nb of months] + dead channels
+   -l     [id]            Analyze only one channel or playlist
+   -r                     Remove the cache
+   -s     [id/all]        Outputs the stats of the selected channel(s)
+   -a     [id]            Append a channel or a playlist at the end of sub.
    --init [file]          Remove all your subs and the cache and init with your subscription file.
-   --af   [file]          To append a file with list of channel or a playlist in sub.swy
-   --ax   [file]          To append a xml file in sub.swy
-   --all                  To recover yours subs in the common page web (more videos)
-   --cat                  To read 'sub.swy'
+   --af   [file]          Append a file with list of channel or a playlist in sub.swy
+   --ax   [file]          Append a xml file in sub.swy
+   --html                 Recover yours subs in the common page web (more videos)
+   --output [file]        Choose the name of the output file
+   --cat                  View your subscriptions
    --css                  Import the css files
-   --loading              To print a progress bar
+   --loading              Prints a progress bar while running
 """, end='')
 	else:
 		for arg in range(len(sys.argv)):
@@ -209,7 +211,7 @@ Options:
 									print(line, end='')
 								except:
 									print(line.encode())
-				elif sys.argv[arg] == '--all':
+				elif sys.argv[arg] == '--html':
 					method = '1'
 					analyze = True
 				elif sys.argv[arg] == '--css':
@@ -224,6 +226,11 @@ Options:
 				elif sys.argv[arg] == '--loading':
 					loading = True
 					analyze = True
+				elif sys.argv[arg] == '--output':
+					if arg + 1 >= len(sys.argv):
+						exit('[!] You forgot an argument after --output')
+					output = sys.argv[arg+1]
+					analyze = True
 				elif sys.argv[arg] == '--help':
 					exit("[!] -h don't work with other options")
 				else:
@@ -232,20 +239,27 @@ Options:
 		passe = time.time()
 		if not analyze_only_one:
 			url_data = swy(sub_file, path=path)
+		if output == '':
+			if mode == 'html':
+				output = 'sub.html'
+			elif mode == 'list':
+				output = 'sub_list'
+			elif mode == 'raw':
+				output = 'sub_raw'
 		if mode == 'html':
-			html_init(path)
-			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
-			html_end(count, path, method)
+			html_init(path, output)
+			nb_new = init(url_data, output, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
+			html_end(count, path, output, method)
 		elif mode == 'raw':
-			if os.path.exists('sub_raw'):
-				os.remove('sub_raw')
-			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
+			if os.path.exists(output):
+				os.remove(output)
+			nb_new = init(url_data, output, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
 			if method != '1':
-				raw_end(count)
+				raw_end(count, output)
 		elif mode == 'list':
-			if os.path.exists('sub_list'):
-				os.remove('sub_list')
-			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
+			if os.path.exists(output):
+				os.remove(output)
+			nb_new = init(url_data, output, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
 			if method != '1':
-				list_end(count)
-		open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("    %H%M") + '\n')
+				list_end(count, output)
+		open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + time.strftime("    %H%M") + '\n')

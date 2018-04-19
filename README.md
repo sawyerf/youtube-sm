@@ -47,14 +47,15 @@ youtube-sm [OPTIONS]
 -t     [nb of days]    Choose how far in the past do you want the program to look for videos
 -d                     Show the dead channels + those who posted no videos
 -o     [nb of months]  Show the channels who didn't post videos in [nb of months] + dead channels
--l     [id]            Choose to analyze only one channel or playlist
+-l     [id]            Analyze only one channel or playlist
 -r                     Remove the cache
 -s     [id/all]        Outputs the stats of the selected channel(s)
--a     [id]            Choose to append a channel or a playlist at the end of sub.
+-a     [id]            Append a channel or a playlist at the end of sub.
 --init [file]          Remove all your subs and the cache and init with your subscription file.
 --af   [file]          Append a file with list of channel or a playlist in sub.swy
 --ax   [file]          Append a xml file in sub.swy
---all                  Recover yours subs in the common page web (more videos)
+--html                 Recover yours subs in the common page web (more videos)
+--output [file]        Choose the name of the output file
 --cat                  View your subscriptions
 --css                  Import the css files
 --loading              Prints a progress bar while running
@@ -94,22 +95,21 @@ These 3 files are generated in:
 ## HTML & RSS
 With youtube-sm you can recover your subscriptions using two methods:
 - RSS (default): videos are recovered through an XML page.
-- HTML (with --all): videos are recovered through an HTML page.
+- HTML (with --html): videos are recovered through an HTML page.
 
 
 They are two choice because they cannot recover the same informations and don't require the same amount of time. 
 So the default method (the RSS method) is more adapted to recover only the newest videos, whereas the HTML method
 is more adapted to recover all the videos of a playlist or to recover its last 30 videos of a channel.
 
-|            |   *HTML*  |   *HTML*   |   *RSS*   |
-|:----------:|:-------:|:--------:|:-------:|
+|            |    *HTML*   |    *HTML*    |     *RSS*    |
+|:----------:|:-----------:|:------------:|:------------:|
 |            | **Channel** | **Playlist** |   **Both**   |
-|  Execution |   slow  |   slow   |   Fast  |
-|   Number   |30 videos|100 videos|15 videos|
-|    Date    | **~** | ✖ | ✔ |
-|  Like Rate | ✖ | ✖ | ✔ |
-|    Views   | ✔ | ✖ | ✔ |
-
+|  Execution |     slow    |     slow     |     Fast     |
+|   Number   |  30 videos  |  100 videos  |   15 videos  |
+|    Date    |     **~**   |       ✖      |       ✔      |
+|  Like Rate |      ✖      |       ✖      |       ✔      |
+|    Views   |      ✔      |       ✖      |       ✔      |
 
 ## Requirements
 - Python 3

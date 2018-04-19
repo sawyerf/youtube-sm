@@ -11,9 +11,9 @@ from .tools import (
 
 
 
-def html_init(path):
+def html_init(path, output='sub.html'):
 	"""To init the html file"""
-	open('sub.html', 'w').write("""<html>
+	open(output, 'w').write("""<html>
 	<head>
 		<meta charset="utf-8" />
 		<link rel="stylesheet" href="css/sub.css" />
@@ -24,7 +24,7 @@ def html_init(path):
 <!-- {} -->
 """.format(time.ctime()))
 
-def init(urls, min_date, path='', mode='html', loading=False, method=0):
+def init(urls, output, min_date, path='', mode='html', loading=False, method=0):
 	"""Run all the analyze in a thread"""
 	threads = []
 	ending = 0
@@ -33,29 +33,21 @@ def init(urls, min_date, path='', mode='html', loading=False, method=0):
 		prog = Progress(nb)
 		prog.progress_bar()
 	if method == '0':
-		for url in urls:
-			if loading:
-				thr = Analyzer(mode, url, min_date, method, path, prog)
-			else:
-				thr = Analyzer(mode, url, min_date, method, path)
-			thr.Thread()
-			threads.append(thr)
-			thr.start()
-		for i in threads:
-			i.join()
+		max_thr = 200
 	elif method == '1':
-		for i in range(nb):
-			if loading:
-				thr = Analyzer(mode, urls[i], min_date, method, path, prog)
-			else:
-				thr = Analyzer(mode, urls[i], min_date, method, path)
-			thr.Thread()
-			threads.append(thr)
-			thr.start()
-			if i%50 == 0 or nb == i+1:
-				for y in threads:
-					y.join()
-				threads = []
+		max_thr = 50
+	for i in range(nb):
+		if loading:
+			thr = Analyzer(mode, urls[i], output, min_date, method, path, prog)
+		else:
+			thr = Analyzer(mode, urls[i], output, min_date, method, path)
+		thr.Thread()
+		threads.append(thr)
+		thr.start()
+		if i%max_thr == 0 or nb == i+1:
+			for y in threads:
+				y.join()
+			threads = []
 	if loading and prog.xmin != prog.xmax:
 		prog.xmin = prog.xmax
 		prog.progress_bar()
@@ -63,11 +55,22 @@ def init(urls, min_date, path='', mode='html', loading=False, method=0):
 
 class Analyzer(Thread):
 	"""It's a group of fonctions to recup the videos informations"""
-	def __init__(self, mode='', url_id='', min_date='', method='0', path='', prog=None):
+	def __init__(self, mode='', url_id='', output='', min_date=0, method='0', path='', prog=None):
 		self.mode = mode
 		# self.method is the way you're going to recv the data (0 -> RSS, 1 -> https://youtube.com/channel/{id}/videos) 
 		self.method = method
 		self.id = url_id
+		if output != '':
+			self.output = output
+		else:
+			if mode == 'html':
+				self.output = 'sub.html'
+			elif mode == 'list':
+				self.output = 'sub_list'
+			elif mode == 'raw':
+				self.output = 'sub_raw'
+			else:
+				self.output = 'sub'
 		self.path_cache = path
 		self.min_date = min_date
 		self.type = self._type_id()
@@ -185,12 +188,12 @@ class Analyzer(Thread):
 			var = self.date + '\t' + self.url + '\t' + self.url_channel + '\t' + self.title + '\t' + self.channel + '\thttps://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url) + '\n'
 			if len(var) > 300:
 				return False
-			open('sub_raw', 'a', encoding='utf8').write(var)
+			open(self.output, 'a', encoding='utf8').write(var)
 		elif self.method == '1':
 			var = self.url + '\t' + self.url_channel + '\t' + self.title + '\t' + self.channel + '\thttps://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url) + '\n'
 			if len(var) > 300:
 				return False
-			open('sub_raw', 'a', encoding='utf8').write(var)
+			open(self.output, 'a', encoding='utf8').write(var)
 		var = ""
 		return True
 
@@ -201,16 +204,16 @@ class Analyzer(Thread):
 		if len(self.url) != 11:
 			return False 
 		if self.method == '0':
-			open('sub_list', 'a', encoding='utf8').write(self.date + ' https://www.youtube.com/watch?v=' + self.url + '\n')
+			open(self.output, 'a', encoding='utf8').write(self.date + ' https://www.youtube.com/watch?v=' + self.url + '\n')
 		elif self.method == '1':
-			open('sub_list', 'a', encoding='utf8').write('https://www.youtube.com/watch?v=' + self.url + '\n')
+			open(self.output, 'a', encoding='utf8').write('https://www.youtube.com/watch?v=' + self.url + '\n')
 		return True
 
 	def generate_data_html(self):
 		"""Append the informations wich are been recover
 		in a file in '.../data/[date]/.' """
 		try:
-			data = open(self.path_cache + 'data/' + self.method + '/' + self.data_file[0], 'rb+').read().decode("utf8")
+			data = open('{}data/{}/{}/{}'.format(self.path_cache, self.method, self.data_file[0], self.data_file[1].replace(':', '')), 'rb+').read().decode("utf8")
 			if self.url in data:
 				return False
 		except:
@@ -233,7 +236,7 @@ class Analyzer(Thread):
 	""".format(self.url, self.url, self.url, self.title, self.url_channel, self.channel, self.date))
 		return True
 
-def html_end(count=7, path='', method='0'):
+def html_end(count=7, path='', output='sub.html', method='0'):
 	"""Recover the file in '.../data/.' with all the
 	informations, sort by date and add the informations
 	in './sub.html'. """
@@ -242,17 +245,19 @@ def html_end(count=7, path='', method='0'):
 		count = len(fch)
 	elif count == -1:
 		count = len(fch)
+	sub_file = open(output, 'a', encoding='utf-8')
 	for i in range(count):
 		fch_in = sorted(os.listdir(path + 'data/' + method + '/' + fch[-1-i]))
 		for a in range(len(fch_in)):
 			data = open(path + 'data/' + method + '/' + fch[-1-i] + '/' + fch_in[-1-a], 'r', encoding='utf-8').read()
-			open('sub.html', 'a', encoding='utf-8').write(data)
-	open('sub.html', 'a').write('</body></html>')
+			sub_file.write(data)
+	sub_file.close()
+	open(output, 'a').write('</body></html>')
 
-def raw_end(count=7):
+def raw_end(count=7, output='sub_raw'):
 	"""Sorted the videos by date"""
 	nb = 0
-	linfo = sorted(open('sub_raw', 'rb').read().decode('utf8').replace('\r', '').split('\n'))
+	linfo = sorted(open(output, 'rb').read().decode('utf8').replace('\r', '').split('\n'))
 	if count == -1:
 		nb = len(linfo)	
 	for i in range(len(linfo)):
@@ -268,19 +273,19 @@ def raw_end(count=7):
 			break
 		except:
 			pass
-	os.remove('sub_raw')
+	os.remove(output)
 	time.sleep(0.01)
-	fichier = open('sub_raw', 'a', encoding='utf8')
+	fichier = open(output, 'a', encoding='utf8')
 	for i in range(nb):
 		try:
 			fichier.write(linfo[-1-i] + '\n')
 		except IndexError:
 			continue
 
-def list_end(count=7):
+def list_end(count=7, output='sub_list'):
 	"""Sorted the videos by date"""
 	nb = 0
-	linfo = sorted(open('sub_list', 'r').read().split('\n'))
+	linfo = sorted(open(output, 'r').read().split('\n'))
 	if count == -1:
 		nb = len(linfo)
 	else:
@@ -295,8 +300,8 @@ def list_end(count=7):
 				break
 			except:
 				pass
-	os.remove('sub_list')
-	fichier = open('sub_list', 'a', encoding='utf8')
+	os.remove(output)
+	fichier = open(output, 'a', encoding='utf8')
 	for i in range(nb):
 		fichier.write(linfo[-1-i][11:] + '\n')
 
