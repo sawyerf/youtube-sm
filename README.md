@@ -1,5 +1,7 @@
 # Youtube_subscription_manager
 
+[![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)](http://pypi.python.org/pypi/youtube-sm/)
+
 - [Description](#description)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -12,9 +14,10 @@
 - [Screenshots](#screenshots)
 
 ## Description
-Youtube_subscription_manager was built as a free alternative to https://www.youtube.com/feed/subscriptions and does not requires to use your youtube account.
+Youtube_subscription_manager is an alternative to youtube.com to recover your subscriptions without without requires an account. 
 
 It can gather informations about every video in a playlist, a channel or your subsciption feed and outputs it as a html page, a detailed list or a list of links.
+
 
 ## Installation
 1. Clone the project: `git clone https://github.com/sawyerf/Youtube_suscription_manager.git`
@@ -24,15 +27,12 @@ It can gather informations about every video in a playlist, a channel or your su
 
 ## Usage
 
-Before using youtube-sm, it is recommended that you download your subscriptions configuration from youtube.com by using this link once you are connected to youtube.com :
-
-https://www.youtube.com/subscription_manager?action_takeout=1
-
-Once this is done, you may load it in youtube-sm by using the following command :
+1. Download your subscriptions configuration from youtube.com ([https://www.youtube.com/subscription_manager?action_takeout=1](here))
+2. Once this is done, you may load it by using the following command :
 
 `youtube-sm --init [file]`
 
-Finally, you can start using the program using the commands shown below (or through `youtube-sm -h`)
+3. Finally, you can start using the program using the commands shown below :
 
 ```
 youtube-sm [OPTIONS]
@@ -96,8 +96,10 @@ With youtube-sm you can recover your subscriptions using two methods:
 - RSS (default): videos are recovered through an XML page.
 - HTML (with --all): videos are recovered through an HTML page.
 
+
 They are two choice because they cannot recover the same informations and don't require the same amount of time. 
-So the default method (the RSS method) is more adapted to recover only the newest videos, whereas the HTML method is more adapted to recover all the videos of a playlist or to recover its last 30 videos.
+So the default method (the RSS method) is more adapted to recover only the newest videos, whereas the HTML method
+is more adapted to recover all the videos of a playlist or to recover its last 30 videos of a channel.
 
 |            |   *HTML*  |   *HTML*   |   *RSS*   |
 |:----------:|:-------:|:--------:|:-------:|

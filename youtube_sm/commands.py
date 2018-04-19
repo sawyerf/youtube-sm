@@ -9,7 +9,8 @@ from .src.analyzer import (
 	list_end)
 from .src.swy import (
 	swy,
-	generate_swy)
+	generate_swy,
+	add_sub)
 from .src.time import lcl_time
 
 def check_id(id):
@@ -82,11 +83,11 @@ def main():
 		nb_new = init(url_data, lcl_time(), path=path)
 		html_end(path=path)
 		open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("%H%M") + '\n')
-	elif sys.argv == ['-h']:
+	elif sys.argv == ['-h'] or sys.argv == ['--help']:
 		print("""Usage: youtube-sm [OPTIONS]
 
 Options:
-   -h                     Print this help text and exit
+   -h  --help             Print this help text and exit
    -n     [file]          To use an other xml file for yours subscriptions
    -m     [mode]          The type of file do you want (html, raw, list)
    -t     [nb of days]    Numbers of days of subscriptions do you want in your file
@@ -137,8 +138,7 @@ Options:
 						if count == -1:
 							all_time = True
 					except:
-						print('[!] Numbers of day invalid')
-						exit()
+						exit('[!] Numbers of day invalid')
 				elif sys.argv[arg] == '-n':
 					if os.path.exists(sys.argv[arg + 1]):
 						if os.path.exists(path + 'sub.swy'):
@@ -154,10 +154,12 @@ Options:
 				elif sys.argv[arg] == '-l':
 					analyze = True
 					analyze_only_one = True
+					if arg + 1 >= len(sys.argv):
+						exit('[!] You forgot an argument after -l')
 					if sys.argv[arg + 1][:2] in ['UC', 'PL']:
 						url_data = [sys.argv[arg + 1]]
 					else:
-						print('[!] Id is not available')
+						exit('[!] Id is not available')
 				elif sys.argv[arg] == '-r':
 					from shutil import rmtree
 					if os.path.exists(path + 'data'):
@@ -181,6 +183,10 @@ Options:
 							exit("[!] Id is not available")
 					except IndexError:
 						exit("[!] Missing argument after the '-s'")
+				elif sys.argv[arg] == '-h':
+					exit("[!] -h don't work with other options")
+				else:
+					exit("[!] No such option: {}".format(sys.argv[arg]))
 			else:
 				if sys.argv[arg] == '--af':
 					if os.path.exists(sys.argv[arg + 1]):
@@ -218,6 +224,10 @@ Options:
 				elif sys.argv[arg] == '--loading':
 					loading = True
 					analyze = True
+				elif sys.argv[arg] == '--help':
+					exit("[!] -h don't work with other options")
+				else:
+					exit("[!] No such option: {}".format(sys.argv[arg]))
 	if analyze:
 		passe = time.time()
 		if not analyze_only_one:
@@ -230,10 +240,12 @@ Options:
 			if os.path.exists('sub_raw'):
 				os.remove('sub_raw')
 			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
-			raw_end(count)
+			if method != '1':
+				raw_end(count)
 		elif mode == 'list':
 			if os.path.exists('sub_list'):
 				os.remove('sub_list')
 			nb_new = init(url_data, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
-			list_end(count)
+			if method != '1':
+				list_end(count)
 		open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("    %H%M") + '\n')
