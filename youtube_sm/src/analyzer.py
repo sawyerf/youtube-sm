@@ -8,7 +8,7 @@ from .sock import (
 from .tools import (
 	Progress,
 	type_id)
-
+from .time import since
 
 
 def html_init(path, output='sub.html'):
@@ -152,7 +152,7 @@ class Analyzer(Thread):
 			self.url_channel = self.id
 			self.title = i.split('dir="ltr" title="')[1].split('"')[0]
 			self.date = i.split('</li><li>')[1].split('</li>')[0]
-			self.data_file = [self.date.split(' ')[1], self.date.split(' ')[0]]
+			self.data_file = [self.date_convert(), 'no_hour']
 		else: #Playlist
 			self.url = i.split('data-video-id="')[1].split('"')[0]
 			if '<a href="/user/' in i:
@@ -161,7 +161,7 @@ class Analyzer(Thread):
 				self.url_channel = i.split('<a href="/channel/')[1].split('"')[0]
 			self.title = i.split('data-title="')[1].split('"')[0]
 			self.channel = i.split('</a>')[2].split('" >')[1]
-			self.data_file = ['Playlist/', self.id]
+			self.data_file = ['Playlist', self.id]
 
 	def info_recup_rss(self, i):
 		"""Recover the informations of a rss page"""
@@ -171,6 +171,27 @@ class Analyzer(Thread):
 		self.channel = i.split('<name>')[1].split('</name>')[0]
 		self.data_file = i.split('<published>')[1].split('+')[0].split('T')
 		self.date = self.data_file[0]
+		self.data_file[0] = self.data_file[0].replace('-', '')
+
+	def date_convert(self):
+		sdate = self.date.split(' ')
+		if 'year' in sdate[1]:
+			day = 365*int(sdate[0])
+			return since(day)[:4] + '0000'
+		elif 'month' in sdate[1]:
+			day = 31*int(sdate[0])
+			return since(day)[:6] + '00'
+		elif 'week' in sdate[1]:
+			day = 7*int(sdate[0])
+		elif 'day' in sdate[1]:
+			day = int(sdate[0])
+		elif 'hour' in sdate[1]:
+			day = 0
+		elif 'minute' in sdate[1]:
+			day = 0
+		else:
+			return '0'
+		return since(day)[:8]
 
 	def write(self):
 		"""Write the information in a file"""
@@ -226,14 +247,14 @@ class Analyzer(Thread):
 		else:
 			self.url_channel = 'user/' + self.url_channel
 		open('{}data/{}/{}/{}'.format(self.path_cache, self.method, self.data_file[0], self.data_file[1].replace(':', '')), 'a', encoding='utf-8').write("""<!--NEXT -->
-	<div class="video">
-		<a class="left" href="https://www.youtube.com/watch?v={}"> <img src="https://i.ytimg.com/vi/{}/mqdefault.jpg" ></a>
-		<a href="https://www.youtube.com/watch?v={}"><h4>{}</h4> </a>
-		<a href="https://www.youtube.com/channel/{}"> <p>{}</p> </a>
-		<p>{}</p>
-		<p class="clear"></p>
-	</div>
-	""".format(self.url, self.url, self.url, self.title, self.url_channel, self.channel, self.date))
+<div class="video">
+	<a class="left" href="https://www.youtube.com/watch?v={}"> <img src="https://i.ytimg.com/vi/{}/mqdefault.jpg" ></a>
+	<a href="https://www.youtube.com/watch?v={}"><h4>{}</h4> </a>
+	<a href="https://www.youtube.com/channel/{}"> <p>{}</p> </a>
+	<p>{}</p>
+	<p class="clear"></p>
+</div>
+""".format(self.url, self.url, self.url, self.title, self.url_channel, self.channel, self.date))
 		return True
 
 def html_end(count=7, path='', output='sub.html', method='0'):
@@ -242,11 +263,25 @@ def html_end(count=7, path='', output='sub.html', method='0'):
 	in './sub.html'. """
 	fch = sorted(os.listdir(path + 'data/' + method + '/'))
 	if len(fch) < count:
-		count = len(fch)
+		date = 0
 	elif count == -1:
-		count = len(fch)
+		date = 0
+	else:
+		date = int(since(count)[:8])
 	sub_file = open(output, 'a', encoding='utf-8')
-	for i in range(count):
+	i = -1
+	while True:
+		i += 1
+		try:
+			folder_date = int(fch[-1-i])
+		except IndexError:
+			break
+		except:
+			continue
+		if folder_date >= date:
+			pass
+		else:
+			break
 		fch_in = sorted(os.listdir(path + 'data/' + method + '/' + fch[-1-i]))
 		for a in range(len(fch_in)):
 			data = open(path + 'data/' + method + '/' + fch[-1-i] + '/' + fch_in[-1-a], 'r', encoding='utf-8').read()

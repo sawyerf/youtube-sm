@@ -37,6 +37,8 @@ def download_html(url_id, type_id=True, split=True):
 	else:
 		url = b'/playlist?list=' + url_id.encode()
 	data = download_https(url)
+	if data == None:
+		return None
 	if split:
 		if type_id: #channel
 			linfo = data.split('<div class="yt-lockup-content">')
