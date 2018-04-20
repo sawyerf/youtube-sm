@@ -165,7 +165,13 @@ Options:
 				elif sys.argv[arg] == '-r':
 					from shutil import rmtree
 					if os.path.exists(path + 'data'):
-						rmtree(path + 'data')
+						for i in range(2):
+							try:
+								rmtree(path + 'data')
+							except:
+								pass
+							else:
+								continue
 						try:
 							os.makedirs(path + 'data/')
 						except:
@@ -187,6 +193,8 @@ Options:
 						exit("[!] Missing argument after the '-s'")
 				elif sys.argv[arg] == '-h':
 					exit("[!] -h don't work with other options")
+				elif sys.argv[arg] == '-1':
+					pass
 				else:
 					exit("[!] No such option: {}".format(sys.argv[arg]))
 			else:
