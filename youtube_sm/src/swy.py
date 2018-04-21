@@ -23,12 +23,14 @@ def add_sub(subs, path=''):
 		data = download_xml(i, type_id=tid, split=False)
 		if data == None:
 			continue
-		if tid:
-			data = data.split('<name>')[1].split('</name>')[0]
-		else:
-			data = data.split('<title>')[1].split('</title>')[0]
-		open(path + 'sub.swy', 'a', encoding='utf8').write(i + '\t' +  data + '\n')
-
+		try:
+			if tid:
+				data = data.split('<name>')[1].split('</name>')[0]
+			else:
+				data = data.split('<title>')[1].split('</title>')[0]
+			open(path + 'sub.swy', 'a', encoding='utf8').write(i + '\t' +  data + '\n')
+		except:
+			pass
 
 def swy(sub_file='subscription_manager', path='', liste=True):
 	"""Generate a list of subs which are append in sub.swy and return"""

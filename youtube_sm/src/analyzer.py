@@ -1,5 +1,6 @@
 import os
 import time
+import re
 
 from threading import Thread
 from .sock import (
@@ -148,28 +149,28 @@ class Analyzer(Thread):
 	def info_recup_html(self, i):
 		"""Recover the informations of the html page"""
 		if self.type: #Channel
-			self.url = i.split('href="/watch?v=')[1].split('" rel')[0]
+			self.url = re.findall(r'href="/watch\?v=(.*)" rel', i)[0]
 			self.url_channel = self.id
-			self.title = i.split('dir="ltr" title="')[1].split('"')[0]
-			self.date = i.split('</li><li>')[1].split('</li>')[0]
+			self.title = re.findall(r'dir="ltr" title="(.*)"  aria', i)[0]
+			self.date = re.findall(r'</li><li>(.*)</li>', i)[0]
 			self.data_file = [self.date_convert(), 'no_hour']
 		else: #Playlist
-			self.url = i.split('data-video-id="')[1].split('"')[0]
+			self.url = re.findall(r'data-video-id="(.*)"', i)[0]
 			if '<a href="/user/' in i:
-				self.url_channel = i.split('<a href="/user/')[1].split('"')[0]
+				self.url_channel = re.findall('<a href="/user/(.*)"', i)[0]
 			elif '<a href="/channel/' in i:
-				self.url_channel = i.split('<a href="/channel/')[1].split('"')[0]
-			self.title = i.split('data-title="')[1].split('"')[0]
+				self.url_channel = re.findall('<a href="/channel/(.*)"', i)[0]
+			self.title = re.findall('data-title="(.*)"', i)[0]
 			self.channel = i.split('</a>')[2].split('" >')[1]
 			self.data_file = ['Playlist', self.id]
 
 	def info_recup_rss(self, i):
 		"""Recover the informations of a rss page"""
-		self.url = i.split('<yt:videoId>')[1].split('</yt:videoId>')[0]
-		self.url_channel = i.split('<yt:channelId>')[1].split('</yt:channelId>')[0]
-		self.title = i.split('<media:title>')[1].split('</media:title>')[0]
-		self.channel = i.split('<name>')[1].split('</name>')[0]
-		self.data_file = i.split('<published>')[1].split('+')[0].split('T')
+		self.url = re.findall(r'<yt:videoId>(.*)</yt:videoId>', i)[0]
+		self.url_channel = re.findall(r'<yt:channelId>(.*)</yt:channelId>', i)[0]
+		self.title = re.findall(r'<media:title>(.*)</media:title>', i)[0]
+		self.channel = re.findall(r'<name>(.*)</name>', i)[0]
+		self.data_file = re.findall(r'<published>(.*)\+', i)[0].split('T')
 		self.date = self.data_file[0]
 		self.data_file[0] = self.data_file[0].replace('-', '')
 
@@ -227,7 +228,7 @@ class Analyzer(Thread):
 		if self.method == '0':
 			open(self.output, 'a', encoding='utf8').write(self.data_file[0] + self.data_file[1].replace(':', '') + ' https://www.youtube.com/watch?v=' + self.url + '\n')
 		elif self.method == '1':
-			if self.type_id:
+			if self._type_id:
 				open(self.output, 'a', encoding='utf8').write(self.data_file[0] + '000000' + ' https://www.youtube.com/watch?v=' + self.url + '\n')
 			else:
 				open(self.output, 'a', encoding='utf8').write('00000000000000' + ' https://www.youtube.com/watch?v=' + self.url + '\n')
@@ -253,7 +254,7 @@ class Analyzer(Thread):
 <div class="video">
 	<a class="left" href="https://www.youtube.com/watch?v={}"> <img src="https://i.ytimg.com/vi/{}/mqdefault.jpg" ></a>
 	<a href="https://www.youtube.com/watch?v={}"><h4>{}</h4> </a>
-	<a href="https://www.youtube.com/channel/{}"> <p>{}</p> </a>
+	<a href="https://www.youtube.com/{}"> <p>{}</p> </a>
 	<p>{}</p>
 	<p class="clear"></p>
 </div>

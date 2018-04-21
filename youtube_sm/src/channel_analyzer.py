@@ -1,5 +1,5 @@
 from .time import lcl_time
-from .sock import xml_recup
+from .sock import download_xml
 from threading import Thread
 
 def old(url_data, min_tps=12):
@@ -13,7 +13,7 @@ def old(url_data, min_tps=12):
 		i.join()
 
 def thread_old(url, lcl):
-	linfo = xml_recup(url)
+	linfo = download_xml(url)
 	if linfo == False:
 		print('[channel dead]', url)
 	elif linfo == None:
@@ -38,7 +38,7 @@ def dead(url_data):
 		i.join()
 
 def thread_dead(url):
-	linfo = xml_recup(url)
+	linfo = download_xml(url)
 	if linfo == False:
 		print('[channel dead]\t', url)
 	elif linfo == None:
@@ -57,7 +57,7 @@ def stats(subs):
 
 def stat(sub, name=''):
 	"""Print the mark and the views of a channel"""
-	data = xml_recup(sub)
+	data = download_xml(sub)
 	if data == None or data == False:
 		return
 	marks = 0
