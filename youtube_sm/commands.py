@@ -4,9 +4,7 @@ import sys
 from .src.analyzer import (
 	html_init,
 	init,
-	html_end,
-	raw_end,
-	list_end)
+	sort_file)
 from .src.swy import (
 	swy,
 	generate_swy,
@@ -256,18 +254,9 @@ Options:
 				output = 'sub_raw'
 		if mode == 'html':
 			html_init(path, output)
-			nb_new = init(url_data, output, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
-			html_end(count, path, output, method)
-		elif mode == 'raw':
+		elif mode == 'raw' or mode == 'list':
 			if os.path.exists(output):
-				os.remove(output)
-			nb_new = init(url_data, output, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
-			if method != '1':
-				raw_end(count, output)
-		elif mode == 'list':
-			if os.path.exists(output):
-				os.remove(output)
-			nb_new = init(url_data, output, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
-			if method != '1':
-				list_end(count, output)
+				os.remove(output)			
+		nb_new = init(url_data, output, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
+		sort_file(count, output, mode, path, method)
 		open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + time.strftime("    %H%M") + '\n')
