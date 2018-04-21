@@ -206,13 +206,13 @@ class Analyzer(Thread):
 		"""Append the informations wich are been recover 
 		in the file 'sub_raw'."""
 		if self.method == '0':
-			var = self.date + '\t' + self.url + '\t' + self.url_channel + '\t' + self.title + '\t' + self.channel + '\thttps://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url) + '\n'
-			if len(var) > 300:
+			var = self.data_file[0] + self.data_file[1].replace(':', '') + '\t' + self.date + '\t' + self.url + '\t' + self.url_channel + '\t' + self.title + '\t' + self.channel + '\thttps://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url) + '\n'
+			if len(var) > 350:
 				return False
 			open(self.output, 'a', encoding='utf8').write(var)
 		elif self.method == '1':
-			var = self.url + '\t' + self.url_channel + '\t' + self.title + '\t' + self.channel + '\thttps://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url) + '\n'
-			if len(var) > 300:
+			var = self.data_file[0] + '000000' + '\t' + self.url + '\t' + self.url_channel + '\t' + self.title + '\t' + self.channel + '\thttps://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url) + '\n'
+			if len(var) > 350:
 				return False
 			open(self.output, 'a', encoding='utf8').write(var)
 		var = ""
@@ -225,9 +225,12 @@ class Analyzer(Thread):
 		if len(self.url) != 11:
 			return False 
 		if self.method == '0':
-			open(self.output, 'a', encoding='utf8').write(self.date + ' https://www.youtube.com/watch?v=' + self.url + '\n')
+			open(self.output, 'a', encoding='utf8').write(self.data_file[0] + self.data_file[1].replace(':', '') + ' https://www.youtube.com/watch?v=' + self.url + '\n')
 		elif self.method == '1':
-			open(self.output, 'a', encoding='utf8').write('https://www.youtube.com/watch?v=' + self.url + '\n')
+			if self.type_id:
+				open(self.output, 'a', encoding='utf8').write(self.data_file[0] + '000000' + ' https://www.youtube.com/watch?v=' + self.url + '\n')
+			else:
+				open(self.output, 'a', encoding='utf8').write('00000000000000' + ' https://www.youtube.com/watch?v=' + self.url + '\n')
 		return True
 
 	def generate_data_html(self):
@@ -257,6 +260,12 @@ class Analyzer(Thread):
 """.format(self.url, self.url, self.url, self.title, self.url_channel, self.channel, self.date))
 		return True
 
+def sort_file(count=7, output='sub.html', mode='html', path='', method='0'):
+	if mode == 'html':
+		html_end(count, path, output, method)
+	elif mode == 'list' or mode == 'raw':
+		raw_list_end(count, output)
+
 def html_end(count=7, path='', output='sub.html', method='0'):
 	"""Recover the file in '.../data/.' with all the
 	informations, sort by date and add the informations
@@ -278,7 +287,7 @@ def html_end(count=7, path='', output='sub.html', method='0'):
 			break
 		except:
 			continue
-		if folder_date >= date:
+		if folder_date > date:
 			pass
 		else:
 			break
@@ -289,54 +298,24 @@ def html_end(count=7, path='', output='sub.html', method='0'):
 	sub_file.close()
 	open(output, 'a').write('</body></html>')
 
-def raw_end(count=7, output='sub_raw'):
+def raw_list_end(count=7, output='sub'):
 	"""Sorted the videos by date"""
-	nb = 0
 	linfo = sorted(open(output, 'rb').read().decode('utf8').replace('\r', '').split('\n'))
+	fichier = open(output, 'w', encoding='utf8')
 	if count == -1:
-		nb = len(linfo)	
-	for i in range(len(linfo)):
-		if linfo[i] == '':
-			continue
+		date = 0
+	else:
+		date = int(since(count)[:8])
+	i = -1
+	while True:
+		i += 1
 		try:
-			if linfo[-1-i][:10] != linfo[-2-i][:10]:
-				nb += 1
-				if nb == count:
-					nb = i
-					break
+			folder_date = int(linfo[-1-i][:8])
 		except IndexError:
 			break
 		except:
-			pass
-	os.remove(output)
-	time.sleep(0.01)
-	fichier = open(output, 'a', encoding='utf8')
-	for i in range(nb):
-		try:
-			fichier.write(linfo[-1-i] + '\n')
-		except IndexError:
 			continue
-
-def list_end(count=7, output='sub_list'):
-	"""Sorted the videos by date"""
-	nb = 0
-	linfo = sorted(open(output, 'r').read().split('\n'))
-	if count == -1:
-		nb = len(linfo)
-	else:
-		for i in range(len(linfo)):
-			try:
-				if linfo[-1-i][:10] != linfo[-2-i][:10]:
-					nb += 1
-					if nb == count:
-						nb = i
-						break
-			except IndexError:
-				break
-			except:
-				pass
-	os.remove(output)
-	fichier = open(output, 'a', encoding='utf8')
-	for i in range(nb):
-		fichier.write(linfo[-1-i][11:] + '\n')
-
+		if folder_date > date:
+			fichier.write(linfo[-1-i][15:] + '\n')
+		else:
+			break

@@ -14,7 +14,7 @@
 - [Screenshots](#screenshots)
 
 ## Description
-Youtube_subscription_manager is an alternative to youtube.com to recover your subscriptions without without requires an account. 
+Youtube_subscription_manager is an alternative to youtube.com to recover your subscriptions without requires an account. 
 
 It can gather informations about every video in a playlist, a channel or your subsciption feed and outputs it as a html page, a detailed list or a list of links.
 
@@ -118,7 +118,7 @@ is more adapted to recover all the videos of a playlist or to recover its last 3
 - Linux
 - Windows
 - Android (Termux)
-- MacOS (I don't known)
+- MacOS (I don't know)
 
 ## Screenshots
 <p><img src="./screenshot/index.jpg" alt="Phone screen" width=405px height=720px></p>
