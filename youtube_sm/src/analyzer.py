@@ -25,7 +25,7 @@ def html_init(path, output='sub.html'):
 <!-- {} -->
 """.format(time.ctime()))
 
-def init(urls, output, min_date, path='', mode='html', loading=False, method=0):
+def init(urls, output, min_date, path='', mode='html', loading=False, method='0'):
 	"""Run all the analyze in a thread"""
 	threads = []
 	ending = 0

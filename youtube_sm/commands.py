@@ -3,19 +3,19 @@ import os
 import sys
 from .src.analyzer import (
 	html_init,
+	html_end,
 	init,
 	sort_file)
 from .src.swy import (
 	swy,
 	generate_swy,
 	add_sub)
+from .src.tools import (
+	del_data,
+	check_id)
 from .src.time import lcl_time
 
-def check_id(id):
-	if id[:2] == 'UC' or id[:2] == 'PL':
-		return True
-	else:
-		return False
+
 
 def init_command(path, arg):
 	from shutil import rmtree
@@ -79,9 +79,9 @@ def main():
 		passe = time.time()
 		url_data = swy(path=path)
 		html_init(path)
-		nb_new = init(url_data, lcl_time(), path=path)
+		init(url_data, 'sub.html', lcl_time(), path)
 		html_end(path=path)
-		open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + str(nb_new) + '\t' + time.strftime("%H%M") + '\n')
+		open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + time.strftime("%H%M") + '\n')
 	elif sys.argv == ['-h'] or sys.argv == ['--help']:
 		print("""Usage: youtube-sm [OPTIONS]
 
@@ -154,6 +154,7 @@ Options:
 				elif sys.argv[arg] == '-l':
 					analyze = True
 					analyze_only_one = True
+					del_data(path, False)
 					if arg + 1 >= len(sys.argv):
 						exit('[!] You forgot an argument after -l')
 					if sys.argv[arg + 1][:2] in ['UC', 'PL']:
@@ -161,21 +162,7 @@ Options:
 					else:
 						exit('[!] Id is not available')
 				elif sys.argv[arg] == '-r':
-					from shutil import rmtree
-					if os.path.exists(path + 'data'):
-						for i in range(2):
-							try:
-								rmtree(path + 'data')
-							except:
-								pass
-							else:
-								continue
-						try:
-							os.makedirs(path + 'data/')
-						except:
-							pass
-					else:
-						print('[!] Data do not exist')
+					del_data(path, True)
 				elif sys.argv[arg] == '-s':
 					try:
 						if check_id(sys.argv[arg+1]):
