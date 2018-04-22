@@ -30,3 +30,28 @@ def type_id(id):
 		return False
 	else:
 		return True
+
+def check_id(id):
+	if id[:2] == 'UC' or id[:2] == 'PL':
+		return True
+	else:
+		return False
+
+def del_data(path='', prin=True):
+	from shutil import rmtree
+	import os
+	if os.path.exists(path + 'data'):
+		for i in range(2):
+			try:
+				rmtree(path + 'data')
+			except:
+				pass
+			else:
+				continue
+		try:
+			os.makedirs(path + 'data/')
+		except:
+			pass
+	else:
+		if prin:
+			print('[!] Data do not exist')
