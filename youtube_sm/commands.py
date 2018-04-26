@@ -100,6 +100,7 @@ Options:
    --af   [file]          Append a file with list of channel or a playlist in sub.swy
    --ax   [file]          Append a xml file in sub.swy
    --html                 Recover yours subs in the common page web (more videos)
+   --ultra-html           Recover all the videos of a channel but take lot of time
    --output [file]        Choose the name of the output file
    --cat                  View your subscriptions
    --css                  Import the css files
@@ -216,6 +217,9 @@ Options:
 					open('css/sub_mobile.css', 'a', encoding='utf8').write(".left\n{\n	float:left;\n}\n.clear\n{\n	clear: both;\n}\n*\n{\n	font-family: Arial;\n}\ndiv\n{\n	margin-left: 0%;\n	margin-right: 0%;\n	margin: 10px 0px 10px 0px;\n}\nimg\n{\n	width: 380px;\n	height: 214px;\n}\nh4\n{\n	line-height: 30px;\n	font-size: 30px;\n	margin: 0px 0px -10px 0px;\n}\np\n{\n	color: grey;\n	line-height: 5px;\n	font-size: 1.9em;\n}\na\n{\n	text-decoration: none;\n	color: black;\n}")
 				elif sys.argv[arg] == '--init':
 					init_command(path, arg)
+				elif sys.argv[arg] == '--ultra-html':
+					method = '2'
+					analyze = True
 				elif sys.argv[arg] == '--loading':
 					loading = True
 					analyze = True

@@ -3,14 +3,20 @@ from setuptools import setup, find_packages
 params = dict()
 params['entry_points'] = {'console_scripts': ['youtube-sm = youtube_sm.commands:main']}
 
+def README():
+	try:
+		return open('README.md', 'r', encoding='utf8').read().replace('\r', '')
+	except:
+		return 'Youtube_subscription_manager is an alternative to youtube.com to recover your subscriptions without requires an account.'
+
 setup(
 	name='youtube_sm',
 	version='1.1.1',
-	url='https://github.com/sawyerf/Youtube_subscription_manager'
+	url='https://github.com/sawyerf/Youtube_subscription_manager',
 	author='Sawyerf',
 	author_email='sawyer.flink@protonmail.ch',
 	description='Youtube subscription manager',
-	long_description=open('README.md', 'r', encoding='utf8').read().replace('\r', ''),
+	long_description=README(),
 	long_description_content_type='text/markdown',
 	keywords='youtube subscription api manager html',
 	license='MLP-2.0',

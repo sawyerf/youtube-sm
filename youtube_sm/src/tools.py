@@ -22,6 +22,21 @@ class Progress():
 		if pc == 1:
 			print()
 
+class Progress_loop():
+	def __init__(self):
+		self.x = 0
+		self.bar = '          '
+		self.xmin = None
+		self.xmax = None
+		
+	def add(self):
+		self.x += 1
+		self.progress_bar()
+
+	def progress_bar(self):
+		self.x = self.x % 10
+		print('|{}{}{}|'.format(self.bar[:self.x], '█', self.bar[self.x + 1:]), end='\r')
+
 def type_id(id):
 	"""True = Channel; False = Playlist"""
 	if id[:2] == 'UC':

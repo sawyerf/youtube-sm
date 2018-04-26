@@ -5,9 +5,11 @@ import re
 from threading import Thread
 from .sock import (
 	download_xml,
-	download_html)
+	download_html,
+	download_show_more)
 from .tools import (
 	Progress,
+	Progress_loop,
 	type_id)
 from .time import since
 
@@ -30,13 +32,18 @@ def init(urls, output, min_date, path='', mode='html', loading=False, method='0'
 	threads = []
 	ending = 0
 	nb = len(urls)
-	if loading:
+	if loading and nb == 1:
+		prog = Progress_loop()
+		prog.progress_bar()
+	elif loading and nb > 1:
 		prog = Progress(nb)
 		prog.progress_bar()
 	if method == '0':
 		max_thr = 200
 	elif method == '1':
 		max_thr = 50
+	elif method == '2':
+		max_thr = 5
 	for i in range(nb):
 		if loading:
 			thr = Analyzer(mode, urls[i], output, min_date, method, path, prog)
@@ -99,7 +106,7 @@ class Analyzer(Thread):
 	def _download_page(self):
 		if self.method == '0':
 			return download_xml(self.id, self.type)
-		elif self.method == '1':
+		elif self.method == '1' or self.method == '2':
 			return download_html(self.id, self.type)
 		else:
 			return None
@@ -132,19 +139,62 @@ class Analyzer(Thread):
 			for i in linfo:
 				try:
 					self.info_recup_html(i)
+					print('', end='')
 				except:
 					pass
 				else:
 					self.write()
+		elif self.method == '2':
+			if self.type != True:
+				print('[!] Work Only With Channel (--ultra-html)')
+			try:
+				self.channel = linfo[0].split('<title>')[1].split('\n')[0]
+			except IndexError:
+				pass
+			except:
+				pass
+			del linfo[0]
+			for i in linfo:
+				try:
+					self.info_recup_html(i)
+				except:
+					pass
+				else:
+					self.write()
+			self.next = re.findall(r'data-uix-load-more-href="(.{176})"', linfo[-1])[0]
+			self.show_more()
+
+	def show_more(self):
+		data = ''
+		while self.next != None:
+			data, self.next = download_show_more(self.next)
+			if data == None:
+				return
+			for i in data:
+				try:
+					self.info_recup_show_more(i)
+				except:
+					pass
+				else:
+					self.write()
+			if self.prog != None:
+				self.prog.add()
 
 	def _url(self, i):
 		if self.method == '0':
 			self.url = i.split('<yt:videoId>')[1].split('</yt:videoId>')[0]
-		elif self.method == '1':
+		elif self.method == '1' or self.method == '2':
 			if self.type:
 				self.url = i.split('href="/watch?v=')[1].split('" rel')[0]
 			else:
 				self.url = i.split('data-video-id="')[1].split('"')[0]
+
+	def info_recup_show_more(self, i):
+		self.url = i.split('href="\\/watch?v=')[1].split('"')[0]
+		self.url_channel = self.id
+		self.title = i.split('ltr" title="')[1].split('"')[0]
+		self.date = re.findall(r'/li\\u003e\\u003cli\\u003e(.*)\\u003c\\/li', i)[0]
+		self.data_file = [self.date_convert(), 'no_hour']
 
 	def info_recup_html(self, i):
 		"""Recover the informations of the html page"""
@@ -211,7 +261,7 @@ class Analyzer(Thread):
 			if len(var) > 350:
 				return False
 			open(self.output, 'a', encoding='utf8').write(var)
-		elif self.method == '1':
+		elif self.method == '1' or self.method == '2':
 			var = self.data_file[0] + '000000' + '\t' + self.url + '\t' + self.url_channel + '\t' + self.title + '\t' + self.channel + '\thttps://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url) + '\n'
 			if len(var) > 350:
 				return False
@@ -227,7 +277,7 @@ class Analyzer(Thread):
 			return False 
 		if self.method == '0':
 			open(self.output, 'a', encoding='utf8').write(self.data_file[0] + self.data_file[1].replace(':', '') + ' https://www.youtube.com/watch?v=' + self.url + '\n')
-		elif self.method == '1':
+		elif self.method == '1' or self.method == '2':
 			if self._type_id:
 				open(self.output, 'a', encoding='utf8').write(self.data_file[0] + '000000' + ' https://www.youtube.com/watch?v=' + self.url + '\n')
 			else:
