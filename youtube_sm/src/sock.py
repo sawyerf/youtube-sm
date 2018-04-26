@@ -1,6 +1,7 @@
 import socket
 import ssl
 import time
+import re
 
 def download_page(url_id, type_id=True, split=True, method='0'):
 	if method == '0':
@@ -53,6 +54,20 @@ def download_html(url_id, type_id=True, split=True):
 	else:
 		return data
 
+def download_show_more(url):
+	data = download_https(url.encode())
+	if data == None:
+		return None, None
+	data = data.replace('\\n', '\n').replace('\\"', '"')
+	open('lel.html', 'w', encoding='utf8').write(data)
+	try:
+		next_link = data.split('data-uix-load-more-href="\\')[1].split('"')[0]
+	except:
+		next_link = None
+	data = data.split('yt-lockup-content')
+	del data[0]
+	return data, next_link
+
 def download_http(url):
 	data = b''
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -93,7 +108,7 @@ def download_https(url):
 		except:
 			break
 		data += raw_data
-		if b'</html>' in data[-20:] or raw_data == b'':
+		if b'\r\n0\r\n\r\n' in data[-20:] or raw_data == b'':
 			break
 	ssock.close()
 	try:
