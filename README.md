@@ -2,6 +2,8 @@
 
 [![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)](http://pypi.python.org/pypi/youtube-sm/)
 
+<p><img align='right' width=400px height=auto src='./images/binome.png' /></p>
+
 - [Description](#description)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -12,6 +14,7 @@
 - [Requirements](#requirements)
 - [Compatible](#compatible)
 - [Screenshots](#screenshots)
+
 
 ## Description
 Youtube_subscription_manager is an alternative to youtube.com to recover your subscriptions without requires an account. 
@@ -97,7 +100,7 @@ These 3 files are generated in:
 With youtube-sm you can recover your subscriptions using two methods:
 - RSS (default): videos are recovered through an XML page.
 - HTML (with --html): videos are recovered through an HTML page.
-
+- ULTRA-HTML (with --ultra-html): videos are recovered with the button 'load more'
 
 They are two choice because they cannot recover the same informations and don't require the same amount of time. 
 So the default method (the RSS method) is more adapted to recover only the newest videos, whereas the HTML method
@@ -122,5 +125,5 @@ is more adapted to recover all the videos of a playlist or to recover its last 3
 - MacOS (I don't know)
 
 ## Screenshots
-<p><img src="./screenshot/index.jpg" alt="Phone screen" width=405px height=720px></p>
-<p><img src="./screenshot/index_pc.jpg" alt="PC screen" width=100% height=auto></p>
+<p><img src="./images/index.jpg" alt="Phone screen" width=405px height=720px></p>
+<p><img src="./images/index_pc.jpg" alt="PC screen" width=100% height=auto></p>
