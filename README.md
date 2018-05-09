@@ -2,7 +2,7 @@
 
 [![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)](http://pypi.python.org/pypi/youtube-sm/)
 
-<p><img align='right' width=400px height=auto src='./images/binome.png' /></p>
+<p><img align='right' width=400px height=auto src='./images/binome.jpg' /></p>
 
 - [Description](#description)
 - [Installation](#installation)
