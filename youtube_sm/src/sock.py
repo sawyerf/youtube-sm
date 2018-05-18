@@ -37,6 +37,10 @@ def download_html(url_id, type_id=True, split=True):
 		url = b'/channel/' + url_id.encode() + b'/videos'
 	else:
 		url = b'/playlist?list=' + url_id.encode()
+		data = download_https(url)
+		url = data.split('<a href="/watch?v')[1].split('"')[0]
+		url = b'/watch?v' + url.encode()
+		print(url)
 	data = download_https(url)
 	if data == None:
 		return None
@@ -46,8 +50,10 @@ def download_html(url_id, type_id=True, split=True):
 			if len(linfo) <= 1:
 				return None
 		else: #playlist
-			linfo = data.split('<tr class="pl-video yt-uix-tile "')
+			print(len(data))
+			linfo = data.split('<li class="yt-uix-scroller-scroll-unit  vve-check"')
 			del linfo[0]
+			print(len(linfo))
 			if linfo == []:
 				return None
 		return linfo
