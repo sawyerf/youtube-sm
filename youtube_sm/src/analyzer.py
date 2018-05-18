@@ -137,8 +137,8 @@ class Analyzer(Thread):
 					pass
 				del linfo[0]
 			for i in linfo:
+				self.info_recup_html(i)
 				try:
-					self.info_recup_html(i)
 					print('', end='')
 				except:
 					pass
@@ -205,13 +205,10 @@ class Analyzer(Thread):
 			self.date = re.findall(r'</li><li>(.*)</li>', i)[0]
 			self.data_file = [self.date_convert(), 'no_hour']
 		else: #Playlist
-			self.url = re.findall(r'data-video-id="(.*)"', i)[0]
-			if '<a href="/user/' in i:
-				self.url_channel = re.findall('<a href="/user/(.*)"', i)[0]
-			elif '<a href="/channel/' in i:
-				self.url_channel = re.findall('<a href="/channel/(.*)"', i)[0]
-			self.title = re.findall('data-title="(.*)"', i)[0]
-			self.channel = i.split('</a>')[2].split('" >')[1]
+			self.url = re.findall(r'data-video-id="(.{11})"', i)[0]
+			self.title = re.findall(r'data-video-title="(.+?)"', i)[0]
+			self.channel = re.findall('data-video-username="(.+?)"', i)[0]
+			self.url_channel = 'results?sp=EgIQAkIECAESAA%253D%253D&search_query=' + self.channel.replace(' ', '+')
 			self.data_file = ['Playlist', self.id]
 
 	def info_recup_rss(self, i):
@@ -262,7 +259,10 @@ class Analyzer(Thread):
 				return False
 			open(self.output, 'a', encoding='utf8').write(var)
 		elif self.method == '1' or self.method == '2':
-			var = self.data_file[0] + '000000' + '\t' + self.url + '\t' + self.url_channel + '\t' + self.title + '\t' + self.channel + '\thttps://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url) + '\n'
+			if self._type_id == True:
+				var = self.data_file[0] + '000000' + '\t' + self.url + '\t' + self.url_channel + '\t' + self.title + '\t' + self.channel + '\thttps://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url) + '\n'
+			else:
+				var = '00000000000000' + '\t' + self.url + '\t' + self.url_channel + '\t' + self.title + '\t' + self.channel + '\thttps://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url) + '\n'
 			if len(var) > 350:
 				return False
 			open(self.output, 'a', encoding='utf8').write(var)
@@ -274,11 +274,11 @@ class Analyzer(Thread):
 		in the file 'sub_raw'. The date is add to sort the
 		videos, it is deleted"""
 		if len(self.url) != 11:
-			return False 
+			return False
 		if self.method == '0':
 			open(self.output, 'a', encoding='utf8').write(self.data_file[0] + self.data_file[1].replace(':', '') + ' https://www.youtube.com/watch?v=' + self.url + '\n')
 		elif self.method == '1' or self.method == '2':
-			if self._type_id:
+			if self.type:
 				open(self.output, 'a', encoding='utf8').write(self.data_file[0] + '000000' + ' https://www.youtube.com/watch?v=' + self.url + '\n')
 			else:
 				open(self.output, 'a', encoding='utf8').write('00000000000000' + ' https://www.youtube.com/watch?v=' + self.url + '\n')
@@ -298,6 +298,8 @@ class Analyzer(Thread):
 				pass
 		if self.url_channel[:2] == 'UC':
 			self.url_channel = 'channel/' + self.url_channel
+		elif self.url_channel[:8] == 'results?':
+			pass
 		else:
 			self.url_channel = 'user/' + self.url_channel
 		open('{}data/{}/{}/{}'.format(self.path_cache, self.method, self.data_file[0], self.data_file[1].replace(':', '')), 'a', encoding='utf-8').write("""<!--NEXT -->
@@ -317,7 +319,7 @@ def sort_file(count=7, output='sub.html', mode='html', path='', method='0'):
 	elif mode == 'list' or mode == 'raw':
 		raw_list_end(count, output)
 
-def html_end(count=7, path='', output='sub.html', method='0'):
+def html_end(count=7, path='', output='sub.html', method='0', play=True):
 	"""Recover the file in '.../data/.' with all the
 	informations, sort by date and add the informations
 	in './sub.html'. """
@@ -325,7 +327,7 @@ def html_end(count=7, path='', output='sub.html', method='0'):
 	if len(fch) < count:
 		date = 0
 	elif count == -1:
-		date = 0
+		date = -1
 	else:
 		date = int(since(count)[:8])
 	sub_file = open(output, 'a', encoding='utf-8')
@@ -337,7 +339,10 @@ def html_end(count=7, path='', output='sub.html', method='0'):
 		except IndexError:
 			break
 		except:
-			continue
+			if play:
+				folder_date = 0
+			else:
+				continue
 		if folder_date > date:
 			pass
 		else:
@@ -354,7 +359,7 @@ def raw_list_end(count=7, output='sub'):
 	linfo = sorted(open(output, 'rb').read().decode('utf8').replace('\r', '').split('\n'))
 	fichier = open(output, 'w', encoding='utf8')
 	if count == -1:
-		date = 0
+		date = -1
 	else:
 		date = int(since(count)[:8])
 	i = -1
