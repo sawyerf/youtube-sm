@@ -137,8 +137,8 @@ class Analyzer(Thread):
 					pass
 				del linfo[0]
 			for i in linfo:
-				self.info_recup_html(i)
 				try:
+					self.info_recup_html(i)
 					print('', end='')
 				except:
 					pass
@@ -190,30 +190,30 @@ class Analyzer(Thread):
 				self.url = i.split('data-video-id="')[1].split('"')[0]
 
 	def info_recup_show_more(self, i):
-		self.url = i.split('href="\\/watch?v=')[1].split('"')[0]
+		self.url = re.findall(r'href="\\/watch\?v=(.{11})"', i)[0]
 		self.url_channel = self.id
-		self.title = i.split('ltr" title="')[1].split('"')[0]
+		self.title = re.findall(r'ltr" title="(.+?)"')[0]
 		self.date = re.findall(r'/li\\u003e\\u003cli\\u003e(.*)\\u003c\\/li', i)[0]
 		self.data_file = [self.date_convert(), 'no_hour']
 
 	def info_recup_html(self, i):
 		"""Recover the informations of the html page"""
 		if self.type: #Channel
-			self.url = re.findall(r'href="/watch\?v=(.*)" rel', i)[0]
+			self.url = re.findall(r'href="/watch\?v=(.{11})"', i)[0]
 			self.url_channel = self.id
-			self.title = re.findall(r'dir="ltr" title="(.*)"  aria', i)[0]
-			self.date = re.findall(r'</li><li>(.*)</li>', i)[0]
+			self.title = re.findall(r'dir="ltr" title="(.+?)"', i)[0]
+			self.date = re.findall(r'</li><li>(.+?)</li>', i)[0]
 			self.data_file = [self.date_convert(), 'no_hour']
 		else: #Playlist
 			self.url = re.findall(r'data-video-id="(.{11})"', i)[0]
 			self.title = re.findall(r'data-video-title="(.+?)"', i)[0]
-			self.channel = re.findall('data-video-username="(.+?)"', i)[0]
+			self.channel = re.findall(r'data-video-username="(.+?)"', i)[0]
 			self.url_channel = 'results?sp=EgIQAkIECAESAA%253D%253D&search_query=' + self.channel.replace(' ', '+')
 			self.data_file = ['Playlist', self.id]
 
 	def info_recup_rss(self, i):
 		"""Recover the informations of a rss page"""
-		self.url = re.findall(r'<yt:videoId>(.*)</yt:videoId>', i)[0]
+		self.url = re.findall(r'<yt:videoId>(.{11})</yt:videoId>', i)[0]
 		self.url_channel = re.findall(r'<yt:channelId>(.*)</yt:channelId>', i)[0]
 		self.title = re.findall(r'<media:title>(.*)</media:title>', i)[0]
 		self.channel = re.findall(r'<name>(.*)</name>', i)[0]
@@ -344,13 +344,10 @@ def html_end(count=7, path='', output='sub.html', method='0', play=True):
 			else:
 				continue
 		if folder_date > date:
-			pass
-		else:
-			break
-		fch_in = sorted(os.listdir(path + 'data/' + method + '/' + fch[-1-i]))
-		for a in range(len(fch_in)):
-			data = open(path + 'data/' + method + '/' + fch[-1-i] + '/' + fch_in[-1-a], 'r', encoding='utf-8').read()
-			sub_file.write(data)
+			fch_in = sorted(os.listdir(path + 'data/' + method + '/' + fch[-1-i]))
+			for a in range(len(fch_in)):
+				data = open(path + 'data/' + method + '/' + fch[-1-i] + '/' + fch_in[-1-a], 'r', encoding='utf-8').read()
+				sub_file.write(data)
 	sub_file.close()
 	open(output, 'a').write('</body></html>')
 
