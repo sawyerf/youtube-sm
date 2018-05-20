@@ -55,7 +55,7 @@ youtube-sm [OPTIONS]
 --af   [file]          Append a file with list of channel or a playlist in sub.swy
 --ax   [file]          Append a xml file in sub.swy
 --html                 Recover yours subs in the common page web (more videos)
---ultra-html           Recover all the videos of a channel but take lot of time
+--ultra-html           Recover all the videos with the common page and the button 'load more'
 --output [file]        Choose the name of the output file
 --cat                  View your subscriptions
 --css                  Import the css files
@@ -103,14 +103,14 @@ They are two choice because they cannot recover the same informations and don't 
 So the default method (the RSS method) is more adapted to recover only the newest videos, whereas the HTML method
 is more adapted to recover all the videos of a playlist or to recover its last 30 videos of a channel.
 
-|            | *ULTRA-HTML* |    *HTML*   |    *HTML*    |     *RSS*    |
-|:----------:|:------------:|:-----------:|:------------:|:------------:|
-|            | **Channel**  | **Channel** | **Playlist** |   **Both**   |
-|  Execution |**very** slow |     slow    |     slow     |     Fast     |
-|   Number   |    **all**   |  30 videos  |  100 videos  |   15 videos  |
-|    Date    |     **~**    |     **~**   |       ✖      |       ✔      |
-|  Like Rate |       ✖      |      ✖      |       ✖      |       ✔      |
-|    Views   |       ✔      |      ✔      |       ✖      |       ✔      |
+|            | *ULTRA-HTML* | *ULTRA-HTML* |    *HTML*   |    *HTML*    |     *RSS*    |
+|:----------:|:------------:|:------------:|:-----------:|:------------:|:------------:|
+|            | **Channel**  | **Playlist** | **Channel** | **Playlist** |   **Both**   |
+|  Execution |**very** slow |**very** slow |     slow    |     slow     |     Fast     |
+|   Number   |    **all**   |    **all**   |  30 videos  |  100 videos  |   15 videos  |
+|    Date    |     **~**    |       ✖      |     **~**   |       ✖      |       ✔      |
+|  Like Rate |       ✖      |       ✖      |      ✖      |       ✖      |       ✔      |
+|    Views   |       ✖      |       ✖      |      ✖      |       ✖      |       ✔      |
 
 ## Requirements
 - Python 3
