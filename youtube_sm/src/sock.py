@@ -57,19 +57,46 @@ def download_html(url_id, type_id=True, split=True):
 	else:
 		return data
 
-def download_show_more(url):
-	data = download_https(url.encode())
-	if data == None:
-		return None, None
-	data = data.replace('\\n', '\n').replace('\\"', '"')
-	open('lel.html', 'w', encoding='utf8').write(data)
+def download_html_playlist(url_id, split=True):
+	data = download_html(url_id, False, False)
 	try:
-		next_link = data.split('data-uix-load-more-href="\\')[1].split('"')[0]
+		len_play = int(re.findall(r'<span id="playlist-length">(.+?)videos</span>', data)[0])
 	except:
-		next_link = None
-	data = data.split('yt-lockup-content')
-	del data[0]
-	return data, next_link
+		return None, None, None
+	linfo = data.split('<li class="yt-uix-scroller-scroll-unit  vve-check"')
+	del linfo[0]
+	if linfo == []:
+		return None, None, None
+	try:
+		next_link = '/watch?v=' + re.findall(r'<a href="/watch\?v=(.+?)"', linfo[-1])[0]
+	except:
+		return None, None, None
+	return linfo, next_link, len_play
+
+def download_show_more(url, type_id=True):
+	if type_id:
+		data = download_https(url.encode())
+		if data == None:
+			return None, None
+		data = data.replace('\\n', '\n').replace('\\"', '"')
+		try:
+			next_link = data.split('data-uix-load-more-href="\\')[1].split('"')[0]
+		except:
+			next_link = None
+		data = data.split('yt-lockup-content')
+		del data[0]
+		return data, next_link
+	else:
+		data = download_https(url.encode())
+		if data == None:
+			return None, None
+		linfo = data.split('<li class="yt-uix-scroller-scroll-unit  vve-check"')
+		del linfo[0]
+		try:
+			next_link = '/watch?v=' + re.findall(r'<a href="/watch\?v=(.+?)"', linfo[-1])[0]
+		except:
+			return None, None
+		return linfo, next_link
 
 def download_http(url):
 	data = b''

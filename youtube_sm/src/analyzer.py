@@ -6,7 +6,8 @@ from threading import Thread
 from .sock import (
 	download_xml,
 	download_html,
-	download_show_more)
+	download_show_more,
+	download_html_playlist)
 from .tools import (
 	Progress,
 	Progress_loop,
@@ -106,8 +107,14 @@ class Analyzer(Thread):
 	def _download_page(self):
 		if self.method == '0':
 			return download_xml(self.id, self.type)
-		elif self.method == '1' or self.method == '2':
+		elif self.method == '1':
 			return download_html(self.id, self.type)
+		elif self.method == '2':
+			if self.type:
+				return download_html(self.id, self.type)
+			else:
+				linfo, self.next, self.len_play = download_html_playlist(self.id)
+				return linfo
 		else:
 			return None
 
@@ -139,46 +146,64 @@ class Analyzer(Thread):
 			for i in linfo:
 				try:
 					self.info_recup_html(i)
-					print('', end='')
 				except:
 					pass
 				else:
 					self.write()
 		elif self.method == '2':
-			if self.type != True:
-				print('[!] Work Only With Channel (--ultra-html)')
-			try:
-				self.channel = linfo[0].split('<title>')[1].split('\n')[0]
-			except IndexError:
-				pass
-			except:
-				pass
-			del linfo[0]
-			for i in linfo:
+			if self.type:
 				try:
-					self.info_recup_html(i)
+					self.channel = linfo[0].split('<title>')[1].split('\n')[0]
+				except IndexError:
+					pass
 				except:
 					pass
-				else:
-					self.write()
-			self.next = re.findall(r'data-uix-load-more-href="(.{176})"', linfo[-1])[0]
-			self.show_more()
+				del linfo[0]
+				for i in linfo:
+					try:
+						self.info_recup_html(i)
+					except:
+						pass
+					else:
+						self.write()
+				self.next = re.findall(r'data-uix-load-more-href="(.{176})"', linfo[-1])[0]
+				self.show_more()
+			else:
+				self.show_more()
 
 	def show_more(self):
 		data = ''
-		while self.next != None:
-			data, self.next = download_show_more(self.next)
-			if data == None:
-				return
-			for i in data:
-				try:
-					self.info_recup_show_more(i)
-				except:
-					pass
-				else:
-					self.write()
-			if self.prog != None:
-				self.prog.add()
+		if self.type:
+			while self.next != None:
+				data, self.next = download_show_more(self.next, True)
+				if data == None:
+					return
+				for i in data:
+					try:
+						self.info_recup_show_more(i)
+					except:
+						pass
+					else:
+						self.write()
+				if self.prog != None:
+					self.prog.add()
+		else:
+			nb = 0
+			while nb < self.len_play:
+				data, self.next = download_show_more(self.next, False)
+				if data == None:
+					return
+				for i in data:
+					try:
+						if nb < int(re.findall(r'tch\?v=.*;index=([0-9]+)', i)[0]):
+							nb += 1
+							self.info_recup_html(i)
+						else:
+							continue
+					except:
+						pass
+					else:
+						self.write()
 
 	def _url(self, i):
 		if self.method == '0':
@@ -192,7 +217,7 @@ class Analyzer(Thread):
 	def info_recup_show_more(self, i):
 		self.url = re.findall(r'href="\\/watch\?v=(.{11})"', i)[0]
 		self.url_channel = self.id
-		self.title = re.findall(r'ltr" title="(.+?)"')[0]
+		self.title = re.findall(r'ltr"\ title="(.+?)"', i)[0]
 		self.date = re.findall(r'/li\\u003e\\u003cli\\u003e(.*)\\u003c\\/li', i)[0]
 		self.data_file = [self.date_convert(), 'no_hour']
 
