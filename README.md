@@ -124,7 +124,7 @@ is more adapted to recover all the videos of a playlist or to recover its last 3
 - Linux
 - Windows
 - Android (Termux)
-- MacOS (I don't know)
+- MacOS
 
 ## Screenshots
 <p><img src="./screenshot/index.jpg" alt="Phone screen" width=405px height=720px></p>
