@@ -67,7 +67,7 @@ def main():
 	if os.name == 'nt':
 		path = os.path.expanduser('~') + '/.youtube_sm/'
 	else:
-		if os.uname().sysname == 'Linux':
+		if os.uname().sysname == 'Linux' or os.uname().sysname == 'Darwin':
 			path = os.environ['HOME'] + '/.cache/youtube_sm/'
 	try:
 		os.makedirs(path + 'data/')
