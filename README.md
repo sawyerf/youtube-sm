@@ -96,7 +96,7 @@ https://www.youtube.com/watch?v={video_id}
 
 These 3 files are generated in:
 - Windows: `C:\Users\<name>\.youtube_sm\`.
-- Linux:   `/home/<name>/.cache/youtube_sm/.`.
+- Linux/MacOS:   `/home/<name>/.cache/youtube_sm/.`.
 
 ## HTML & RSS
 With youtube-sm you can recover your subscriptions using two methods:
