@@ -43,7 +43,7 @@ youtube-sm [OPTIONS]
 ```
 -h                     Print this help text and exit
 -n     [file]          Use an other xml file for your subscriptions
--m     [mode]          Choose the type of the output (html, raw, list)
+-m     [mode]          Choose the type of the output (html, raw, list, view)
 -t     [nb of days]    Choose how far in the past do you want the program to look for videos
 -d                     Show the dead channels + those who posted no videos
 -o     [nb of months]  Show the channels who didn't post videos in [nb of months] + dead channels
@@ -71,6 +71,11 @@ youtube-sm [OPTIONS]
 ```
 https://www.youtube.com/watch?v={video_id}
 ```
+- view :
+```
+{views}
+```
+
 - html :
 ```
 <!--NEXT -->
@@ -110,7 +115,7 @@ is more adapted to recover all the videos of a playlist or to recover its last 3
 |   Number   |    **all**   |    **all**   |  30 videos  |  100 videos  |   15 videos  |
 |    Date    |     **~**    |       ✖      |     **~**   |       ✖      |       ✔      |
 |  Like Rate |       ✖      |       ✖      |      ✖      |       ✖      |       ✔      |
-|    Views   |       ✖      |       ✖      |      ✖      |       ✖      |       ✔      |
+|    Views   |       ✔      |       ✖      |      ✔      |       ✖      |       ✔      |
 
 ## Requirements
 - Python 3

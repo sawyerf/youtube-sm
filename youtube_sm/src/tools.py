@@ -53,6 +53,7 @@ def check_id(id):
 		return False
 
 def del_data(path='', prin=True):
+	""" delete the data folder"""
 	from shutil import rmtree
 	import os
 	if os.path.exists(path + 'data'):

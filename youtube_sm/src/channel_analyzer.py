@@ -13,6 +13,7 @@ def old(url_data, min_tps=12):
 		i.join()
 
 def thread_old(url, lcl):
+	""" Print the old channel """
 	linfo = download_xml(url)
 	if linfo == False:
 		print('[channel dead]', url)
@@ -38,6 +39,7 @@ def dead(url_data):
 		i.join()
 
 def thread_dead(url):
+	""" Print the dead channel """
 	linfo = download_xml(url)
 	if linfo == False:
 		print('[channel dead]\t', url)
