@@ -1,0 +1,6 @@
+**.html
+**sub_*
+dist/
+build/
+youtube_sm.egg-info/
+**__pycache__/
