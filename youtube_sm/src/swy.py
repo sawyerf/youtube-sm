@@ -46,7 +46,7 @@ def swy(sub_file='subscription_manager', path='', liste=True):
 		for i in data_sub:
 			ch = i.split('\t')
 			try:
-				url_data[ch[0]] = ch[1][:len(ch[1])-1]
+				url_data[ch[0]] = ch[1]
 			except:
 				pass
 	return url_data
