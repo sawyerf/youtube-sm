@@ -63,11 +63,10 @@ def init(urls, output, min_date, path='', mode='html', loading=False, method='0'
 
 
 class Analyzer(Thread):
-	"""It's a group of fonctions to recup the videos informations"""
+	"""It's a group of fonctions to recover the videos informations"""
 	def __init__(self, mode='', url_id='', output='', min_date=0, method='0', path='', prog=None):
-		self.mode = mode
-		# self.method is the way you're going to recv the data (0 -> RSS, 1 -> https://youtube.com/channel/{id}/videos) 
-		self.method = method
+		self.mode = mode # html / raw / list / view
+		self.method = method # 0 --> RSS / 1 --> html / 2 --> ultra-html
 		self.id = url_id
 		if output != '':
 			self.output = output
@@ -78,20 +77,22 @@ class Analyzer(Thread):
 				self.output = 'sub_list'
 			elif mode == 'raw':
 				self.output = 'sub_raw'
+			elif mode == 'view':
+				self.output = 'sub_view'
 			else:
 				self.output = 'sub'
-		self.path_cache = path
-		self.min_date = min_date
-		self.type = self._type_id()
+		self.path_cache = path # The path where the data and the sub are stock
+		self.min_date = min_date 
+		self.type = self._type_id() # True --> chanel False -- > Playlist
 		#all the var user in class
-		self.url = ""
-		self.url_channel = ""
+		self.url = "" # id of a video
+		self.url_channel = "" 
 		self.title = ""
 		self.channel = ""
 		self.date = ""
-		self.data_file = ""
+		self.data_file = "" #The name of the file where stock the informations in data
 		#Progress
-		self.prog = prog
+		self.prog = prog # True --> loading / False --> no loading
 
 	def Thread(self):
 		Thread.__init__(self)
@@ -105,6 +106,7 @@ class Analyzer(Thread):
 		return type_id(self.id)
 
 	def _download_page(self):
+		""" To download a page with the id of a channel/Playlist """
 		if self.method == '0':
 			return download_xml(self.id, self.type)
 		elif self.method == '1':
@@ -133,7 +135,10 @@ class Analyzer(Thread):
 				date = int(i.split("<published>")[1].split("</published>")[0].replace('-', '').replace('+00:00', '').replace('T', '').replace(':', ''))
 				if self.min_date <= date:
 					self.info_recup_rss(i)
-					self.write()
+					if self.mode == 'view':
+						self.write(i)
+					else:
+						self.write()
 		elif self.method == '1':
 			if self.type: #Channel
 				try:
@@ -149,7 +154,10 @@ class Analyzer(Thread):
 				except:
 					pass
 				else:
-					self.write()
+					if self.mode == 'view':
+						self.write(i)
+					else:
+						self.write()
 		elif self.method == '2':
 			if self.type:
 				try:
@@ -165,13 +173,19 @@ class Analyzer(Thread):
 					except:
 						pass
 					else:
-						self.write()
+						if self.mode == 'view':
+							self.write(i)
+						else:
+							self.write()
 				self.next = re.findall(r'data-uix-load-more-href="(.{176})"', linfo[-1])[0]
 				self.show_more()
 			else:
 				self.show_more()
 
 	def show_more(self):
+		""" The continuation of analyzer_sub for the mode 'ultra-html' 
+		This function recover and write the information recover in 
+		in the link in the button 'load more'"""
 		data = ''
 		if self.type:
 			while self.next != None:
@@ -184,7 +198,10 @@ class Analyzer(Thread):
 					except:
 						pass
 					else:
-						self.write()
+						if self.mode == 'view':
+							self.write(i)
+						else:
+							self.write()
 				if self.prog != None:
 					self.prog.add()
 		else:
@@ -203,18 +220,15 @@ class Analyzer(Thread):
 					except:
 						pass
 					else:
-						self.write()
-
-	def _url(self, i):
-		if self.method == '0':
-			self.url = i.split('<yt:videoId>')[1].split('</yt:videoId>')[0]
-		elif self.method == '1' or self.method == '2':
-			if self.type:
-				self.url = i.split('href="/watch?v=')[1].split('" rel')[0]
-			else:
-				self.url = i.split('data-video-id="')[1].split('"')[0]
+						if self.mode == 'view':
+							self.write(i)
+						else:
+							self.write()
+				if self.prog != None:
+					self.prog.add()
 
 	def info_recup_show_more(self, i):
+		"""Recover the informations for the mode 'ultra-html'"""
 		self.url = re.findall(r'href="\\/watch\?v=(.{11})"', i)[0]
 		self.url_channel = self.id
 		self.title = re.findall(r'ltr"\ title="(.+?)"', i)[0]
@@ -246,7 +260,29 @@ class Analyzer(Thread):
 		self.date = self.data_file[0]
 		self.data_file[0] = self.data_file[0].replace('-', '')
 
+	def _view(self, i):
+		""" Return the views of a videos"""
+		if self.method == '0':
+			return re.findall(r'views="(.+?)"', i)[0].replace(',', '')
+		elif self.method == '1' and self.type:
+			return re.findall(r'class="yt-lockup-meta-info"><li>(.+?)\ views', i)[0].replace(',', '')
+		elif self.method == '2' and self.type:
+			if '<ul class="yt-lockup-meta-info"><li>' in i:
+				return re.findall(r'class="yt-lockup-meta-info"><li>(.+?) views', i)[0].replace(',', '')
+			elif 'class="yt-lockup-meta-info"\\u003e\\u003cli\\u003e' in i:
+				return re.findall(r'class="yt-lockup-meta-info"\\u003e\\u003cli\\u003e(.+?) views', i)[0].replace(',', '')
+		else:
+			if not self.type:
+				raise Exception('[*] The mode view don\' work with playlist')
+			else:
+				raise Exception('[*] You don\'t specify the mode')
+
 	def date_convert(self):
+		""" Convert the date which are recover in the html page
+		in a date we can easily sort.
+		like this: '2 day' --> '20180525'
+		           '2 months' --> '20180300' 
+		           '2 years' --> '20160000' """
 		sdate = self.date.split(' ')
 		if 'year' in sdate[1]:
 			day = 365*int(sdate[0])
@@ -266,7 +302,7 @@ class Analyzer(Thread):
 			return '0'
 		return since(day)[:8]
 
-	def write(self):
+	def write(self, i=None):
 		"""Write the information in a file"""
 		if self.mode == 'html':
 			return self.generate_data_html()
@@ -274,6 +310,8 @@ class Analyzer(Thread):
 			return self.append_raw()
 		elif self.mode == 'list':
 			return self.append_list()
+		elif self.mode == 'view':
+			return self.append_view(i)
 
 	def append_raw(self):
 		"""Append the informations wich are been recover 
@@ -297,7 +335,7 @@ class Analyzer(Thread):
 	def append_list(self):
 		""""Append the informations wich are been recover
 		in the file 'sub_raw'. The date is add to sort the
-		videos, it is deleted"""
+		videos, but it's deleted"""
 		if len(self.url) != 11:
 			return False
 		if self.method == '0':
@@ -308,6 +346,16 @@ class Analyzer(Thread):
 			else:
 				open(self.output, 'a', encoding='utf8').write('00000000000000' + ' https://www.youtube.com/watch?v=' + self.url + '\n')
 		return True
+
+	def append_view(self, i):
+		""" Write the views in a file"""
+		try:
+			view = self._view(i)
+		except:
+			print(i)
+			return
+		if view != None:
+			open(self.output, 'a', encoding='utf8').write(view + '\n')
 
 	def generate_data_html(self):
 		"""Append the informations wich are been recover
@@ -339,6 +387,7 @@ class Analyzer(Thread):
 		return True
 
 def sort_file(count=7, output='sub.html', mode='html', path='', method='0'):
+	""" To sort the videos by date or add the videos in the file"""
 	if mode == 'html':
 		html_end(count, path, output, method)
 	elif mode == 'list' or mode == 'raw':

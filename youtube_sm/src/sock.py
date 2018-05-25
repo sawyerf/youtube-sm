@@ -58,6 +58,8 @@ def download_html(url_id, type_id=True, split=True):
 		return data
 
 def download_html_playlist(url_id, split=True):
+	""" Download the html page of a playlist and 
+	return the data, the next link to download and the size of the playlist """
 	data = download_html(url_id, False, False)
 	try:
 		len_play = int(re.findall(r'<span id="playlist-length">(.+?)videos</span>', data)[0])
@@ -74,6 +76,8 @@ def download_html_playlist(url_id, split=True):
 	return linfo, next_link, len_play
 
 def download_show_more(url, type_id=True):
+	""" Download the page for the method 'ultra-html'
+	and return the data and the next link to download """
 	if type_id:
 		data = download_https(url.encode())
 		if data == None:
