@@ -11,13 +11,13 @@ def README():
 
 setup(
 	name='youtube_sm',
-	version='1.1.4',
+	version='2.0.0',
 	url='https://github.com/sawyerf/Youtube_subscription_manager',
 	author='Sawyerf',
 	author_email='sawyer.flink@protonmail.ch',
 	description='Youtube subscription manager',
-	long_description=README(),
 	long_description_content_type='text/markdown',
+	long_description=README(),
 	keywords='youtube subscription api manager html',
 	license='MLP-2.0',
 	packages=find_packages(),

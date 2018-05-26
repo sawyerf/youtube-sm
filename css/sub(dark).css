@@ -1,0 +1,30 @@
+.left { float: left; }
+.clear { clear: both; }
+
+* { font-family: Arial; }
+body { background-color: #181a1d; }
+
+div.video{
+	background-color: #1c1e21;
+	margin: 10px 27% 10px 27%; }
+
+div.video:hover{ background-color: #26292e;
+	p{color:black}}
+
+img {
+	width: 280px;
+	height: 157px;
+	margin-right: 7px; }
+
+h4 {
+	color: #dcdddf;
+	line-height: 18px;
+	font-size: 18px;
+	margin: 0px 0px -5px 0px; }
+
+p {
+	color: grey;
+	line-height: 7px; }
+a {
+	text-decoration: none;
+	color: black; }

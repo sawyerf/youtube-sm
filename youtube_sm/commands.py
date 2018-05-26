@@ -1,11 +1,9 @@
 import time
 import os
 import sys
-from .src.analyzer import (
-	html_init,
-	html_end,
-	init,
-	sort_file)
+
+from .src.write import Write_file
+from .src.thread import Run_analyze
 from .src.swy import (
 	swy,
 	generate_swy,
@@ -53,6 +51,7 @@ def init_command(path, arg):
 	exit('[*] Done')
 
 def main():
+	# Init variable
 	url_data = []
 	analyze = False
 	analyze_only_one = False
@@ -63,7 +62,7 @@ def main():
 	all_time = False
 	output = ''
 	sub_file = 'subscription_manager'
-	#path
+	# Path of the cache
 	if os.name == 'nt':
 		path = os.path.expanduser('~') + '/.youtube_sm/'
 	else:
@@ -73,14 +72,15 @@ def main():
 		os.makedirs(path + 'data/')
 	except:
 		pass
-	#commands
+	# Commands
 	del sys.argv[0]
-	if sys.argv==[]:
+	if sys.argv==[]: # Default command
 		passe = time.time()
 		url_data = swy(path=path)
-		html_init(path)
-		init(url_data, 'sub.html', lcl_time(), path)
-		html_end(path=path)
+		file = Write_file('sub.html', path, 'html', '0')
+		file.html_init()
+		Run_analyze(url_data, 'sub.html', lcl_time(), path, 'html', False, file, '0')
+		file.html_end()
 		open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + time.strftime("%H%M") + '\n')
 	elif sys.argv == ['-h'] or sys.argv == ['--help']:
 		print("""Usage: youtube-sm [OPTIONS]
@@ -243,11 +243,12 @@ Options:
 				output = 'sub_list'
 			elif mode == 'raw':
 				output = 'sub_raw'
+		file = Write_file(output, path, mode, method)
 		if mode == 'html':
-			html_init(path, output)
-		elif mode == 'raw' or mode == 'list':
+			file.html_init()
+		elif mode == 'raw' or mode == 'list' or mode == 'view':
 			if os.path.exists(output):
-				os.remove(output)			
-		nb_new = init(url_data, output, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, method)
-		sort_file(count, output, mode, path, method)
+				os.remove(output)		
+		nb_new = Run_analyze(url_data, output, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, file, method)
+		file.sort_file(count)
 		open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + time.strftime("    %H%M") + '\n')

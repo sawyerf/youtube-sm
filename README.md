@@ -14,10 +14,10 @@
 - [Screenshots](#screenshots)
 
 ## Description
-Youtube_subscription_manager is an alternative to youtube.com to recover your subscriptions without requires an account. 
+Youtube_subscription_manager is an alternative to youtube.com to recover your subscriptions without requires an account
+*(You can also recover the videos of other platform).*
 
 It can gather informations about every video in a playlist, a channel or your subsciption feed and outputs it as a html page, a detailed list or a list of links.
-
 
 ## Installation
 1. Clone the project: `git clone https://github.com/sawyerf/Youtube_suscription_manager.git`
@@ -60,6 +60,23 @@ youtube-sm [OPTIONS]
 --cat                  View your subscriptions
 --css                  Import the css files
 --loading              Prints a progress bar while running
+```
+
+## Example
+
+- Basic
+```
+youtube-sm
+```
+
+- Your sub since 1 month
+```
+youtube-sm -t 30 --html --css --loading
+```
+
+- All the videos of a channel
+```
+youtube-sm -l UC-lHJZR3Gqxm24_Vd_AJ5Yw -t -1 -m list --loading -r --output test.csv
 ```
 
 ## Type of File
