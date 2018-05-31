@@ -43,6 +43,14 @@ class Youtube_Analyzer(Thread):
 	def _type_id(self):
 		return type_id(self.id)
 
+	def _complet_url_channel(self, url_channel):
+		if url_channel[:2] == 'UC':
+			url_channel = 'https://youtube.com/channel/' + url_channel
+		elif url_channel[:8] == 'results?':
+			url_channel = 'https://youtube.com/' + url_channel
+		else:
+			url_channel = 'https://youtube.com/user/' + url_channel
+		return url_channel
 	def _download_page(self):
 		""" To download a page with the id of a channel/Playlist """
 		if self.method == '0':
@@ -61,11 +69,28 @@ class Youtube_Analyzer(Thread):
 	def write(self):
 		"""Write the information in a file"""
 		if self.mode == 'html':
-			return self.file.write(url=self.url, title=self.title, url_channel=self.url_channel, channel=self.channel, date=self.date, data_file=self.data_file)
+			return self.file.write(
+				url='https://www.youtube.com/watch?v='+self.url,
+				title=self.title,
+				url_channel=self._complet_url_channel(self.url_channel),
+				url_img='https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url),
+				channel=self.channel,
+				date=self.date,
+				data_file=self.data_file)
 		elif self.mode == 'raw':
-			return self.file.write(url=self.url, title=self.title, url_channel=self.url_channel, channel=self.channel, date=self.date, data_file=self.data_file, type_id=self.type)
+			return self.file.write(
+				url=self.url,
+				title=self.title,
+				url_channel=self.url_channel,
+				channel=self.channel,
+				date=self.date,
+				data_file=self.data_file,
+				type_id=self.type)
 		elif self.mode == 'list':
-			return self.file.write(url=self.url, data_file=self.data_file, type_id=self.type)
+			return self.file.write(
+				url='https://www.youtube.com/watch?v='+self.url,
+				data_file=self.data_file,
+				type_id=self.type)
 		elif self.mode == 'view':
 			return self.file.write(view=self.view)
 

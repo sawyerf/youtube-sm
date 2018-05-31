@@ -41,7 +41,7 @@ youtube-sm [OPTIONS]
 ## Commands
 
 ```
--h                     Print this help text and exit
+-h                     Print the help text and exit
 -n     [file]          Use an other xml file for your subscriptions
 -m     [mode]          Choose the type of the output (html, raw, list, view)
 -t     [nb of days]    Choose how far in the past do you want the program to look for videos
@@ -58,7 +58,7 @@ youtube-sm [OPTIONS]
 --ultra-html           Recover all the videos with the common page and the button 'load more'
 --output [file]        Choose the name of the output file
 --cat                  View your subscriptions
---css                  Import the css files
+--css  [mode]          Import the css files (light, dark, switch)
 --loading              Prints a progress bar while running
 ```
 

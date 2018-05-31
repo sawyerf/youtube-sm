@@ -14,17 +14,31 @@ def download_page(url_id, type_id=True, split=True, method='0'):
 def download_xml(url_id, type_id=True, split=True):
 	"""Return a list of informations of each video with the 
 	RSS youtube page"""
-	nb = 0
-	data = b""
 	if type_id: #Channel
 		url = b'/feeds/videos.xml?channel_id=' + url_id.encode()
 	else: #Playlist
 		url = b'/feeds/videos.xml?playlist_id=' + url_id.encode()
 	data = download_http(url)
+	if data == None:
+		return None
 	if split:
 		linfo = data.split("<entry>")
 		del linfo[0]
 		if linfo == []:
+			return None
+		return linfo
+	else:
+		return data
+
+def download_xml_daily(url_id, split=True):
+	data = download_https(b'/rss/user/' + url_id.encode(), 'dailymotion.com')
+	if data == None:
+		return None
+	if split:
+		linfo = data.split('<item>')
+		del linfo[0]
+		if linfo == []:
+			print('lol')
 			return None
 		return linfo
 	else:
@@ -119,10 +133,10 @@ def download_http(url):
 	except:
 		return None
 
-def download_https(url):
+def download_https(url, host='youtube.com'):
 	data = b''
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	sock.connect(("youtube.com", 443))
+	sock.connect((host, 443))
 	for i in range(5):
 		try:
 			ssock = ssl.wrap_socket(sock)
@@ -132,7 +146,7 @@ def download_https(url):
 				return None
 		else:
 			break
-	ssock.write(b"GET " + url + b' HTTP/1.1\r\nHost: www.youtube.com\r\nAccept-Language: en\r\n\r\n')
+	ssock.write(b"GET " + url + b' HTTP/1.1\r\nHost: www.' + host.encode() + b'\r\nAccept-Language: en\r\n\r\n')
 	# Recv the HTML page :
 	while True:
 		try:

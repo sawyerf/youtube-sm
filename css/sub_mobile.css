@@ -1,40 +1,42 @@
-.left
-{
-	float:left;
+.left { float:left; }
+.clear { clear: both; }
+* { font-family: Arial; }
+
+
+#But{
+	margin: 0 0 0 0;
+	position: fixed;
+	width: 100%;
 }
-.clear
-{
-	clear: both;
+
+#but {
+	height: var(--HeightButMob);
+	margin: 0 0 0 0;}
+
+#first{
+	margin: 0 0 0 0;
+	width: 100%;
+	height: var(--HeightButMob);
 }
-*
-{
-	font-family: Arial;
-}
-div
-{
+div.video {
 	margin-left: 0%;
 	margin-right: 0%;
-	margin: 10px 0px 10px 0px;
-}
-img
-{
+	margin: 10px 10px 10px 10px; }
+
+img {
 	width: 380px;
-	height: 214px;
-}
-h4
-{
+	height: 214px; }
+
+h4 {
 	line-height: 30px;
 	font-size: 30px;
-	margin: 0px 0px -10px 0px;
-}
-p
-{
+	margin: 0px 0px -10px 0px; }
+
+p {
 	color: grey;
 	line-height: 5px;
-	font-size: 1.9em;
-}
-a
-{
+	font-size: 1.9em; }
+
+a {
 	text-decoration: none;
-	color: black;
-}
+	color: black; }
