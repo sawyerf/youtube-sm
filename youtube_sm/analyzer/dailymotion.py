@@ -29,7 +29,13 @@ class Dailymotion_Analyzer(Thread):
 		self.analyzer_sub()
 		if self.prog != None:
 			self.prog.add()
-			
+	
+	def add_sub(self, sub):
+		data = download_xml_daily(sub, split=False)
+		if data == None:
+			return None
+		return sub + '\t' + sub
+
 	def analyzer_sub(self):
 		if self.method == '0':
 			linfo = self._download_page()
@@ -42,6 +48,12 @@ class Dailymotion_Analyzer(Thread):
 					continue
 				else:
 					self.write()
+
+	def _download_page(self):
+		if self.method == '0':
+			return download_xml_daily(self.id)
+		else:
+			return False
 
 	def write(self):
 		"""Write the information in a file"""
@@ -71,12 +83,6 @@ class Dailymotion_Analyzer(Thread):
 		elif self.mode == 'view':
 			return self.file.write(view=self.view)
 
-	def _download_page(self):
-		if self.method == '0':
-			return download_xml_daily(self.id)
-		else:
-			return False
-
 	def info_recup_rss(self, i):
 		self.url = re.findall(r'<link>(.+?)</link>', i)[0]
 		self.url_channel = 'https://www.dailymotion.com/' + self.id
@@ -95,3 +101,12 @@ class Dailymotion_Analyzer(Thread):
 		if len(day) == 1:
 			day = '0' + day
 		return str(x.tm_year) + '-' + month + '-' + day
+
+	def old(self, url, lcl):
+		return
+
+	def dead(self, url):
+		return
+
+	def stat(self, sub, name=''):
+		return

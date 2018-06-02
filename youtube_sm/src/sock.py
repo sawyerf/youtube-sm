@@ -38,7 +38,6 @@ def download_xml_daily(url_id, split=True):
 		linfo = data.split('<item>')
 		del linfo[0]
 		if linfo == []:
-			print('lol')
 			return None
 		return linfo
 	else:

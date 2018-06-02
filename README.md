@@ -2,10 +2,13 @@
 
 [![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)](http://pypi.python.org/pypi/youtube-sm/)
 
+<p><img align='right' width=400px height=auto src='https://sawyerf.github.io/youtube_sm/binome.jpg' /></p>
+
 - [Description](#description)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Commands](#commands)
+- [Example](#example)
 - [Type of File](#type-of-file)
 - [Cache](#cache)
 - [HTML & RSS](#html--rss)
@@ -42,7 +45,6 @@ youtube-sm [OPTIONS]
 
 ```
 -h                     Print the help text and exit
--n     [file]          Use an other xml file for your subscriptions
 -m     [mode]          Choose the type of the output (html, raw, list, view)
 -t     [nb of days]    Choose how far in the past do you want the program to look for videos
 -d                     Show the dead channels + those who posted no videos
@@ -144,5 +146,5 @@ is more adapted to recover all the videos of a playlist or to recover its last 3
 - MacOS
 
 ## Screenshots
-<p><img src="./screenshot/index.jpg" alt="Phone screen" width=405px height=720px></p>
-<p><img src="./screenshot/index_pc.jpg" alt="PC screen" width=100% height=auto></p>
+<a href="https://sawyerf.github.io/youtube_sm/example.html"><img src="https://sawyerf.github.io/youtube_sm/sub_mob.jpg" alt="Phone screen" width=405px height=720px>
+<img src="https://sawyerf.github.io/youtube_sm/sub_pc.jpg" alt="PC screen" width=100% height=auto></a>

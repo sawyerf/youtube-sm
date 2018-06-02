@@ -1,15 +1,19 @@
 from threading import Thread
 from ..analyzer.imports import return_Analyzer
+from .time import lcl_time
 from ..src.tools import (
 	Progress,
 	Progress_loop,
 	type_id)
 
+
 def Run_analyze(urls, output, min_date, path='', mode='html', loading=False, file=None, method='0'):
 	"""Run all the analyze in a thread"""
 	threads = []
 	ending = 0
-	nb = len(urls)
+	nb = 0
+	for site in urls:
+		nb += len(urls[site])
 	if loading and nb == 1:
 		prog = Progress_loop()
 		prog.progress_bar()
@@ -42,3 +46,37 @@ def Run_analyze(urls, output, min_date, path='', mode='html', loading=False, fil
 		prog.xmin = prog.xmax
 		prog.progress_bar()
 		print()
+
+def old(subs, min_tps=12):
+	lcl = lcl_time(min_tps)
+	threads = []
+	for site in subs:
+		analyzer = return_Analyzer(site)()
+		for url in subs[site]:
+			thr = Thread(target=analyzer.old, args=(url, lcl))
+			threads.append(thr)
+			thr.start()
+	for i in threads:
+		i.join()
+
+def dead(subs):
+	threads = []
+	for site in subs:
+		analyzer = return_Analyzer(site)()
+		for url in subs[site]:
+			thr = Thread(target=analyzer.dead, args=(url,))
+			threads.append(thr)
+			thr.start()
+	for i in threads:
+		i.join()
+
+def stats(subs):
+	threads = []
+	for site in subs:
+		analyzer = return_Analyzer(site)()
+		for url in subs[site]:
+			thr = Thread(target=analyzer.stat, args=(url, subs[site][url],))
+			threads.append(thr)
+			thr.start()
+	for i in threads:
+		i.join()

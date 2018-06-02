@@ -40,6 +40,21 @@ class Youtube_Analyzer(Thread):
 		if self.prog != None:
 			self.prog.add()
 
+	def add_sub(self, sub):
+		tid = type_id(sub)
+		data = download_xml(sub, type_id=tid, split=False)
+		if data == None:
+			return None
+		try:
+			if tid:
+				data = re.findall(r'<name>(.+?)</name>', data)[0]
+			else:
+				data = data.split(r'<title>(.+?)</title>', data)[0]
+		except:
+			return None
+		else:
+			return sub + '\t' + data
+
 	def analyzer_sub(self):
 		"""Recover all the videos of a channel or a playlist
 		and add the informations in $HOME/.cache/youtube_sm/data/."""
@@ -50,7 +65,7 @@ class Youtube_Analyzer(Thread):
 			for i in linfo:
 				date = int(i.split("<published>")[1].split("</published>")[0].replace('-', '').replace('+00:00', '').replace('T', '').replace(':', ''))
 				if self.min_date <= date:
-					self.info_recup_rss(i)
+					self.info_rss(i)
 					self.write()
 		elif self.method == '1':
 			if self.type: #Channel
@@ -63,7 +78,7 @@ class Youtube_Analyzer(Thread):
 				del linfo[0]
 			for i in linfo:
 				try:
-					self.info_recup_html(i)
+					self.info_html(i)
 				except:
 					pass
 				else:
@@ -79,7 +94,7 @@ class Youtube_Analyzer(Thread):
 				del linfo[0]
 				for i in linfo:
 					try:
-						self.info_recup_html(i)
+						self.info_html(i)
 					except:
 						pass
 					else:
@@ -144,7 +159,7 @@ class Youtube_Analyzer(Thread):
 					return
 				for i in data:
 					try:
-						self.info_recup_show_more(i)
+						self.info_show_more(i)
 					except:
 						pass
 					else:
@@ -161,7 +176,7 @@ class Youtube_Analyzer(Thread):
 					try:
 						if nb < int(re.findall(r'tch\?v=.*;index=([0-9]+)', i)[0]):
 							nb += 1
-							self.info_recup_html(i)
+							self.info_html(i)
 						else:
 							continue
 					except:
@@ -172,7 +187,7 @@ class Youtube_Analyzer(Thread):
 					self.prog.add()
 		print()
 
-	def info_recup_show_more(self, i):
+	def info_show_more(self, i):
 		"""Recover the informations for the mode 'ultra-html'"""
 		self.url = re.findall(r'href="\\/watch\?v=(.{11})"', i)[0]
 		self.url_channel = self.id
@@ -181,7 +196,7 @@ class Youtube_Analyzer(Thread):
 		self.view = re.findall(r'class="yt-lockup-meta-info"\\u003e\\u003cli\\u003e(.+?) views', i)[0].replace(',', '')
 		self.data_file = [self.date_convert(), 'no_hour']
 
-	def info_recup_html(self, i):
+	def info_html(self, i):
 		"""Recover the informations of the html page"""
 		if self.type: #Channel
 			self.url = re.findall(r'href="/watch\?v=(.{11})"', i)[0]
@@ -197,7 +212,7 @@ class Youtube_Analyzer(Thread):
 			self.url_channel = 'results?sp=EgIQAkIECAESAA%253D%253D&search_query=' + self.channel.replace(' ', '+')
 			self.data_file = ['Playlist', self.id]
 
-	def info_recup_rss(self, i):
+	def info_rss(self, i):
 		"""Recover the informations of a rss page"""
 		self.url = re.findall(r'<yt:videoId>(.{11})</yt:videoId>', i)[0]
 		self.url_channel = re.findall(r'<yt:channelId>(.*)</yt:channelId>', i)[0]
@@ -261,3 +276,62 @@ class Youtube_Analyzer(Thread):
 		else:
 			return '0'
 		return since(day)[:8]
+
+	def old(self, url, lcl):
+		linfo = download_xml(url)
+		if linfo == False:
+			print('[channel dead]', url)
+		elif linfo == None:
+			print('[  no video  ]', url)
+		else:
+			tps_vd = linfo[0].split("<published>")[1].split("</published>")[0].replace('-', '').replace('+00:00', '').replace('T', '').replace(':', '')
+			if lcl > int(tps_vd):
+				try:
+					print('[ ' + tps_vd[:4] + '/' + tps_vd[4:6] + '/' + tps_vd[6:8] + ' ] ' + linfo[0].split('<name>')[1].split('</name>')[0])
+				except UnicodeEncodeError:
+					print('[ ' + tps_vd[:4] + '/' + tps_vd[4:6] + '/' + tps_vd[6:8] + ' ]', linfo[0].split('<name>')[1].split('</name>')[0].encode())
+				except:
+					print("[   erreur   ]", url)
+
+	def dead(self, url):
+		""" Print the dead channel """
+		linfo = download_xml(url)
+		if linfo == False:
+			print('[channel dead]\t', url)
+		elif linfo == None:
+			print('[  no video  ]\t', url)
+
+
+	def stat(self, sub, name=''):
+		"""Print the mark and the views of a channel"""
+		data = download_xml(sub)
+		if data == None or data == False:
+			return
+		marks = 0
+		views = 0
+		count_marks = 0
+		for i in data:
+			mark, view = self.info_stats(i)
+			if mark != None:
+				marks += mark
+				count_marks += 1
+			views += view
+		marks = marks / (count_marks / 2)
+		prin = str(marks)[:4] + " for " + name + ' (' + str(views) + ' views)'
+		try:
+			print(prin)
+		except:
+			print(prin.encode())
+
+
+	def info_stats(self, data):
+		raw = data.split("<media:community>")[1].split("</media:community>")[0]
+		try:
+			mark = float(data.split("average=\"")[1].split("\"")[0])
+		except:
+			mark = None
+		try:
+			view = int(data.split("views=\"")[1].split("\"")[0])
+		except:
+			view = 0
+		return mark, view
