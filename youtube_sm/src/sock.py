@@ -116,11 +116,11 @@ def download_show_more(url, type_id=True):
 			return None, None
 		return linfo, next_link
 
-def download_http(url):
+def download_http(url, host='youtube.com'):
 	data = b''
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	sock.connect(("youtube.com", 80))
-	sock.send(b"GET " + url + b" HTTP/1.0\r\nHost: www.youtube.com\r\n\r\n")
+	sock.connect((host, 80))
+	sock.send(b"GET " + url + b" HTTP/1.0\r\nHost: www." + host.encode() + b"\r\n\r\n")
 	while True:
 		raw_data = sock.recv(1024)
 		if raw_data == b"":

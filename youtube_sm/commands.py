@@ -75,6 +75,8 @@ def main():
 	all_time = False
 	output = ''
 	sub_file = 'subscription_manager'
+	site = 'youtube'
+	add = False
 	# Path of the cache
 	if os.name == 'nt':
 		path = os.path.expanduser('~') + '/.youtube_sm/'
@@ -116,7 +118,7 @@ Options:
    --ultra-html           Recover all the videos with the common page and the button 'load more'
    --output [file]        Choose the name of the output file
    --cat                  View your subscriptions
-   --css  [mode]          Import the css files (light, dark, switch)
+   --css  [style]         Import the css files (light, dark, switch)
    --loading              Prints a progress bar while running
 """, end='')
 	else:
@@ -161,10 +163,11 @@ Options:
 					else:
 						exit('[!] File not found')
 				elif sys.argv[arg] == '-a':
-					if sys.argv[arg + 1][:2] in ['UC', 'PL']:
-						add_sub([sys.argv[arg + 1]], path)
+					if len(sys.argv) != arg + 1:
+						sub_to_add = sys.arv[arg + 1]
+						add = True
 					else:
-						print('[!] Id is not available')
+						exit('[!] You Forgot An Argument (-a)')
 				elif sys.argv[arg] == '-l':
 					analyze = True
 					analyze_only_one = True
@@ -202,6 +205,11 @@ Options:
 						add_sub(open(sys.argv[arg + 1], 'r').read().split('\n'), path)
 					else:
 						exit('[!] File not found')
+				elif sys.argv[arg] == '--site':
+					if len(sys.argv) != arg + 1:
+						site = sys.argv[arg+1]
+					else:
+						exit('[!] You Forgot An Argument (--site)')
 				elif sys.argv[arg] == '--ax':
 					if os.path.exists(sys.argv[arg + 1]):
 						generate_swy(sys.argv[arg + 1], path)
@@ -267,3 +275,5 @@ Options:
 		nb_new = Run_analyze(url_data, output, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, file, method)
 		file.sort_file(count)
 		open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + time.strftime("    %H%M") + '\n')
+	elif add:
+		sub_add(sub_to_add, site)

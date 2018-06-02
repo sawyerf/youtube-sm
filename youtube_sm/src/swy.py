@@ -10,11 +10,11 @@ def generate_swy(sub_file, path=''):
 		exit('[!] File not found (' + sub_file + ')')
 	liste = data.split('<outline')
 	del liste[:2]
+	open(path + 'sub.swy', 'a', encoding='utf8').write('[v][2.0]\n[site][youtube]')
 	for i in liste:
 		channel = i.split('title="')[1].split('"')[0]
 		id_chnl = i.split('xmlUrl="')[1].split('"')[0].replace('https://www.youtube.com/feeds/videos.xml?channel_id=', '')
 		open(path + 'sub.swy', 'a', encoding='utf8').write('{}\t{}\n'.format(id_chnl, channel))
-
 
 def add_sub(subs, path=''):
 	"""Add a list of subs in sub.swy"""
@@ -32,22 +32,35 @@ def add_sub(subs, path=''):
 		except:
 			pass
 
+def convert_v1_to_v2(sub_file):
+	"""The sub.swy have evolve and is no more compatible so 
+	this function can convert the sub.swy"""
+	data = open(sub_file, 'rb').read().decode('utf8')
+	open(sub_file, 'w', encoding='utf8').write('[v][2.0]\n[site][youtube]\n' + data)
+
 def swy(sub_file='subscription_manager', path='', liste=True):
 	"""Generate a list of subs which are append in sub.swy and return"""
 	if not exists(path + 'sub.swy'):
 		generate_swy(sub_file, path)
-	data_sub = open(path + 'sub.swy', 'rb').read().decode("utf8").split('\n')
+	urls = dict()
+	data_sub = open(path + 'sub.swy', 'rb').read().decode("utf8").split('[site]')
+	if not '[v][' in data_sub[0]:
+		convert_v1_to_v2(path + 'sub.swy')
+	del data_sub[0]
 	if liste:
-		url_data = []
 		for i in data_sub:
-			url_data.append(i.split('\t')[0])
+			subs = i.split('\n')
+			urls[subs[0]] = []
+			for y in range(1, len(subs)):
+				if subs[y] == '':
+					continue
+				urls[subs[0]].append(subs[y].split('\t')[0])
 	else:
-		url_data = dict()
 		for i in data_sub:
-			ch = i.split('\t')
-			try:
-				url_data[ch[0]] = ch[1]
-			except:
-				pass
-	return url_data
-
+			subs = i.split('\n')
+			urls[subs[0]] = dict()
+			for y in range(1, len(subs)):
+				if subs[y] == '':
+					continue
+				urls[subs[0]][subs[y].split('\t')[0]] = subs[y].split('\t')[1]
+	return urls

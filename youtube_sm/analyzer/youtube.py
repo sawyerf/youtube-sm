@@ -40,60 +40,6 @@ class Youtube_Analyzer(Thread):
 		if self.prog != None:
 			self.prog.add()
 
-	def _type_id(self):
-		return type_id(self.id)
-
-	def _complet_url_channel(self, url_channel):
-		if url_channel[:2] == 'UC':
-			url_channel = 'https://youtube.com/channel/' + url_channel
-		elif url_channel[:8] == 'results?':
-			url_channel = 'https://youtube.com/' + url_channel
-		else:
-			url_channel = 'https://youtube.com/user/' + url_channel
-		return url_channel
-	def _download_page(self):
-		""" To download a page with the id of a channel/Playlist """
-		if self.method == '0':
-			return download_xml(self.id, self.type)
-		elif self.method == '1':
-			return download_html(self.id, self.type)
-		elif self.method == '2':
-			if self.type:
-				return download_html(self.id, self.type)
-			else:
-				linfo, self.next, self.len_play = download_html_playlist(self.id)
-				return linfo
-		else:
-			return None
-
-	def write(self):
-		"""Write the information in a file"""
-		if self.mode == 'html':
-			return self.file.write(
-				url='https://www.youtube.com/watch?v='+self.url,
-				title=self.title,
-				url_channel=self._complet_url_channel(self.url_channel),
-				url_img='https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url),
-				channel=self.channel,
-				date=self.date,
-				data_file=self.data_file)
-		elif self.mode == 'raw':
-			return self.file.write(
-				url=self.url,
-				title=self.title,
-				url_channel=self.url_channel,
-				channel=self.channel,
-				date=self.date,
-				data_file=self.data_file,
-				type_id=self.type)
-		elif self.mode == 'list':
-			return self.file.write(
-				url='https://www.youtube.com/watch?v='+self.url,
-				data_file=self.data_file,
-				type_id=self.type)
-		elif self.mode == 'view':
-			return self.file.write(view=self.view)
-
 	def analyzer_sub(self):
 		"""Recover all the videos of a channel or a playlist
 		and add the informations in $HOME/.cache/youtube_sm/data/."""
@@ -142,6 +88,49 @@ class Youtube_Analyzer(Thread):
 				self.show_more()
 			else:
 				self.show_more()
+
+	def _download_page(self):
+		""" To download a page with the id of a channel/Playlist """
+		if self.method == '0':
+			return download_xml(self.id, self.type)
+		elif self.method == '1':
+			return download_html(self.id, self.type)
+		elif self.method == '2':
+			if self.type:
+				return download_html(self.id, self.type)
+			else:
+				linfo, self.next, self.len_play = download_html_playlist(self.id)
+				return linfo
+		else:
+			return None
+
+	def write(self):
+		"""Write the information in a file"""
+		if self.mode == 'html':
+			return self.file.write(
+				url='https://www.youtube.com/watch?v='+self.url,
+				title=self.title,
+				url_channel=self._complet_url_channel(self.url_channel),
+				url_img='https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url),
+				channel=self.channel,
+				date=self.date,
+				data_file=self.data_file)
+		elif self.mode == 'raw':
+			return self.file.write(
+				url=self.url,
+				title=self.title,
+				url_channel=self.url_channel,
+				channel=self.channel,
+				date=self.date,
+				data_file=self.data_file,
+				type_id=self.type)
+		elif self.mode == 'list':
+			return self.file.write(
+				url='https://www.youtube.com/watch?v='+self.url,
+				data_file=self.data_file,
+				type_id=self.type)
+		elif self.mode == 'view':
+			return self.file.write(view=self.view)
 
 	def show_more(self):
 		""" The continuation of analyzer_sub for the mode 'ultra-html' 
@@ -235,6 +224,18 @@ class Youtube_Analyzer(Thread):
 				raise Exception('[*] The mode view don\' work with playlist')
 			else:
 				raise Exception('[*] You don\'t specify the mode')
+
+	def _type_id(self):
+		return type_id(self.id)
+
+	def _complet_url_channel(self, url_channel):
+		if url_channel[:2] == 'UC':
+			url_channel = 'https://youtube.com/channel/' + url_channel
+		elif url_channel[:8] == 'results?':
+			url_channel = 'https://youtube.com/' + url_channel
+		else:
+			url_channel = 'https://youtube.com/user/' + url_channel
+		return url_channel
 
 	def date_convert(self):
 		""" Convert the date which are recover in the html page

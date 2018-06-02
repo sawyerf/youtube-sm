@@ -58,7 +58,7 @@ youtube-sm [OPTIONS]
 --ultra-html           Recover all the videos with the common page and the button 'load more'
 --output [file]        Choose the name of the output file
 --cat                  View your subscriptions
---css  [mode]          Import the css files (light, dark, switch)
+--css  [style]         Import the css files (light, dark, switch)
 --loading              Prints a progress bar while running
 ```
 
