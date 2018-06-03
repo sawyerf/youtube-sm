@@ -137,13 +137,11 @@ class Youtube_Analyzer(Thread):
 				url_channel=self.url_channel,
 				channel=self.channel,
 				date=self.date,
-				data_file=self.data_file,
-				type_id=self.type)
+				data_file=self.data_file)
 		elif self.mode == 'list':
 			return self.file.write(
 				url='https://www.youtube.com/watch?v='+self.url,
-				data_file=self.data_file,
-				type_id=self.type)
+				data_file=self.data_file)
 		elif self.mode == 'view':
 			return self.file.write(view=self.view)
 
@@ -194,7 +192,7 @@ class Youtube_Analyzer(Thread):
 		self.title = re.findall(r'ltr"\ title="(.+?)"', i)[0]
 		self.date = re.findall(r'/li\\u003e\\u003cli\\u003e(.*)\\u003c\\/li', i)[0]
 		self.view = re.findall(r'class="yt-lockup-meta-info"\\u003e\\u003cli\\u003e(.+?) views', i)[0].replace(',', '')
-		self.data_file = [self.date_convert(), 'no_hour']
+		self.data_file = [self.date_convert(), '000000']
 
 	def info_html(self, i):
 		"""Recover the informations of the html page"""
@@ -204,13 +202,13 @@ class Youtube_Analyzer(Thread):
 			self.title = re.findall(r'dir="ltr" title="(.+?)"', i)[0]
 			self.date = re.findall(r'</li><li>(.+?)</li>', i)[0]
 			self.view = re.findall(r'class="yt-lockup-meta-info"><li>(.+?)\ views', i)[0].replace(',', '')
-			self.data_file = [self.date_convert(), 'no_hour']
+			self.data_file = [self.date_convert(), '000000']
 		else: #Playlist
 			self.url = re.findall(r'data-video-id="(.{11})"', i)[0]
 			self.title = re.findall(r'data-video-title="(.+?)"', i)[0]
 			self.channel = re.findall(r'data-video-username="(.+?)"', i)[0]
 			self.url_channel = 'results?sp=EgIQAkIECAESAA%253D%253D&search_query=' + self.channel.replace(' ', '+')
-			self.data_file = ['Playlist', self.id]
+			self.data_file = ['0000000000', '000000']
 
 	def info_rss(self, i):
 		"""Recover the informations of a rss page"""

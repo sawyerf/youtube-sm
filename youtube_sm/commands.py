@@ -166,7 +166,6 @@ Options:
 						exit('[!] You forgot an argument after -l')
 					else:
 						url_data = {sys.argv[arg+1]: [sys.argv[arg+2]]}
-						print(url_data)
 				elif sys.argv[arg] == '-r':
 					del_data(path, True)
 				elif sys.argv[arg] == '-s':

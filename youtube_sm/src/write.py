@@ -22,14 +22,14 @@ class Write_file():
 		self.method = method
 		self.path_cache = path_cache # The path where the data and the sub are stock
 
-	def write(self, url='', title='', url_channel='', url_img='', channel='', date='', data_file='', view='', type_id=''):
+	def write(self, url='', title='', url_channel='', url_img='', channel='', date='', data_file='', view=''):
 		"""Write the information in a file"""
 		if self.mode == 'html':
 			return self.generate_data_html(url, title, url_channel, url_img, channel, date, data_file)
 		elif self.mode == 'raw':
-			return self.append_raw(url, title, url_channel, url_img, channel, date, data_file, type_id)
+			return self.append_raw(url, title, url_channel, url_img, channel, date, data_file)
 		elif self.mode == 'list':
-			return self.append_list(url, data_file, type_id)
+			return self.append_list(url, data_file)
 		elif self.mode == 'view':
 			return self.append_view(view)
 
@@ -53,39 +53,26 @@ class Write_file():
 		<script type="text/javascript" src="css/button.js"></script>
 		""")
 
-	def append_raw(self, url, title, url_channel, url_img, channel, date, data_file, type_id):
+	def append_raw(self, url, title, url_channel, url_img, channel, date, data_file):
 		"""Append the informations wich are been recover 
 		in the file 'sub_raw'."""
-		if self.method == '0':
-			var = data_file[0] + data_file[1].replace(':', '') + '\t' + date + '\t' + url + '\t' + url_channel + '\t' + title + '\t' + channel + '\t' + url_img + '\n'
-			if len(var) > 350:
-				return False
-			open(self.output, 'a', encoding='utf8').write(var)
-		elif self.method == '1' or self.method == '2':
-			if type_id == True:
-				var = data_file[0] + '000000' + '\t' + url + '\t' + url_channel + '\t' + title + '\t' + channel + '\t' + url_img + '\n'
-			else:
-				var = '00000000000000' + '\t' + url + '\t' + url_channel + '\t' + title + '\t' + channel + '\t' + url_img + '\n'
-			if len(var) > 350:
-				return False
-			open(self.output, 'a', encoding='utf8').write(var)
+		var = data_file[0] + data_file[1].replace(':', '') + '\t' + date + '\t' + url + '\t' + url_channel + '\t' + title + '\t' + channel + '\t' + url_img
+		if '\n' in var:
+			return False
+		open(self.output, 'a', encoding='utf8').write(var + '\n')
 		var = ""
 		return True
 
-	def append_list(self, url, data_file, type_id):
+	def append_list(self, url, data_file):
 		""""Append the informations wich are been recover
 		in the file 'sub_raw'. The date is add to sort the
 		videos, but it's deleted"""
-		if len(url) != 43:
+		var = data_file[0] + data_file[1].replace(':', '') + ' ' + url
+		if not '\n' in var:
+			open(self.output, 'a', encoding='utf8').write(var + '\n')
+			return True
+		else:
 			return False
-		if self.method == '0':
-			open(self.output, 'a', encoding='utf8').write(data_file[0] + data_file[1].replace(':', '') + ' ' + url + '\n')
-		elif self.method == '1' or self.method == '2':
-			if type_id:
-				open(self.output, 'a', encoding='utf8').write(data_file[0] + '000000' + ' ' + url + '\n')
-			else:
-				open(self.output, 'a', encoding='utf8').write('00000000000000' + ' ' + url + '\n')
-		return True
 
 	def append_view(self, view):
 		""" Write the views in a file"""

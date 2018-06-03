@@ -73,13 +73,11 @@ class Dailymotion_Analyzer(Thread):
 				url_channel=self.url_channel,
 				channel=self.channel,
 				date=self.date,
-				data_file=self.data_file,
-				type_id=self.type)
+				data_file=self.data_file)
 		elif self.mode == 'list':
 			return self.file.write(
 				url=self.url,
-				data_file=self.data_file,
-				type_id=self.type)
+				data_file=self.data_file)
 		elif self.mode == 'view':
 			return self.file.write(view=self.view)
 
