@@ -1,6 +1,7 @@
 # Youtube_subscription_manager
 
-[![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)](http://pypi.python.org/pypi/youtube-sm/)
+
+[![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)](http://pypi.python.org/pypi/youtube-sm/) [![GitLab](https://sawyerf.github.io/youtube_sm/gitlab.jpg)](https://gitlab.com/sawyerf/Youtube_subscription_manager) 
 
 <p><img align='right' width=400px height=auto src='https://sawyerf.github.io/youtube_sm/binome.jpg' /></p>
 
@@ -32,10 +33,10 @@ It can gather informations about every video in a playlist, a channel or your su
 
 1. Download your subscriptions configuration from youtube.com ([here](https://www.youtube.com/subscription_manager?action_takeout=1))
 2. Once this is done, you may load it by using the following command :
-
 ```
 youtube-sm --init [file]
 ```
+
 3. Finally, you can start using the program using the commands shown below :
 ```
 youtube-sm [OPTIONS]
@@ -81,21 +82,25 @@ youtube-sm -t 30 --html --css --loading
 youtube-sm -l UC-lHJZR3Gqxm24_Vd_AJ5Yw -t -1 -m list --loading -r --output test.csv
 ```
 
+- Add a sub
+```
+youtube-sm -a [youtube] UC-lHJZR3Gqxm24_Vd_AJ5Yw
+```
+
 ## Type of File
-- raw :
+#### Raw :
 ```
 {date}     {video_id}     {channel_id}     {title}     {channel}     {link_pic}
 ```
-- list :
+#### List :
 ```
 https://www.youtube.com/watch?v={video_id}
 ```
-- view :
+#### View :
 ```
 {views}
 ```
-
-- html :
+#### Html :
 ```
 <!--NEXT -->
 <div class="video">
