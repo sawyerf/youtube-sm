@@ -66,6 +66,16 @@ class Dailymotion_Analyzer(Thread):
 				channel=self.channel,
 				date=self.date,
 				data_file=self.data_file)
+		elif self.mode == 'json':
+			return self.file.write(
+				title=self.title,
+				url=self.url,
+				url_channel=self.url_channel,
+				channel=self.channel,
+				date=self.date,
+				url_img=elf.url_img,
+				view=self.view,
+				data_file=self.data_file)
 		elif self.mode == 'raw':
 			return self.file.write(
 				url=self.url,

@@ -16,6 +16,8 @@ class Write_file():
 				self.output = 'sub_raw'
 			elif mode == 'view':
 				self.output = 'sub_view'
+			elif mode == 'json':
+				self.output = 'sub.json'
 			else:
 				self.output = 'sub'
 		self.mode = mode
@@ -25,21 +27,30 @@ class Write_file():
 	def write(self, url='', title='', url_channel='', url_img='', channel='', date='', data_file='', view=''):
 		"""Write the information in a file"""
 		if self.mode == 'html':
-			return self.generate_data_html(url, title, url_channel, url_img, channel, date, data_file)
+			return self.append_html(url, title, url_channel, url_img, channel, date, data_file)
 		elif self.mode == 'raw':
 			return self.append_raw(url, title, url_channel, url_img, channel, date, data_file)
 		elif self.mode == 'list':
 			return self.append_list(url, data_file)
 		elif self.mode == 'view':
 			return self.append_view(view)
+		elif self.mode == 'json':
+			return self.append_json(title, url, url_channel, channel, date, url_img, view, data_file)
+
+	def json_init(self):
+		try:
+			os.makedirs(self.path_cache + 'data/' + self.mode + '/' + self.method)
+		except:
+			pass
+		open(self.output, 'w', encoding='utf8').write('{\n"items" : [\n')
 
 	def html_init(self):
 		"""To init the html file"""
 		try:
-			os.mkdir(self.path_cache + 'data/' + self.method)
+			os.makedirs(self.path_cache + 'data/' + self.mode + '/' + self.method)
 		except:
 			pass
-		open(self.output, 'w').write("""<html>
+		open(self.output, 'w', encoding='utf8').write("""<html>
 	<head>
 		<meta charset="utf-8" />
 		<link rel="stylesheet" href="css/sub.css" />
@@ -56,7 +67,7 @@ class Write_file():
 	def append_raw(self, url, title, url_channel, url_img, channel, date, data_file):
 		"""Append the informations wich are been recover 
 		in the file 'sub_raw'."""
-		var = data_file[0] + data_file[1].replace(':', '') + '\t' + date + '\t' + url + '\t' + url_channel + '\t' + title + '\t' + channel + '\t' + url_img
+		var = data_file[0] + data_file[1] + '\t' + date + '\t' + url + '\t' + url_channel + '\t' + title + '\t' + channel + '\t' + url_img
 		if '\n' in var:
 			return False
 		open(self.output, 'a', encoding='utf8').write(var + '\n')
@@ -67,7 +78,7 @@ class Write_file():
 		""""Append the informations wich are been recover
 		in the file 'sub_raw'. The date is add to sort the
 		videos, but it's deleted"""
-		var = data_file[0] + data_file[1].replace(':', '') + ' ' + url
+		var = data_file[0] + data_file[1] + ' ' + url
 		if not '\n' in var:
 			open(self.output, 'a', encoding='utf8').write(var + '\n')
 			return True
@@ -79,41 +90,66 @@ class Write_file():
 		if view != None:
 			open(self.output, 'a', encoding='utf8').write(view + '\n')
 
-	def generate_data_html(self, url, title, url_channel, url_img,  channel, date, data_file):
+	def append_html(self, url, title, url_channel, url_img,  channel, date, data_file):
 		"""Append the informations wich are been recover
 		in a file in '.../data/[date]/.' """
 		try:
-			data = open('{}data/{}/{}/{}'.format(self.path_cache, self.method, data_file[0], data_file[1].replace(':', '')), 'rb+').read().decode("utf8")
+			data = open(self.path_c(data_file, False), 'rb+').read().decode("utf8")
 			if url in data:
 				return False
 		except:
 			try:
-				os.mkdir(self.path_cache + 'data/' + self.method + '/' + data_file[0])
+				os.mkdir(self.path_c(data_file, True))
 			except:
 				pass
-		open('{}data/{}/{}/{}'.format(self.path_cache, self.method, data_file[0], data_file[1].replace(':', '')), 'a', encoding='utf-8').write("""<!--NEXT -->
+		open(self.path_c(data_file, False), 'a', encoding='utf-8').write("""<!--NEXT -->
 		<div class="video">
 			<a class="left" href="{}"> <img src="{}" ></a>
 			<a href="{}"><h4>{}</h4> </a>
 			<a href="{}"> <p>{}</p> </a>
 			<p>{}</p>
 			<p class="clear"></p>
-		</div>
-""".format(url, url_img, url, title, url_channel, channel, date))
+		</div>\n""".format(url, url_img, url, title, url_channel, channel, date))
 		return True
+
+	def append_json(self, title, url, url_channel, channel, date, url_img, view, data_file):
+		try:
+			data = open(self.path_c(data_file, False), 'rb+').read().decode("utf8")
+			if url in data:
+				return False
+		except:
+			try:
+				os.mkdir(self.path_c(data_file, True))
+			except:
+				pass
+		open(self.path_c(data_file, False), 'a', encoding='utf8').write("{" + """
+	"title": "{}",
+	"id": "{}",
+	"idChannel": "{}",
+	"uploader": "{}",
+	"uploaded": "{}",
+	"image": "{}",
+	"views": "{}"\n""".format(title, url, url_channel, channel, date, url_img, view) + "}\n")
+
+	def path_c(self, data_file, folder=True):
+		if folder:
+			return '{}data/{}/{}/{}/'.format(self.path_cache, self.mode, self.method, data_file[0])
+		else:
+			return '{}data/{}/{}/{}/{}'.format(self.path_cache, self.mode, self.method, data_file[0], data_file[1])
 
 	def sort_file(self, count=7):
 		""" To sort the videos by date or add the videos in the file"""
-		if self.mode == 'html':
-			self.html_end(count)
+		if self.mode == 'html' or self.mode == 'json':
+			self.html_json_end(count)
 		elif self.mode == 'list' or self.mode == 'raw':
 			self.raw_list_end(count)
 
-	def html_end(self, count=7, play=True):
+	def html_json_end(self, count=7, play=True):
 		"""Recover the file in '.../data/.' with all the
 		informations, sort by date and add the informations
 		in './sub.html'. """
-		fch = sorted(os.listdir(self.path_cache + 'data/' + self.method + '/'))
+		first = True
+		fch = sorted(os.listdir(self.path_cache + 'data/' + self.mode + '/' + self.method + '/'))
 		if len(fch) < count:
 			date = 0
 		elif count == -1:
@@ -134,12 +170,19 @@ class Write_file():
 				else:
 					continue
 			if folder_date > date:
-				fch_in = sorted(os.listdir(self.path_cache + 'data/' + self.method + '/' + fch[-1-i]))
+				fch_in = sorted(os.listdir(self.path_cache + 'data/' + self.mode + '/' + self.method + '/' + fch[-1-i]))
 				for a in range(len(fch_in)):
-					data = open(self.path_cache + 'data/' + self.method + '/' + fch[-1-i] + '/' + fch_in[-1-a], 'r', encoding='utf-8').read()
+					data = open(self.path_cache + 'data/' + self.mode + '/' + self.method + '/' + fch[-1-i] + '/' + fch_in[-1-a], 'r', encoding='utf-8').read()
+					if first == False and self.mode == 'json':
+						sub_file.write(',')
+					else:
+						first = False
 					sub_file.write(data)
 		sub_file.close()
-		open(self.output, 'a').write('</body></html>')
+		if self.mode == 'html':
+			open(self.output, 'a').write('</body></html>')
+		elif self.mode == 'json':
+			open(self.output, 'a').write(']}')
 
 	def raw_list_end(self, count=7):
 		"""Sorted the videos by date"""

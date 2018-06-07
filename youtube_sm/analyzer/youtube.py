@@ -27,7 +27,7 @@ class Youtube_Analyzer(Thread):
 		self.title = ""
 		self.channel = ""
 		self.date = ""
-		self.data_file = "" #The name of the file where stock the informations in data
+		self.data_file = [] #The name of the file where stock the informations in data
 		# Function
 		self.prog = prog # True --> loading / False --> no loading
 		self.file = file
@@ -130,6 +130,16 @@ class Youtube_Analyzer(Thread):
 				channel=self.channel,
 				date=self.date,
 				data_file=self.data_file)
+		elif self.mode == 'json':
+			return self.file.write(
+				title=self.title,
+				url=self.url,
+				url_channel=self.url_channel,
+				channel=self.channel,
+				date=self.date,
+				url_img='https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url),
+				view=self.view,
+				data_file=self.data_file)
 		elif self.mode == 'raw':
 			return self.file.write(
 				url=self.url,
@@ -216,7 +226,7 @@ class Youtube_Analyzer(Thread):
 		self.url_channel = re.findall(r'<yt:channelId>(.*)</yt:channelId>', i)[0]
 		self.title = re.findall(r'<media:title>(.*)</media:title>', i)[0]
 		self.channel = re.findall(r'<name>(.*)</name>', i)[0]
-		self.data_file = re.findall(r'<published>(.*)\+', i)[0].split('T')
+		self.data_file = re.findall(r'<published>(.*)\+', i)[0].replace(':', '').split('T')
 		self.date = self.data_file[0]
 		self.view = re.findall(r'views="(.+?)"', i)[0].replace(',', '')
 		self.data_file[0] = self.data_file[0].replace('-', '')

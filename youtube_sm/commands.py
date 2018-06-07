@@ -63,6 +63,12 @@ def write_css(arg):
 	open('css/sub.css', 'a').write('.left { float: left; }\n.clear { clear: both; }\n* { font-family: Arial;}\n\nbody {\n	margin: 0 0 0 0;\n	background-color: var(--Back);}\n\n.But {\n	width: 100%;\n	position: fixed;}\n\n#but {\n	-webkit-appearance: none;\n	border: none;\n	background-color: var(--ColorBut);\n	width: 100%;\n	height: var(--HeightBut); }\n\n#first{\n	margin: 0 27% 0 27%;\n	height: var(--HeightBut); }\n\ndiv.video:hover{ \n	background-color: var(--DivHover); }\n\ndiv.video {\n	background-color: var(--Div);\n	margin: 5px 27% 5px 27%; }\n\nimg {\n	width: 280px;\n	height: 157px;\n	margin-right: 5px; }\n\nh4 {\n	color: var(--ColorH4);\n	line-height: 18px;\n	font-size: 18px;\n	margin: 0px 0px -5px 0px; }\n\np {\n	color: var(--ColorP);\n	line-height: 7px; }\n\na{\n	text-decoration: none;\n	color: black; }\n')
 	open('css/sub_mobile.css', 'w').write('.left { float:left; }\n.clear { clear: both; }\n* { font-family: Arial; }\n\n\n#But{\n	margin: 0 0 0 0;\n	position: fixed;\n	width: 100%;\n}\n\n#but {\n	height: var(--HeightButMob);\n	margin: 0 0 0 0;}\n\n#first{\n	margin: 0 0 0 0;\n	width: 100%;\n	height: var(--HeightButMob);\n}\ndiv.video {\n	margin-left: 0%;\n	margin-right: 0%;\n	margin: 10px 10px 10px 10px; }\n\nimg {\n	width: 380px;\n	height: 214px; }\n\nh4 {\n	line-height: 30px;\n	font-size: 30px;\n	margin: 0px 0px -10px 0px; }\n\np {\n	color: grey;\n	line-height: 5px;\n	font-size: 1.9em; }\n\na {\n	text-decoration: none;\n	color: black; }\n')
 
+def write_log(arg, path, passe):
+	var = ''
+	for i in arg:
+		var += i + ' '
+	open(path + 'log', 'a', encoding='utf8').write(time.strftime("%H%M") + '\t' + str(time.time() - passe)[:4] + '\t' + var + '\n')
+
 def main():
 	# Init variable
 	url_data = []
@@ -95,13 +101,13 @@ def main():
 		file.html_init()
 		Run_analyze(url_data, 'sub.html', lcl_time(), path, 'html', False, file, '0')
 		file.html_end()
-		open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + time.strftime("%H%M") + '\n')
+		write_log(sys.argv, path, passe)
 	elif sys.argv == ['-h'] or sys.argv == ['--help']:
 		print("""Usage: youtube-sm [OPTIONS]
 
 Options:
    -h                     Print this help text and exit
-   -m     [mode]          Choose the type of the output (html, raw, list, view)
+   -m     [mode]          Choose the type of the output (html, json, raw, list, view)
    -t     [nb of days]    Choose how far in the past do you want the program to look for videos
    -d                     Show the dead channels + those who posted no videos
    -o     [nb of months]  Show the channels who didn't post videos in [nb of months] + dead channels
@@ -141,7 +147,7 @@ Options:
 					dead(url_data)
 				elif sys.argv[arg] == '-m':
 					analyze = True
-					if sys.argv[arg + 1] in ['html', 'raw', 'list', 'view']:
+					if sys.argv[arg + 1] in ['html', 'raw', 'list', 'view', 'json']:
 						mode = sys.argv[arg + 1]
 					else:
 						exit('[!] Mode file invalid')
@@ -249,12 +255,16 @@ Options:
 				output = 'sub_list'
 			elif mode == 'raw':
 				output = 'sub_raw'
+			elif mode == 'json':
+				output = 'sub.json'
 		file = Write_file(output, path, mode, method)
 		if mode == 'html':
 			file.html_init()
-		elif mode == 'raw' or mode == 'list' or mode == 'view':
+		elif mode == 'json':
+			file.json_init()
+		elif mode in ['list', 'raw', 'view']:
 			if os.path.exists(output):
-				os.remove(output)		
+				os.remove(output)
 		nb_new = Run_analyze(url_data, output, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, file, method)
 		file.sort_file(count)
-		open(path + 'log', 'a').write(str(time.time() - passe) + '\t' + time.strftime("    %H%M") + '\n')
+		write_log(sys.argv, path, passe)

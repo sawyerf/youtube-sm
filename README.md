@@ -46,7 +46,7 @@ youtube-sm [OPTIONS]
 
 ```
 -h                     Print the help text and exit
--m     [mode]          Choose the type of the output (html, raw, list, view)
+-m     [mode]          Choose the type of the output (html, json, raw, list, view)
 -t     [nb of days]    Choose how far in the past do you want the program to look for videos
 -d                     Show the dead channels + those who posted no videos
 -o     [nb of months]  Show the channels who didn't post videos in [nb of months] + dead channels
@@ -100,8 +100,20 @@ https://www.youtube.com/watch?v={video_id}
 ```
 {views}
 ```
-#### Html :
+#### Json :
+```json
+{
+	"title": "{title}",
+	"id": "{video_id}",
+	"idChannel": "{channel_id}",
+	"uploader": "{channel}",
+	"uploaded": "{date}",
+	"image": "{link_pic}",
+	"views": "{views}"
+}
 ```
+#### Html :
+```html
 <!--NEXT -->
 <div class="video">
 	<a class="left" href="https://www.youtube.com/watch?v={video_id}"> <img src="{link_pic}" ></a>
