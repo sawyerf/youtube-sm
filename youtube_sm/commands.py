@@ -100,7 +100,7 @@ def main():
 		file = Write_file('sub.html', path, 'html', '0')
 		file.html_init()
 		Run_analyze(url_data, 'sub.html', lcl_time(), path, 'html', False, file, '0')
-		file.html_end()
+		file.html_json_end()
 		write_log(sys.argv, path, passe)
 	elif sys.argv == ['-h'] or sys.argv == ['--help']:
 		print("""Usage: youtube-sm [OPTIONS]
