@@ -48,7 +48,8 @@ def init_command(path, arg):
 		else:
 			exit('[!] File Not Found (subscription_manager)')
 	print('[*] Subs append to sub.swy')
-	exit('[*] Done')
+	print('[*] Done')
+	exit(0)
 
 def write_css(arg):
 	if arg == '' or arg == 'light' or arg[0] == '-':
