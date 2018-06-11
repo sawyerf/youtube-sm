@@ -1,9 +1,9 @@
 # Youtube_subscription_manager
 
 
-[![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)](http://pypi.python.org/pypi/youtube-sm/) [![GitLab](https://sawyerf.github.io/youtube_sm/gitlab.jpg)](https://gitlab.com/sawyerf/Youtube_subscription_manager) 
+[![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)](http://pypi.python.org/pypi/youtube-sm/) [![example](https://sawyerf.gitlab.io/youtube_sm/exampleshield.svg)](https://sawyerf.gitlab.io/youtube_sm/example.html) [![GitLab](https://sawyerf.gitlab.io/youtube_sm/gitlab.jpg)](https://gitlab.com/sawyerf/Youtube_subscription_manager) 
 
-<p><img align='right' width=400px height=auto src='https://sawyerf.github.io/youtube_sm/binome.jpg' /></p>
+<p><img align='right' width=400px height=auto src='https://sawyerf.gitlab.io/youtube_sm/binome.jpg' /></p>
 
 - [Description](#description)
 - [Installation](#installation)
@@ -18,13 +18,12 @@
 - [Screenshots](#screenshots)
 
 ## Description
-Youtube_subscription_manager is an alternative to youtube.com to recover your subscriptions without requires an account
-*(You can also recover the videos of other platform).*
+Youtube_subscription_manager is an alternative to youtube.com to retrieve the videos of your subscriptions feed without requires an account *(You can also recover the videos of other platform).*
 
-It can gather informations about every video in a playlist, a channel or your subsciption feed and outputs it as a html page, a detailed list or a list of links.
+It can gather informations about every video in a playlist, a channel or your subsciptions feed and outputs it as a html page, a detailed list or a list of links.
 
 ## Installation
-1. Clone the project: `git clone https://github.com/sawyerf/Youtube_suscription_manager.git`
+1. Clone the project: `git clone https://gitlab.com/sawyerf/Youtube_suscription_manager.git`
 2. Open the folder you just cloned : `cd Youtube_subscription_manager`
 3. Execute the setup: `sudo python3 setup.py install`
 4. Recover your subscription file in youtube and you are ready to go !
@@ -163,5 +162,5 @@ is more adapted to recover all the videos of a playlist or to recover its last 3
 - MacOS
 
 ## Screenshots
-<a href="https://sawyerf.github.io/youtube_sm/example.html"><img src="https://sawyerf.github.io/youtube_sm/sub_mob.jpg" alt="Phone screen" width=405px height=720px>
-<img src="https://sawyerf.github.io/youtube_sm/sub_pc.jpg" alt="PC screen" width=100% height=auto></a>
+<a href="https://sawyerf.gitlab.io/youtube_sm/example.html"><img src="https://sawyerf.gitlab.io/youtube_sm/sub_mob.jpg" alt="Phone screen" width=405px height=720px>
+<img src="https://sawyerf.gitlab.io/youtube_sm/sub_pc.jpg" alt="PC screen" width=100% height=auto></a>
