@@ -7,8 +7,8 @@ test:
         - python3 setup.py install
         - youtube-sm --init subscription_manager
         - youtube-sm
-        - youtube-sm -html -l UC-lHJZR3Gqxm24_Vd_AJ5Yw -m html -t 1 --ouput lol.html -r 
-        - youtube-sm --ultra -html UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list --ouput -t 1 -r
+        - youtube-sm --html -l [youtube] UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list -t -1 --output lol.html -r
+        - youtube-sm --ultra-html -l [youtube] UCEcNXmr7DYq1XxpWHSxaN0w -m raw -t -1 -r
         only:
         - master
 
