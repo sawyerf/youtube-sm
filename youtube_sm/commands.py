@@ -10,7 +10,8 @@ from .src.swy import (
 	add_sub)
 from .src.tools import (
 	del_data,
-	check_id)
+	check_id,
+	print_debug)
 from .src.time import lcl_time
 
 
@@ -84,15 +85,17 @@ def main():
 	sub_file = 'subscription_manager'
 	site = 'youtube'
 	# Path of the cache
+	print_debug('[*] Hello :)')
 	if os.name == 'nt':
 		path = os.path.expanduser('~') + '/.youtube_sm/'
 	else:
 		if os.uname().sysname == 'Linux' or os.uname().sysname == 'Darwin':
 			path = os.environ['HOME'] + '/.cache/youtube_sm/'
+	print_debug('[*] Path: {}'.format(path))
 	try:
 		os.makedirs(path + 'data/')
 	except:
-		pass
+		print_debug('[!] Data already exist or can\'t be create')
 	# Commands
 	del sys.argv[0]
 	if sys.argv==[]: # Default command
@@ -124,6 +127,7 @@ Options:
    --output [file]        Choose the name of the output file
    --cat                  View your subscriptions
    --css  [style]         Import the css files (light, dark, switch)
+   --debug                Print errors and progress
    --loading              Prints a progress bar while running
 """, end='')
 	else:
@@ -223,7 +227,7 @@ Options:
 					try:
 						os.mkdir('css')
 					except:
-						pass
+						print_debug('[!] CSS folder already exist or can\'t be created')
 					if len(sys.argv) != arg + 1:
 						write_css(sys.argv[arg+1])
 					else:
@@ -243,6 +247,8 @@ Options:
 					analyze = True
 				elif sys.argv[arg] == '--help':
 					exit("[!] -h don't work with other options")
+				elif sys.argv[arg] == '--debug':
+					pass
 				else:
 					exit("[!] No such option: {}".format(sys.argv[arg]))
 	if analyze:
@@ -269,3 +275,5 @@ Options:
 		nb_new = Run_analyze(url_data, output, lcl_time(int(count/30+(30-count%30)/30), all_time), path, mode, loading, file, method)
 		file.sort_file(count)
 		write_log(sys.argv, path, passe)
+	print_debug('[*] Done')
+

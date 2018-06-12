@@ -1,10 +1,11 @@
 from threading import Thread
 from ..analyzer.imports import return_Analyzer
 from .time import lcl_time
-from ..src.tools import (
+from .tools import (
 	Progress,
 	Progress_loop,
-	type_id)
+	type_id,
+	print_debug)
 
 
 def Run_analyze(urls, output, min_date, path='', mode='html', loading=False, file=None, method='0'):
@@ -29,6 +30,7 @@ def Run_analyze(urls, output, min_date, path='', mode='html', loading=False, fil
 	elif method == '2':
 		max_thr = 5
 	# Run threads
+	print_debug('[*] Start threads')
 	for site in urls:
 		analyzer = return_Analyzer(site)
 		if analyzer == None:
@@ -50,6 +52,7 @@ def Run_analyze(urls, output, min_date, path='', mode='html', loading=False, fil
 def old(subs, min_tps=12):
 	lcl = lcl_time(min_tps)
 	threads = []
+	print_debug('[*] Start threads')
 	for site in subs:
 		analyzer = return_Analyzer(site)()
 		for url in subs[site]:
@@ -61,6 +64,7 @@ def old(subs, min_tps=12):
 
 def dead(subs):
 	threads = []
+	print_debug('[*] Start threads')
 	for site in subs:
 		analyzer = return_Analyzer(site)()
 		for url in subs[site]:
@@ -72,6 +76,7 @@ def dead(subs):
 
 def stats(subs):
 	threads = []
+	print_debug('[*] Start threads')
 	for site in subs:
 		analyzer = return_Analyzer(site)()
 		for url in subs[site]:

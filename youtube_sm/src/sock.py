@@ -2,6 +2,7 @@ import socket
 import ssl
 import time
 import re
+from .tools import print_debug
 
 def download_page(url_id, type_id=True, split=True, method='0'):
 	if method == '0':
@@ -25,6 +26,7 @@ def download_xml(url_id, type_id=True, split=True):
 		linfo = data.split("<entry>")
 		del linfo[0]
 		if linfo == []:
+			print_debug('[!] No videos ({})'.format(url_id))
 			return None
 		return linfo
 	else:
@@ -60,11 +62,13 @@ def download_html(url_id, type_id=True, split=True):
 		if type_id: #channel
 			linfo = data.split('<div class="yt-lockup-content">')
 			if len(linfo) <= 1:
+				print_debug('[!] No videos ({})'.format(url_id))
 				return None
 		else: #playlist
 			linfo = data.split('<li class="yt-uix-scroller-scroll-unit  vve-check"')
 			del linfo[0]
 			if linfo == []:
+				print_debug('[!] No videos ({})'.format(url_id))
 				return None
 		return linfo
 	else:
@@ -77,15 +81,17 @@ def download_html_playlist(url_id, split=True):
 	try:
 		len_play = int(re.findall(r'<span id="playlist-length">(.+?)videos</span>', data)[0])
 	except:
+		print_debug("[!] No video in the page ({})".format(url_id))
 		return None, None, None
 	linfo = data.split('<li class="yt-uix-scroller-scroll-unit  vve-check"')
 	del linfo[0]
 	if linfo == []:
+		print_debug("[!] No video in the page ({})".format(url_id))
 		return None, None, None
 	try:
 		next_link = '/watch?v=' + re.findall(r'<a href="/watch\?v=(.+?)"', linfo[-1])[0]
 	except:
-		return None, None, None
+		next_link = None
 	return linfo, next_link, len_play
 
 def download_show_more(url, type_id=True):
@@ -130,6 +136,7 @@ def download_http(url, host='youtube.com'):
 	try:
 		return data.decode('utf8')
 	except:
+		print_debug('[!] Can\'t decode data recv ({}{})'.format(host, url))
 		return None
 
 def download_https(url, host='youtube.com'):
@@ -142,6 +149,7 @@ def download_https(url, host='youtube.com'):
 		except OSError:
 			time.sleep(1)
 			if i == 4:
+				print_debug('[!] Can\'t start the ssl connection ({}{})'.format(host, url))
 				return None
 		else:
 			break
@@ -151,6 +159,7 @@ def download_https(url, host='youtube.com'):
 		try:
 			raw_data = ssock.recv(1000)
 		except ConnectionResetError:
+			print_debug('[!] Connection losted ({}{})'.format(host, url))
 			return None
 		except:
 			break
@@ -161,4 +170,5 @@ def download_https(url, host='youtube.com'):
 	try:
 		return data.decode('utf8')
 	except:
+		print_debug('[!] Can\'t decode data recv ({}{})'.format(host, url))
 		return None

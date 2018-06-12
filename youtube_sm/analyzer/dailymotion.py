@@ -1,7 +1,8 @@
 import re
+
 from time import strptime
 from threading import Thread
-
+from ..src.tools import print_debug
 from ..src.sock import download_xml_daily
 
 class Dailymotion_Analyzer(Thread):
@@ -29,7 +30,7 @@ class Dailymotion_Analyzer(Thread):
 		self.analyzer_sub()
 		if self.prog != None:
 			self.prog.add()
-	
+
 	def add_sub(self, sub):
 		data = download_xml_daily(sub, split=False)
 		if data == None:
@@ -45,7 +46,7 @@ class Dailymotion_Analyzer(Thread):
 				try:
 					self.info_recup_rss(i)
 				except:
-					continue
+					print_debug('[!] Error during the retrieve of the info ({})'.format(self.id))
 				else:
 					self.write()
 
@@ -73,7 +74,7 @@ class Dailymotion_Analyzer(Thread):
 				url_channel=self.url_channel,
 				channel=self.channel,
 				date=self.date,
-				url_img=elf.url_img,
+				url_img=self.url_img,
 				view=self.view,
 				data_file=self.data_file)
 		elif self.mode == 'raw':

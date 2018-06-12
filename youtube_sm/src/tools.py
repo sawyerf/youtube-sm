@@ -1,3 +1,5 @@
+import sys
+
 class Progress():
 	"""Print a progress bar"""
 	def __init__(self, xmax=0):
@@ -28,7 +30,7 @@ class Progress_loop():
 		self.bar = '          '
 		self.xmin = None
 		self.xmax = None
-		
+
 	def add(self):
 		self.x += 1
 		self.progress_bar()
@@ -36,7 +38,6 @@ class Progress_loop():
 	def progress_bar(self):
 		self.x = self.x % 10
 		print('|{}{}{}|'.format(self.bar[:self.x], '█', self.bar[self.x + 1:]), end='\r')
-
 
 def type_id(id):
 	"""True = Channel; False = Playlist"""
@@ -72,3 +73,7 @@ def del_data(path='', prin=True):
 	else:
 		if prin:
 			print('[!] Data do not exist')
+
+def print_debug(msg):
+	if '--debug' in sys.argv:
+		print(msg)

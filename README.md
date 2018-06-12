@@ -49,10 +49,10 @@ youtube-sm [OPTIONS]
 -t     [nb of days]    Choose how far in the past do you want the program to look for videos
 -d                     Show the dead channels + those who posted no videos
 -o     [nb of months]  Show the channels who didn't post videos in [nb of months] + dead channels
--l     [id]            Analyze only one channel or playlist
+-l     [site][id]      Analyze only one channel or playlist
 -r                     Remove the cache
 -s     [id/all]        Outputs the stats of the selected channel(s)
--a     [id]            Append a channel or a playlist at the end of sub.
+-a     [site][id]      Append a channel or a playlist at the end of sub.
 --init [file]          Remove all your subs and the cache and init with your subscription file.
 --af   [file]          Append a file with list of channel or a playlist in sub.swy
 --ax   [file]          Append a xml file in sub.swy
@@ -61,6 +61,7 @@ youtube-sm [OPTIONS]
 --output [file]        Choose the name of the output file
 --cat                  View your subscriptions
 --css  [style]         Import the css files (light, dark, switch)
+--debug                Print errors and progress
 --loading              Prints a progress bar while running
 ```
 
@@ -78,7 +79,7 @@ youtube-sm -t 30 --html --css --loading
 
 - All the videos of a channel
 ```
-youtube-sm -l UC-lHJZR3Gqxm24_Vd_AJ5Yw -t -1 -m list --loading -r --output test.csv
+youtube-sm -l [youtube] UC-lHJZR3Gqxm24_Vd_AJ5Yw -t -1 -m list --loading -r --output test.csv
 ```
 
 - Add a sub

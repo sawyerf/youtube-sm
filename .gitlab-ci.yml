@@ -7,8 +7,13 @@ test:
         - python3 setup.py install
         - youtube-sm --init subscription_manager
         - youtube-sm
-        - youtube-sm --html -l [youtube] UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list -t -1 --output lol.html -r
-        - youtube-sm --ultra-html -l [youtube] UCEcNXmr7DYq1XxpWHSxaN0w -m raw -t -1 -r
+        - wc -l sub.html
+        - youtube-sm --debug -m json --output test.json
+        - wc -l sub.json
+        - youtube-sm --html -l [youtube] UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list -t -1 --output test.list -r --debug
+        - wc -l test.list
+        - youtube-sm --ultra-html -l [youtube] UCEcNXmr7DYq1XxpWHSxaN0w -m raw -t -1 -r --output test.raw --debug
+        - wc -l test.raw
         only:
         - master
 

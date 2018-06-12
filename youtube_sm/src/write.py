@@ -2,6 +2,7 @@ import time
 import os
 
 from .time import since
+from .tools import print_debug
 
 class Write_file():
 	def __init__(self, output='sub.html', path_cache='', mode='html', method='0'):
@@ -38,17 +39,21 @@ class Write_file():
 			return self.append_json(title, url, url_channel, channel, date, url_img, view, data_file)
 
 	def json_init(self):
+		print_debug('[*] Init json')
 		try:
 			os.makedirs(self.path_cache + 'data/' + self.mode + '/' + self.method)
 		except:
+			print_debug('[!] Cache folder already exist or can\'t be create')
 			pass
 		open(self.output, 'w', encoding='utf8').write('{\n"items" : [\n')
 
 	def html_init(self):
 		"""To init the html file"""
+		print_debug('[*] Init html')
 		try:
 			os.makedirs(self.path_cache + 'data/' + self.mode + '/' + self.method)
 		except:
+			print_debug('[!] Cache folder already exist or can\'t be create')
 			pass
 		open(self.output, 'w', encoding='utf8').write("""<html>
 	<head>
@@ -148,6 +153,7 @@ class Write_file():
 		"""Recover the file in '.../data/.' with all the
 		informations, sort by date and add the informations
 		in './sub.html'. """
+		print_debug('[*] Start sort of {}'.format(self.mode))
 		first = True
 		fch = sorted(os.listdir(self.path_cache + 'data/' + self.mode + '/' + self.method + '/'))
 		if len(fch) < count:
@@ -186,6 +192,7 @@ class Write_file():
 
 	def raw_list_end(self, count=7):
 		"""Sorted the videos by date"""
+		print('[*] Start sort of {}'.format(self.mode))
 		linfo = sorted(open(self.output, 'rb').read().decode('utf8').replace('\r', '').split('\n'))
 		fichier = open(self.output, 'w', encoding='utf8')
 		if count == -1:
@@ -205,3 +212,4 @@ class Write_file():
 				fichier.write(linfo[-1-i][15:] + '\n')
 			else:
 				break
+

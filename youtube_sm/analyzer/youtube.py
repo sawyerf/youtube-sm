@@ -10,7 +10,8 @@ from ..src.sock import (
 from ..src.tools import (
 	Progress,
 	Progress_loop,
-	type_id)
+	type_id,
+	print_debug)
 from ..src.time import since
 
 class Youtube_Analyzer(Thread):
@@ -72,15 +73,15 @@ class Youtube_Analyzer(Thread):
 				try:
 					self.channel = linfo[0].split('<title>')[1].split('\n')[0]
 				except IndexError:
-					pass
+					print_debug('[!] Not found the title ({})'.format(self.id))
 				except:
-					pass
+					print_debug('[!] Not found the title ({})'.format(self.id))
 				del linfo[0]
 			for i in linfo:
 				try:
 					self.info_html(i)
 				except:
-					pass
+					print_debug('[!] Error during the retrieve of the info ({})'.format(self.id))
 				else:
 					self.write()
 		elif self.method == '2':
@@ -88,15 +89,15 @@ class Youtube_Analyzer(Thread):
 				try:
 					self.channel = linfo[0].split('<title>')[1].split('\n')[0]
 				except IndexError:
-					pass
+					print_debug('[!] Not found the title ({})'.format(self.id))
 				except:
-					pass
+					print_debug('[!] Not found the title ({})'.format(self.id))
 				del linfo[0]
 				for i in linfo:
 					try:
 						self.info_html(i)
 					except:
-						pass
+						print_debug('[!] Error during the retrieve of the info ({})'.format(self.id))
 					else:
 						self.write()
 				self.next = re.findall(r'data-uix-load-more-href="(.{176})"', linfo[-1])[0]
@@ -169,7 +170,7 @@ class Youtube_Analyzer(Thread):
 					try:
 						self.info_show_more(i)
 					except:
-						pass
+						print_debug('[!] Error during the retrieve of the info ({})'.format(self.id))
 					else:
 						self.write()
 				if self.prog != None:
