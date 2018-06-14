@@ -1,4 +1,8 @@
+import re
+import sys
 from os.path import exists
+from os import makedirs
+
 from .sock import download_xml
 from ..analyzer.imports import return_Analyzer
 from .tools import (
@@ -23,8 +27,8 @@ def generate_swy(sub_file, path=''):
 	except:
 		data_sub['[youtube]'] = []
 	for i in liste:
-		channel = i.split('title="')[1].split('"')[0]
-		id_chnl = i.split('xmlUrl="')[1].split('"')[0].replace('https://www.youtube.com/feeds/videos.xml?channel_id=', '')
+		channel = re.findall(r'title="(.+?)"', i)[0]
+		id_chnl = re.findall(r'channel_id=(.+?)"', i)[0]
 		if not id_chnl+'\t'+channel in data_sub['[youtube]']:
 			data_sub['[youtube]'].append(id_chnl + '\t' + channel)
 	write_list(data_sub, path)
@@ -55,7 +59,7 @@ def add_sub(subs, path=''):
 	write_list(list_subs, path)
 
 def convert_v1_to_v2(sub_file):
-	"""The sub.swy have evolve and is no more compatible so 
+	"""The sub.swy have evolve and is no more compatible so
 	this function convert the sub.swy version 1.0 to 2.0"""
 	print_debug('[*] Convert swy (v1 to v2)')
 	data = open(sub_file, 'rb').read().decode('utf8')
@@ -68,7 +72,10 @@ def swy(path, mode=0):
 		   2 --> return a list wich is not .split('\t')"""
 	print_debug('[*] Start read swy')
 	if not exists(path + 'sub.swy'):
-		exit("[!] You don't added you sub")
+		try:
+			open(path + 'sub.swy', 'w', encoding='utf8')
+		except:
+			print('[!] You didn\'t initialize')
 	urls = dict()
 	data_sub = open(path + 'sub.swy', 'rb').read().decode("utf8").split('[site]')
 	if not '[v][' in data_sub[0]:
@@ -94,3 +101,45 @@ def swy(path, mode=0):
 					continue
 				urls[subs[0]][subs[y].split('\t')[0]] = subs[y].split('\t')[1]
 	return urls
+
+def init_swy(path, arg):
+	from shutil import rmtree
+	if exists(path):
+		rmtree(path)
+	try:
+		makedirs(path + 'data/')
+	except:
+		exit('[*] Error We Can\'t Create The Folder')
+	else:
+		print('[*] Data File Create')
+	if len(sys.argv) != arg + 1:
+		add_file = sys.argv[arg + 1]
+		if not exists(add_file):
+			exit('[!] File Not Found (' + add_file + ')')
+		if add_file[len(add_file) - 4:] == '.swy':
+			with open(add_file, 'rb') as file, open(path + 'sub.swy', 'a', encoding='utf8') as sub_file:
+				nb_line = 1
+				while True:
+					line = file.readline().decode('utf8')
+					if '\t' in line or '[site]' in line or '[v]' in line:
+						sub_file.write(line)
+					elif line == '':
+						break
+					else:
+						print('[!] No tabs in line ' + str(nb_line))
+		elif add_file[len(add_file) - 5:] == '.json':
+			subs = dict()
+			data = open(add_file, 'rb').read().decode('utf8')
+			subs['[youtube]'] = re.findall(r'channel/(.+?)"', data)
+			add_sub(subs, path)
+		else:
+			generate_swy(add_file, path=path)
+	else:
+		if exists('subscription_manager'):
+			generate_swy('subscription_manager', path=path)
+		else:
+			exit('[!] File Not Found (subscription_manager)')
+	print('[*] Subs append to sub.swy')
+	print('[*] Done')
+	exit(0)
+

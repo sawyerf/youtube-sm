@@ -24,7 +24,7 @@ class Youtube_Analyzer(Thread):
 		self.type = self._type_id() # True --> chanel False -- > Playlist
 		# Init info videos
 		self.url = "" # id of a video
-		self.url_channel = "" 
+		self.url_channel = ""
 		self.title = ""
 		self.channel = ""
 		self.date = ""
@@ -45,13 +45,15 @@ class Youtube_Analyzer(Thread):
 		tid = type_id(sub)
 		data = download_xml(sub, type_id=tid, split=False)
 		if data == None:
+			print("[!] The channel/playlist can't be add. It could be delete.")
 			return None
 		try:
 			if tid:
 				data = re.findall(r'<name>(.+?)</name>', data)[0]
 			else:
-				data = data.split(r'<title>(.+?)</title>', data)[0]
+				data = re.findall(r'<title>(.+?)</title>', data)[0]
 		except:
+			print("[!] The channel/playlist can't be add. It could be delete.")
 			return None
 		else:
 			return sub + '\t' + data

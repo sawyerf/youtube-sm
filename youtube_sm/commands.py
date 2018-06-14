@@ -2,74 +2,22 @@ import time
 import os
 import sys
 
-from .src.write import Write_file
+from .src.write import (
+	Write_file,
+	write_css,
+	write_log)
 from .src.thread import Run_analyze
 from .src.swy import (
 	swy,
 	generate_swy,
-	add_sub)
+	add_sub,
+	init_swy)
 from .src.tools import (
 	del_data,
 	check_id,
 	print_debug)
 from .src.time import lcl_time
 
-
-
-def init_command(path, arg):
-	from shutil import rmtree
-	if os.path.exists(path):
-		rmtree(path)
-	try:
-		os.makedirs(path + 'data/')
-	except:
-		exit('[*] Error We Can\'t Create The Folder')
-	else:
-		print('[*] Data File Create')
-	if len(sys.argv) != arg + 1:
-		add_file = sys.argv[arg + 1]
-		if not os.path.exists(add_file):
-			exit('[!] File Not Found (' + add_file + ')')
-		if add_file[len(add_file) - 4:] == '.swy':
-			with open(add_file, 'rb') as file, open(path + 'sub.swy', 'a', encoding='utf8') as sub_file:
-				nb_line = 1
-				while True:
-					line = file.readline().decode('utf8')
-					if '\t' in line or '[site]' in line or '[v]' in line:
-						sub_file.write(line)
-					elif line == '':
-						break
-					else:
-						print('[!] No tabs in line ' + str(nb_line))
-		else:
-			generate_swy(add_file, path=path)
-	else:
-		if os.path.exists('subscription_manager'):
-			generate_swy('subscription_manager', path=path)
-		else:
-			exit('[!] File Not Found (subscription_manager)')
-	print('[*] Subs append to sub.swy')
-	print('[*] Done')
-	exit(0)
-
-def write_css(arg):
-	if arg == '' or arg == 'light' or arg[0] == '-':
-		open('css/sub.css', 'w').write(':root {\n	--Back: white;\n	--DivHover : #e9edf3;\n	--Div: white;\n	--ColorH4: black;\n	--ColorP: grey;\n	--ColorBut: #e2e5e9;\n 	--HeightBut: 0px;\n	--HeightButMob: 0px }\n')
-	elif arg == 'dark':
-		open('css/sub.css', 'w').write(':root {\n	--Back: #181a1d;\n	--DivHover : #1c1e21;\n	--Div: #26292e;\n	--ColorH4: #dcdddf;\n	--ColorP: grey;\n	--ColorBut: #e2e5e9;\n	--HeightBut: 0px;\n	--HeightButMob: 0px }\n')
-	elif arg == 'switch':
-		open('css/button.js', 'w').write('function lol() {\n	if (lel == "1") {\n		document.documentElement.style.setProperty("--Back", "#181a1d");\n		document.documentElement.style.setProperty("--Div", "#1c1e21");\n		document.documentElement.style.setProperty("--DivHover", "#26292e");\n		document.documentElement.style.setProperty("--ColorH4", "#dcdddf");\n		document.documentElement.style.setProperty("--ColorP", "grey");\n		document.documentElement.style.setProperty("--ColorBut", "#292c30");\n		document.cookie = "lel=1";\n		lel = "2"\n	} else if (lel == "2"){\n		document.documentElement.style.setProperty("--Back", "white");\n		document.documentElement.style.setProperty("--Div", "white");\n		document.documentElement.style.setProperty("--DivHover", "white");\n		document.documentElement.style.setProperty("--ColorH4", "black");\n		document.documentElement.style.setProperty("--ColorP", "grey");\n		document.documentElement.style.setProperty("--ColorBut", "#e2e5e9");\n		document.cookie = "lel=2";\n		lel = "1"} }\ndocument.documentElement.style.setProperty("--HeightBut", "25px");\ndocument.documentElement.style.setProperty("--HeightButMob", "50px");\nif (document.cookie == ""){	var lel = "1"\n} else { lel = document.cookie.replace("lel=", "")}\nlol();')
-		open('css/sub.css', 'w').write(':root {\n	--Back: white;\n	--DivHover : #e9edf3;\n	--Div: white;\n	--ColorH4: black;\n	--ColorP: grey;\n	--ColorBut: #e2e5e9;\n 	--HeightBut: 0px;\n	--HeightButMob: 0px }\n')
-	else:
-		exit('[!] No such argument: ' + arg)
-	open('css/sub.css', 'a').write('.left { float: left; }\n.clear { clear: both; }\n* { font-family: Arial;}\n\nbody {\n	margin: 0 0 0 0;\n	background-color: var(--Back);}\n\n.But {\n	width: 100%;\n	position: fixed;}\n\n#but {\n	-webkit-appearance: none;\n	border: none;\n	background-color: var(--ColorBut);\n	width: 100%;\n	height: var(--HeightBut); }\n\n#first{\n	margin: 0 27% 0 27%;\n	height: var(--HeightBut); }\n\ndiv.video:hover{ \n	background-color: var(--DivHover); }\n\ndiv.video {\n	background-color: var(--Div);\n	margin: 5px 27% 5px 27%; }\n\nimg {\n	width: 280px;\n	height: 157px;\n	margin-right: 5px; }\n\nh4 {\n	color: var(--ColorH4);\n	line-height: 18px;\n	font-size: 18px;\n	margin: 0px 0px -5px 0px; }\n\np {\n	color: var(--ColorP);\n	line-height: 7px; }\n\na{\n	text-decoration: none;\n	color: black; }\n')
-	open('css/sub_mobile.css', 'w').write('.left { float:left; }\n.clear { clear: both; }\n* { font-family: Arial; }\n\n\n#But{\n	margin: 0 0 0 0;\n	position: fixed;\n	width: 100%;\n}\n\n#but {\n	height: var(--HeightButMob);\n	margin: 0 0 0 0;}\n\n#first{\n	margin: 0 0 0 0;\n	width: 100%;\n	height: var(--HeightButMob);\n}\ndiv.video {\n	margin-left: 0%;\n	margin-right: 0%;\n	margin: 10px 10px 10px 10px; }\n\nimg {\n	width: 380px;\n	height: 214px; }\n\nh4 {\n	line-height: 30px;\n	font-size: 30px;\n	margin: 0px 0px -10px 0px; }\n\np {\n	color: grey;\n	line-height: 5px;\n	font-size: 1.9em; }\n\na {\n	text-decoration: none;\n	color: black; }\n')
-
-def write_log(arg, path, passe):
-	var = ''
-	for i in arg:
-		var += i + ' '
-	open(path + 'log', 'a', encoding='utf8').write(time.strftime("%H%M") + '\t' + str(time.time() - passe)[:4] + '\t' + var + '\n')
 
 def main():
 	# Init variable
@@ -233,7 +181,7 @@ Options:
 					else:
 						write_css('')
 				elif sys.argv[arg] == '--init':
-					init_command(path, arg)
+					init_swy(path, arg)
 				elif sys.argv[arg] == '--ultra-html':
 					method = '2'
 					analyze = True
