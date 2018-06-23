@@ -130,7 +130,9 @@ def init_swy(path, arg):
 		elif add_file[len(add_file) - 5:] == '.json':
 			subs = dict()
 			data = open(add_file, 'rb').read().decode('utf8')
-			subs['[youtube]'] = re.findall(r'channel/(.+?)"', data)
+			subs['[youtube]'] = re.findall(r'channel/(.{24})', data)
+			add = re.findall(r'youtube.com/playlist\?list=(.{34})', data)
+			subs['[youtube]'] = [*subs['[youtube]'], *add]
 			add_sub(subs, path)
 		else:
 			generate_swy(add_file, path=path)
