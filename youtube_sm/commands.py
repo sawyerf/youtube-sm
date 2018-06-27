@@ -129,15 +129,13 @@ Options:
 					del_data(path, True)
 				elif sys.argv[arg] == '-s':
 					try:
-						if check_id(sys.argv[arg+1]):
-							from .src.thread import stat
-							stat(sys.argv[arg+1])
-						elif sys.argv[arg+1] == 'all':
+						if sys.argv[arg+1] == 'all':
 							from .src.thread import stats
 							subs = swy(path, 1)
 							stats(subs)
 						else:
-							exit("[!] Id is not available")
+							from .src.thread import stats
+							stats({sys.argv[arg+1]: {sys.argv[arg+2]: sys.argv[arg+2]}})
 					except IndexError:
 						exit("[!] Missing argument after the '-s'")
 				elif sys.argv[arg] == '-h':

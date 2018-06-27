@@ -98,24 +98,54 @@ class Dailymotion_Analyzer(Thread):
 		self.title = re.findall(r'<media:title>(.+?)</media:title>', i)[0]
 		self.url_img = re.findall(r'<media:thumbnail\ url="(.+?)"', i)[0]
 		self.channel = self.id
-		x = strptime(re.findall(r'<pubDate>.{5}(.*)\ \+', i)[0], '%d %b %Y %H:%M:%S')
-		self.date = self.convert_date(x)
+		self.date, x = self.convert_date(re.findall(r'<pubDate>.{5}(.*)\ \+', i)[0], True)
 		self.data_file = [self.date.replace('-', ''), str(x.tm_hour) + str(x.tm_min) + str(x.tm_sec)]
 		self.view = re.findall(r'<dm:views>(.+?)</dm:views>', i)[0].replace(',', '')
 
-	def convert_date(self, x):
+	def convert_date(self, date, y=False):
+		x = strptime(date, '%d %b %Y %H:%M:%S')
 		month, day = str(x.tm_mon), str(x.tm_mday)
 		if len(month) == 1:
 			month = '0' + month
 		if len(day) == 1:
 			day = '0' + day
-		return str(x.tm_year) + '-' + month + '-' + day
+		if y:
+			return str(x.tm_year) + '-' + month + '-' + day, x
+		else:
+			return str(x.tm_year) + '-' + month + '-' + day
 
 	def old(self, url, lcl):
+		data = download_xml_daily(url)
+		if data == None:
+			print('[ channel dead ]', url)
+		else:
+			try:
+				last = int(self.convert_date(re.findall(r'<pubDate>.{5}(.*)\ \+', data[0])[0]).replace('-', ''))
+			except:
+				return
+			if last <= lcl:
+				last = str(last)
+				print('[ ' + last[:4] + '/' + last[4:6] + '/' + last[6:8] + ' ] ' + url)
 		return
 
 	def dead(self, url):
-		return
+		data = download_xml_daily(url)
+		if data == None or data == False:
+			print('[ channel dead ]', url)
 
 	def stat(self, sub, name=''):
-		return
+		view, like = 0, 0
+		data = download_xml_daily(sub, False)
+		views = re.findall(r'views>(.+?)</dm', data)
+		likes = re.findall(r'dm:favorites>(.+?)</', data)
+		for i in views:
+			try:
+				view += int(i)
+			except:
+				pass
+		for i in likes:
+			try:
+				like += int(i)
+			except:
+				pass
+		print(like, 'likes for', sub, '(' + str(view) + ' views)')
