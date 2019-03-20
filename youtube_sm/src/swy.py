@@ -39,7 +39,8 @@ def write_list(list_subs, path):
 	for site in list_subs:
 		file.write('[site]' + site + '\n')
 		for i in list_subs[site]:
-			file.write(i + '\n')
+			if i != None:
+				file.write(i + '\n')
 
 def add_sub(subs, path=''):
 	"""Add a list of subs in sub.swy"""
