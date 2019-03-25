@@ -5,3 +5,4 @@ dist/
 build/
 youtube_sm.egg-info/
 **__pycache__/
+test*

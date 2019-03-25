@@ -14,6 +14,12 @@ test:
         - wc -l test.list
         - youtube-sm --ultra-html -l [youtube] UCEcNXmr7DYq1XxpWHSxaN0w -m raw -t -1 -r --output test.raw --debug
         - wc -l test.raw
+        - youtube-sm -l [peertube] thinkerview.video:5 -m raw -t -1 -r --output test.raw --debug
+        - wc -l test.raw
+        - youtube-sm -l [peertube] thinkerview.video -m raw -t -1 -r --output test.raw --debug
+        - wc -l test.raw
+        - youtube-sm -l [daylimotion] karimdebbache -m raw -t -1 -r --output test.raw --debug
+        - wc -l test.raw
         only:
         - master
 
