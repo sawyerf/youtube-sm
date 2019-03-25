@@ -6,8 +6,30 @@ from	..src.sock	import	(
 			download_https)
 from ..src.tools import print_debug
 
+def ptube_crtlink(info, type_file):
+	if len(info) == 2 and info[1] != '':
+		return '/feeds/videos.{}?accountId={}'.format(type_file, info[1])
+	return '/feeds/videos.{}'.format(type_file)
+
 def	download_xml_peertube(url_id, split=True):
-	data = download_https(b'/feeds/videos.xml', url_id)
+	info = url_id.split(':')
+	print(ptube_crtlink(info, 'xml'))
+	data = download_https(ptube_crtlink(info, 'xml').encode(), info[0])
+	if data == None:
+		print_debug('[!] Failed to download (url_id)')
+		return None
+	if split:
+		linfo = data.split('<item>')
+		del linfo[0]
+		if linfo == []:
+			return None
+		return linfo
+	else:
+		return data
+
+def	download_atom_peertube(url_id, split=True):
+	info = sub.split(':')
+	data = download_https(ptube_crtlink(info, 'atom').encode(), info[0])
 	if data == None:
 		return None
 	if split:
@@ -124,7 +146,7 @@ class	Peertube_Analyzer(Thread):
 
 	def info_rss(self, i):
 		self.url =			re.findall(r'<link>(.*)</link>', i)[0]
-		self.url_channel =	'https://' + self.id
+		self.url_channel =	'https://' + self.id.split(':')[0]
 		self.channel =		re.findall(r'<dc:creator>(.*)</dc:creator>', i)[0]
 		self.title =		re.findall(r'<title><!\[CDATA\[(.*)\]\]></title>', i)[0]
 		self.url_img =		re.findall(r'<media:thumbnail url="(.*)"', i)[0]

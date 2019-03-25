@@ -11,6 +11,7 @@ from ..src.tools import (
 	Progress,
 	Progress_loop,
 	type_id,
+	check_id,
 	print_debug)
 from ..src.time import since
 
@@ -102,7 +103,10 @@ class Youtube_Analyzer(Thread):
 						print_debug('[!] Error during the retrieve of the info ({})'.format(self.id))
 					else:
 						self.write()
-				self.next = re.findall(r'data-uix-load-more-href="(.{176})"', linfo[-1])[0]
+				try:
+					self.next = re.findall(r'data-uix-load-more-href="([^"]*)"', linfo[-1])[0]
+				except:
+					return
 				self.show_more()
 			else:
 				self.show_more()
