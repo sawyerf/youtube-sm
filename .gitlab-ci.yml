@@ -18,8 +18,11 @@ test:
         - wc -l test.raw
         - youtube-sm -l [peertube] thinkerview.video -m raw -t -1 -r --output test.raw --debug
         - wc -l test.raw
-        - youtube-sm -l [daylimotion] karimdebbache -m raw -t -1 -r --output test.raw --debug
-        - wc -l test.raw
+        - youtube-sm -l [test] test -m raw -t -1 -r --output test.raw --debug
+        - curl -O https://sawyerf.gitlab.io/youtube_sm/test.swy
+        - youtube-sm --debug --init test.swy
+        - youtube-sm --debug -t -1 --output testall.html
+        - wc -l testall.html
         only:
         - master
 

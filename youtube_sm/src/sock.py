@@ -46,7 +46,7 @@ def download_https(url, host='youtube.com'):
 		except:
 			break
 		data += raw_data
-		if b'\r\n0\r\n\r\n' in data[-20:] or raw_data == b'' or b'</rss>' in data[-20:]:
+		if b'\r\n0\r\n\r\n' in data[-20:] or raw_data == b'' or b'</rss>' in data[-20:] or b'</html>' in data[-20:]:
 			break
 	ssock.close()
 	try:

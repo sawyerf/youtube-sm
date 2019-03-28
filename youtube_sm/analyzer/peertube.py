@@ -1,4 +1,5 @@
 import	re
+import	socket
 
 from threading				import	Thread
 from datetime				import	datetime
@@ -41,10 +42,14 @@ class	Peertube_Analyzer(Thread):
 
 	def add_sub(self, sub):
 		""" This function return the informations wich are write in sub.swy ."""
-		data = download_xml_peertube(sub, False)
-		if data == None:
+		try:
+			data = download_xml_peertube(sub, False)
+		except socket.gaierror:
+			print("[!] Wrong host ({})".format(sub))
+			return None
+		if data == None or not '</rss>' in data:
 			print("[!] The channel/playlist can't be add. It could be delete.")
-			return 'None'
+			return None
 		try:
 			data = re.findall(r'<title>(.*)</title>', data)[0]
 		except:
