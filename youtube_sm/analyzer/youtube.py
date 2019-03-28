@@ -2,7 +2,7 @@ import os
 import re
 
 from threading import Thread
-from ..src.sock import (
+from ..downloader.youtube import (
 	download_xml,
 	download_html,
 	download_show_more,

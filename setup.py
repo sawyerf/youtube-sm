@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 params = dict()
-params['entry_points'] = {'console_scripts': ['youtube-sm = youtube_sm.commands:main']}
+params['entry_points'] = {'console_scripts': ['youtube-sm = youtube_sm.main:main']}
 
 def README():
 	try:
@@ -11,7 +11,7 @@ def README():
 
 setup(
 	name='youtube_sm',
-	version='2.0.0',
+	version='2.0.2',
 	url='https://github.com/sawyerf/Youtube_subscription_manager',
 	author='Sawyerf',
 	author_email='sawyer.flink@protonmail.ch',

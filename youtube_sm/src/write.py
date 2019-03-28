@@ -193,7 +193,10 @@ class Write_file():
 	def raw_list_end(self, count=7):
 		"""Sorted the videos by date"""
 		print('[*] Start sort of {}'.format(self.mode))
-		linfo = sorted(open(self.output, 'rb').read().decode('utf8').replace('\r', '').split('\n'))
+		try:
+			linfo = sorted(open(self.output, 'rb').read().decode('utf8').replace('\r', '').split('\n'))
+		except FileNotFoundError:
+			return 
 		fichier = open(self.output, 'w', encoding='utf8')
 		if count == -1:
 			date = -1

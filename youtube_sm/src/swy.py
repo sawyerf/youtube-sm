@@ -3,7 +3,7 @@ import sys
 from os.path import exists
 from os import makedirs
 
-from .sock import download_xml
+from ..downloader.youtube import download_xml
 from ..analyzer.imports import return_Analyzer
 from .tools import (
 	type_id,

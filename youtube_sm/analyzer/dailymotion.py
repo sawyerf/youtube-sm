@@ -1,9 +1,9 @@
 import re
 
-from time import strptime
-from threading import Thread
-from ..src.tools import print_debug
-from ..src.sock import download_xml_daily
+from time						import strptime
+from threading					import Thread
+from ..src.tools				import print_debug
+from ..downloader.dailymotion	import download_xml_daily
 
 class Dailymotion_Analyzer(Thread):
 	def __init__(self, url_id='', min_date=0, mode='', method='0', file=None, prog=None):
@@ -38,8 +38,11 @@ class Dailymotion_Analyzer(Thread):
 		return sub + '\t' + sub
 
 	def analyzer_sub(self):
+		print_debug("[!] Dailymotion has delete the rss so this functionnality is suspende. Sorry")
+		return 
 		if self.method == '0':
 			linfo = self._download_page()
+			print(linfo)
 			if linfo == False or linfo == None:
 				return
 			for i in linfo:

@@ -1,45 +1,11 @@
 import	re
 
-from	threading	import	Thread
-from	datetime	import	datetime
-from	..src.sock	import	(
-			download_https)
-from ..src.tools import print_debug
-
-def ptube_crtlink(info, type_file):
-	if len(info) == 2 and info[1] != '':
-		return '/feeds/videos.{}?accountId={}'.format(type_file, info[1])
-	return '/feeds/videos.{}'.format(type_file)
-
-def	download_xml_peertube(url_id, split=True):
-	info = url_id.split(':')
-	print(ptube_crtlink(info, 'xml'))
-	data = download_https(ptube_crtlink(info, 'xml').encode(), info[0])
-	if data == None:
-		print_debug('[!] Failed to download (url_id)')
-		return None
-	if split:
-		linfo = data.split('<item>')
-		del linfo[0]
-		if linfo == []:
-			return None
-		return linfo
-	else:
-		return data
-
-def	download_atom_peertube(url_id, split=True):
-	info = sub.split(':')
-	data = download_https(ptube_crtlink(info, 'atom').encode(), info[0])
-	if data == None:
-		return None
-	if split:
-		linfo = data.split('<item>')
-		del linfo[0]
-		if linfo == []:
-			return None
-		return linfo
-	else:
-		return data
+from threading				import	Thread
+from datetime				import	datetime
+from ..src.tools				import print_debug
+from ..downloader.peertube	import	(
+		download_xml_peertube,
+		download_atom_peertube)
 
 class	Peertube_Analyzer(Thread):
 	def __init__(self, url_id='', min_date=0, mode='', method='0', file=None, prog=None):
