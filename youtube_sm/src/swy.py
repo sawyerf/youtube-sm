@@ -46,7 +46,11 @@ def add_sub(subs, path=''):
 	"""Add a list of subs in sub.swy"""
 	list_subs = swy(path, 2)
 	for site in subs:
-		analyzer = return_Analyzer(site)()
+		analyzer = return_Analyzer(site)
+		if analyzer == None:
+			print('[!] The site {} is not support'.format(site))
+			continue
+		analyzer = analyzer()
 		if analyzer == None:
 			print('[!] The site {} is not support'.format(site))
 			continue

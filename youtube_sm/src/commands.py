@@ -72,9 +72,9 @@ Options:
 """, end='')
 		else:
 			for arg in range(len(sys.argv)):
-				if len(sys.argv[0]) > 0 and sys.argv[arg][0] != '-':
+				if len(sys.argv[arg]) > 0 and sys.argv[arg][0] != '-':
 					continue
-				if len(sys.argv[0]) > 1 and sys.argv[arg][1] != '-':
+				if len(sys.argv[arg]) > 1 and sys.argv[arg][1] != '-':
 					if sys.argv[arg] == '-o':
 						self.url_data = swy(self.path)
 						print('[*]Start of analysis')

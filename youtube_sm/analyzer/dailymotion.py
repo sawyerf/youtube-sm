@@ -32,6 +32,8 @@ class Dailymotion_Analyzer(Thread):
 			self.prog.add()
 
 	def add_sub(self, sub):
+		print_debug("[!] Dailymotion has delete the rss so this functionnality is suspende. Sorry")
+		return None
 		data = download_xml_daily(sub, split=False)
 		if data == None:
 			return None
