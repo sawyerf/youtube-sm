@@ -48,6 +48,8 @@ def download_https(url, host='youtube.com'):
 		data += raw_data
 		if b'\r\n0\r\n\r\n' in data[-20:] or raw_data == b'' or b'</rss>' in data[-20:] or b'</html>' in data[-20:]:
 			break
+		if b'200' not in data[:20]:
+			return None
 	ssock.close()
 	try:
 		return data.decode('utf8')
