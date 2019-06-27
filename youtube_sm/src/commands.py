@@ -37,17 +37,8 @@ class	Commands():
 		self.path = path
 		self.passe = 0
 
-	def parser(self):
-		if sys.argv == []: # Default command
-			self.passe = time.time()
-			self.url_data = swy(self.path)
-			file = Write_file('sub.html', self.path, 'html', '0')
-			file.html_init()
-			Run_analyze(self.url_data, 'sub.html', lcl_time(), self.path, 'html', False, file, '0')
-			file.html_json_end()
-			write_log(sys.argv, self.path, self.passe)
-		elif sys.argv == ['-h'] or sys.argv == ['--help']:
-			print("""Usage: youtube-sm [OPTIONS]
+	def _h(self):
+		print("""Usage: youtube-sm [OPTIONS]
 
 Options:
    -h                     Print this help text and exit
@@ -70,64 +61,152 @@ Options:
    --debug                Print errors and progress
    --loading              Prints a progress bar while running
 """, end='')
+		
+	def _o(self):
+		self.url_data = swy(self.path)
+		print('[*]Start of analysis')
+		try:
+			min_tps = int(sys.argv[arg + 1])
+		except:
+			old(self.url_data)
+		else:
+			old(self.url_data, min_tps)
+
+	def _d(self):
+		self.url_data = swy(self.path)
+		print('[*]Start of analysis')
+		dead(self.url_data)
+
+	def _m(self):
+		self.analyze = True
+		if sys.argv[arg + 1] in ['html', 'raw', 'list', 'view', 'json']:
+			self.mode = sys.argv[arg + 1]
+		else:
+			exit('[!] Mode file invalid')
+
+	def _t(self):
+		self.analyze = True
+		try:
+			self.count = int(sys.argv[arg + 1])
+			if self.count == -1:
+				self.all_time = True
+		except:
+			exit('[!] Numbers of day invalid')
+
+	def _a(self):
+		if len(sys.argv) != arg + 2:
+			add_sub({sys.argv[arg+1]: [sys.argv[arg + 2]]}, self.path)
+		else:
+			exit('[!] You Forgot An Argument (-a)')
+
+	def _l(self):
+		self.analyze = True
+		self.analyze_only_one = True
+		del_data(self.path, False)
+		if arg + 2 >= len(sys.argv):
+			exit('[!] You forgot an argument after -l')
+		else:
+			self.url_data = {sys.argv[arg+1]: [sys.argv[arg+2]]}
+
+	def _s(self):
+		try:
+			if sys.argv[arg+1] == 'all':
+				from .src.thread import stats
+				subs = swy(self.path, 1)
+				stats(subs)
+			else:
+				from .src.thread import stats
+				stats({sys.argv[arg+1]: {sys.argv[arg+2]: sys.argv[arg+2]}})
+		except IndexError:
+			exit("[!] Missing argument after the '-s'")
+
+	def __af(self):
+		if os.path.exists(sys.argv[arg + 1]):
+			add_sub(open(sys.argv[arg + 1], 'r').read().split('\n'), self.path)
+		else:
+			exit('[!] File not found')
+
+	def __ax(self):
+		if os.path.exists(sys.argv[arg + 1]):
+			generate_swy(sys.argv[arg + 1], self.path)
+		else:
+			exit('[!] File not found')
+
+	def __cat(self):
+		if os.path.exists(self.path + 'sub.swy'):
+			with open(self.path + 'sub.swy', 'r') as file:
+				while True:
+					line = file.readline()
+					if line == '':
+						break
+					try:
+						print(line, end='')
+					except:
+						print(line.encode())
+
+	def __html(self):
+		self.method = '1'
+		self.analyze = True
+
+	def __css(self):
+		try:
+			os.mkdir('css')
+		except:
+			print_debug('[!] CSS folder already exist or can\'t be created')
+		if len(sys.argv) != arg + 1:
+			write_css(sys.argv[arg+1])
+		else:
+			write_css('')
+
+	def __utltra_html(self):
+		self.method = '2'
+		self.analyze = True
+
+	def __loading(self):
+		self.loading = True
+		self.analyze = True
+
+	def __output(self):
+		if arg + 1 >= len(sys.argv):
+			exit('[!] You forgot an argument after --output')
+		self.output = sys.argv[arg+1]
+		self.analyze = True
+
+	def __default(self):
+		self.passe = time.time()
+		self.url_data = swy(self.path)
+		file = Write_file('sub.html', self.path, 'html', '0')
+		file.html_init()
+		Run_analyze(self.url_data, 'sub.html', lcl_time(), self.path, 'html', False, file, '0')
+		file.html_json_end()
+		write_log(sys.argv, self.path, self.passe)
+
+	def parser(self):
+		if sys.argv == []: # Default command
+			self.__default()
+		elif sys.argv == ['-h'] or sys.argv == ['--help']:
+			self._h()
 		else:
 			for arg in range(len(sys.argv)):
 				if len(sys.argv[arg]) > 0 and sys.argv[arg][0] != '-':
 					continue
 				if len(sys.argv[arg]) > 1 and sys.argv[arg][1] != '-':
 					if sys.argv[arg] == '-o':
-						self.url_data = swy(self.path)
-						print('[*]Start of analysis')
-						try:
-							min_tps = int(sys.argv[arg + 1])
-						except:
-							old(self.url_data)
-						else:
-							old(self.url_data, min_tps)
+						self._o()
 					elif sys.argv[arg] == '-d':
-						self.url_data = swy(self.path)
-						print('[*]Start of analysis')
-						dead(self.url_data)
+						self._d()
 					elif sys.argv[arg] == '-m':
-						self.analyze = True
-						if sys.argv[arg + 1] in ['html', 'raw', 'list', 'view', 'json']:
-							self.mode = sys.argv[arg + 1]
-						else:
-							exit('[!] Mode file invalid')
+						self._m()
 					elif sys.argv[arg] == '-t':
-						self.analyze = True
-						try:
-							self.count = int(sys.argv[arg + 1])
-							if self.count == -1:
-								self.all_time = True
-						except:
-							exit('[!] Numbers of day invalid')
+						self._t()
 					elif sys.argv[arg] == '-a':
-						if len(sys.argv) != arg + 2:
-							add_sub({sys.argv[arg+1]: [sys.argv[arg + 2]]}, self.path)
-						else:
-							exit('[!] You Forgot An Argument (-a)')
+						self._a()
 					elif sys.argv[arg] == '-l':
-						self.analyze = True
-						self.analyze_only_one = True
-						del_data(self.path, False)
-						if arg + 2 >= len(sys.argv):
-							exit('[!] You forgot an argument after -l')
-						else:
-							self.url_data = {sys.argv[arg+1]: [sys.argv[arg+2]]}
+						self._l()
 					elif sys.argv[arg] == '-r':
 						del_data(self.path, True)
 					elif sys.argv[arg] == '-s':
-						try:
-							if sys.argv[arg+1] == 'all':
-								from .src.thread import stats
-								subs = swy(self.path, 1)
-								stats(subs)
-							else:
-								from .src.thread import stats
-								stats({sys.argv[arg+1]: {sys.argv[arg+2]: sys.argv[arg+2]}})
-						except IndexError:
-							exit("[!] Missing argument after the '-s'")
+						self._s()
 					elif sys.argv[arg] == '-h':
 						exit("[!] -h don't work with other options")
 					elif sys.argv[arg] == '-1':
@@ -136,51 +215,23 @@ Options:
 						exit("[!] No such option: {}".format(sys.argv[arg]))
 				else:
 					if sys.argv[arg] == '--af':
-						if os.path.exists(sys.argv[arg + 1]):
-							add_sub(open(sys.argv[arg + 1], 'r').read().split('\n'), self.path)
-						else:
-							exit('[!] File not found')
+						self.__af()
 					elif sys.argv[arg] == '--ax':
-						if os.path.exists(sys.argv[arg + 1]):
-							generate_swy(sys.argv[arg + 1], self.path)
-						else:
-							exit('[!] File not found')
+						self.__ax()
 					elif sys.argv[arg] == '--cat':
-						if os.path.exists(self.path + 'sub.swy'):
-							with open(self.path + 'sub.swy', 'r') as file:
-								while True:
-									line = file.readline()
-									if line == '':
-										break
-									try:
-										print(line, end='')
-									except:
-										print(line.encode())
+						self.__cat()
 					elif sys.argv[arg] == '--html':
-						self.method = '1'
-						self.analyze = True
+						self.__html()
 					elif sys.argv[arg] == '--css':
-						try:
-							os.mkdir('css')
-						except:
-							print_debug('[!] CSS folder already exist or can\'t be created')
-						if len(sys.argv) != arg + 1:
-							write_css(sys.argv[arg+1])
-						else:
-							write_css('')
+						self.__css()
 					elif sys.argv[arg] == '--init':
 						init_swy(self.path, arg)
 					elif sys.argv[arg] == '--ultra-html':
-						self.method = '2'
-						self.analyze = True
+						self.__utlra_html()
 					elif sys.argv[arg] == '--loading':
-						self.loading = True
-						self.analyze = True
+						self.__loading()
 					elif sys.argv[arg] == '--output':
-						if arg + 1 >= len(sys.argv):
-							exit('[!] You forgot an argument after --output')
-						self.output = sys.argv[arg+1]
-						self.analyze = True
+						self.__output()
 					elif sys.argv[arg] == '--help':
 						exit("[!] -h don't work with other options")
 					elif sys.argv[arg] == '--debug':
