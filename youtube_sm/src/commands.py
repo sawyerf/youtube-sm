@@ -37,7 +37,7 @@ class	Commands():
 		self.path = path
 		self.passe = 0
 
-	def _h(self):
+	def _h(self, arg):
 		print("""Usage: youtube-sm [OPTIONS]
 
 Options:
@@ -62,7 +62,7 @@ Options:
    --loading              Prints a progress bar while running
 """, end='')
 		
-	def _o(self):
+	def _o(self, arg):
 		self.url_data = swy(self.path)
 		print('[*]Start of analysis')
 		try:
@@ -72,19 +72,19 @@ Options:
 		else:
 			old(self.url_data, min_tps)
 
-	def _d(self):
+	def _d(self, arg):
 		self.url_data = swy(self.path)
 		print('[*]Start of analysis')
 		dead(self.url_data)
 
-	def _m(self):
+	def _m(self, arg):
 		self.analyze = True
 		if sys.argv[arg + 1] in ['html', 'raw', 'list', 'view', 'json']:
 			self.mode = sys.argv[arg + 1]
 		else:
 			exit('[!] Mode file invalid')
 
-	def _t(self):
+	def _t(self, arg):
 		self.analyze = True
 		try:
 			self.count = int(sys.argv[arg + 1])
@@ -93,13 +93,13 @@ Options:
 		except:
 			exit('[!] Numbers of day invalid')
 
-	def _a(self):
+	def _a(self, arg):
 		if len(sys.argv) != arg + 2:
 			add_sub({sys.argv[arg+1]: [sys.argv[arg + 2]]}, self.path)
 		else:
 			exit('[!] You Forgot An Argument (-a)')
 
-	def _l(self):
+	def _l(self, arg):
 		self.analyze = True
 		self.analyze_only_one = True
 		del_data(self.path, False)
@@ -108,7 +108,7 @@ Options:
 		else:
 			self.url_data = {sys.argv[arg+1]: [sys.argv[arg+2]]}
 
-	def _s(self):
+	def _s(self, arg):
 		try:
 			if sys.argv[arg+1] == 'all':
 				from .src.thread import stats
@@ -120,19 +120,19 @@ Options:
 		except IndexError:
 			exit("[!] Missing argument after the '-s'")
 
-	def __af(self):
+	def __af(self, arg):
 		if os.path.exists(sys.argv[arg + 1]):
 			add_sub(open(sys.argv[arg + 1], 'r').read().split('\n'), self.path)
 		else:
 			exit('[!] File not found')
 
-	def __ax(self):
+	def __ax(self, arg):
 		if os.path.exists(sys.argv[arg + 1]):
 			generate_swy(sys.argv[arg + 1], self.path)
 		else:
 			exit('[!] File not found')
 
-	def __cat(self):
+	def __cat(self, arg):
 		if os.path.exists(self.path + 'sub.swy'):
 			with open(self.path + 'sub.swy', 'r') as file:
 				while True:
@@ -144,11 +144,11 @@ Options:
 					except:
 						print(line.encode())
 
-	def __html(self):
+	def __html(self, arg):
 		self.method = '1'
 		self.analyze = True
 
-	def __css(self):
+	def __css(self, arg):
 		try:
 			os.mkdir('css')
 		except:
@@ -158,21 +158,21 @@ Options:
 		else:
 			write_css('')
 
-	def __utltra_html(self):
+	def __utltra_html(self, arg):
 		self.method = '2'
 		self.analyze = True
 
-	def __loading(self):
+	def __loading(self, arg):
 		self.loading = True
 		self.analyze = True
 
-	def __output(self):
+	def __output(self, arg):
 		if arg + 1 >= len(sys.argv):
 			exit('[!] You forgot an argument after --output')
 		self.output = sys.argv[arg+1]
 		self.analyze = True
 
-	def __default(self):
+	def __default(self, arg):
 		self.passe = time.time()
 		self.url_data = swy(self.path)
 		file = Write_file('sub.html', self.path, 'html', '0')
@@ -185,28 +185,28 @@ Options:
 		if sys.argv == []: # Default command
 			self.__default()
 		elif sys.argv == ['-h'] or sys.argv == ['--help']:
-			self._h()
+			self._h(arg)
 		else:
 			for arg in range(len(sys.argv)):
 				if len(sys.argv[arg]) > 0 and sys.argv[arg][0] != '-':
 					continue
 				if len(sys.argv[arg]) > 1 and sys.argv[arg][1] != '-':
 					if sys.argv[arg] == '-o':
-						self._o()
+						self._o(arg)
 					elif sys.argv[arg] == '-d':
-						self._d()
+						self._d(arg)
 					elif sys.argv[arg] == '-m':
-						self._m()
+						self._m(arg)
 					elif sys.argv[arg] == '-t':
-						self._t()
+						self._t(arg)
 					elif sys.argv[arg] == '-a':
-						self._a()
+						self._a(arg)
 					elif sys.argv[arg] == '-l':
-						self._l()
+						self._l(arg)
 					elif sys.argv[arg] == '-r':
 						del_data(self.path, True)
 					elif sys.argv[arg] == '-s':
-						self._s()
+						self._s(arg)
 					elif sys.argv[arg] == '-h':
 						exit("[!] -h don't work with other options")
 					elif sys.argv[arg] == '-1':
@@ -215,23 +215,23 @@ Options:
 						exit("[!] No such option: {}".format(sys.argv[arg]))
 				else:
 					if sys.argv[arg] == '--af':
-						self.__af()
+						self.__af(arg)
 					elif sys.argv[arg] == '--ax':
-						self.__ax()
+						self.__ax(arg)
 					elif sys.argv[arg] == '--cat':
-						self.__cat()
+						self.__cat(arg)
 					elif sys.argv[arg] == '--html':
-						self.__html()
+						self.__html(arg)
 					elif sys.argv[arg] == '--css':
-						self.__css()
+						self.__css(arg)
 					elif sys.argv[arg] == '--init':
 						init_swy(self.path, arg)
 					elif sys.argv[arg] == '--ultra-html':
-						self.__utlra_html()
+						self.__utlra_html(arg)
 					elif sys.argv[arg] == '--loading':
-						self.__loading()
+						self.__loading(arg)
 					elif sys.argv[arg] == '--output':
-						self.__output()
+						self.__output(arg)
 					elif sys.argv[arg] == '--help':
 						exit("[!] -h don't work with other options")
 					elif sys.argv[arg] == '--debug':
