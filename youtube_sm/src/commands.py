@@ -158,7 +158,7 @@ Options:
 		else:
 			write_css('')
 
-	def __utltra_html(self, arg):
+	def __ultra_html(self, arg):
 		self.method = '2'
 		self.analyze = True
 
@@ -172,7 +172,7 @@ Options:
 		self.output = sys.argv[arg+1]
 		self.analyze = True
 
-	def __default(self, arg):
+	def __default(self):
 		self.passe = time.time()
 		self.url_data = swy(self.path)
 		file = Write_file('sub.html', self.path, 'html', '0')
@@ -227,7 +227,7 @@ Options:
 					elif sys.argv[arg] == '--init':
 						init_swy(self.path, arg)
 					elif sys.argv[arg] == '--ultra-html':
-						self.__utlra_html(arg)
+						self.__ultra_html(arg)
 					elif sys.argv[arg] == '--loading':
 						self.__loading(arg)
 					elif sys.argv[arg] == '--output':
