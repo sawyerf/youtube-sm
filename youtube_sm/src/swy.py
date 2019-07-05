@@ -89,22 +89,24 @@ def swy(path, mode=0):
 	if mode == 0 or mode == 2:
 		for i in data_sub:
 			subs = i.split('\n')
-			urls[subs[0]] = []
+			siteid = subs[0].rstrip()
+			urls[siteid] = []
 			for y in range(1, len(subs)):
 				if subs[y] == '':
 					continue
 				if mode == 0:
-					urls[subs[0]].append(subs[y].split('\t')[0])
+					urls[siteid].append(subs[y].split('\t')[0])
 				else:
-					urls[subs[0]].append(subs[y])
+					urls[siteid].append(subs[y])
 	elif mode == 1:
 		for i in data_sub:
 			subs = i.split('\n')
-			urls[subs[0]] = dict()
+			siteid = subs[0].rstrip()
+			urls[siteid] = dict()
 			for y in range(1, len(subs)):
 				if subs[y] == '':
 					continue
-				urls[subs[0]][subs[y].split('\t')[0]] = subs[y].split('\t')[1]
+				urls[siteid][subs[y].split('\t')[0]] = subs[y].split('\t')[1]
 	return urls
 
 def init_swy(path, arg):
