@@ -40,10 +40,13 @@ def Run_analyze(urls, output, min_date, path='', mode='html', loading=False, fil
 			thr.Thread()
 			threads.append(thr)
 			thr.start()
+			print_debug("[*] Thread start ({}{})".format(site, urls[site][i]))
 			if i%max_thr == 0 or nb == i+1:
 				for y in threads:
 					y.join()
 				threads = []
+		for y in threads:
+			y.join()
 	if loading and prog.xmin != prog.xmax:
 		prog.xmin = prog.xmax
 		prog.progress_bar()

@@ -107,6 +107,8 @@ def swy(path, mode=0):
 				if subs[y] == '':
 					continue
 				urls[siteid][subs[y].split('\t')[0]] = subs[y].split('\t')[1]
+	for site in urls:
+		print_debug("[*] {} subs for {}".format(len(urls[site]), site))
 	return urls
 
 def init_swy(path, arg):

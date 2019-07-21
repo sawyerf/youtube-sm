@@ -264,4 +264,4 @@ Options:
 			nb_new = Run_analyze(self.url_data, self.output, lcl_time(int(self.count/30+(30-self.count%30)/30), self.all_time), self.path, self.mode, self.loading, file, self.method)
 			file.sort_file(self.count)
 			write_log(sys.argv, self.path, self.passe)
-		print_debug('[*] Done')
+		print_debug('[*] Done ({} seconds)'.format(str(time.time() - self.passe)[:7]))
