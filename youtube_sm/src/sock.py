@@ -25,6 +25,7 @@ def download_https(url, host='youtube.com'):
 	data = b''
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	sock.connect((host, 443))
+	sock.settimeout(1);
 	for i in range(5):
 		try:
 			ssock = ssl.wrap_socket(sock)

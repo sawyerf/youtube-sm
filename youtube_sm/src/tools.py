@@ -7,8 +7,9 @@ class Progress():
 		self.xmax = xmax
 
 	def add(self):
-		self.xmin += 1
-		self.progress_bar()
+		if self.xmin < self.xmax:
+			self.xmin += 1
+			self.progress_bar()
 
 	def progress_bar(self):
 		load = ''
