@@ -1,12 +1,13 @@
 :root {
-	--Back: #181a1d;
-	--DivHover : #1c1e21;
-	--Div: #26292e;
-	--ColorH4: #dcdddf;
-	--ColorP: grey;
-	--ColorBut: #e2e5e9;
-	--HeightBut: 0px;
-	--HeightButMob: 0px }
+		--Back: #181a1d;
+		--DivHover : #1c1e21;
+		--Div: #26292e;
+		--ColorH4: #dcdddf;
+		--ColorP: grey;
+		--ColorBut: #e2e5e9;
+		--HeightBut: 0px;
+		--HeightButMob: 0px }
+
 .left { float: left; }
 .clear { clear: both; }
 * { font-family: Arial;}
@@ -46,12 +47,36 @@ h4 {
 	color: var(--ColorH4);
 	line-height: 18px;
 	font-size: 18px;
-	margin: 0px 0px -5px 0px; }
+	margin: 0px 0px 10px 0px; }
 
 p {
 	color: var(--ColorP);
-	line-height: 7px; }
+	margin: 4px 0px 4px 0px;
+}
 
 a{
 	text-decoration: none;
 	color: black; }
+
+.description {
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+  white-space: pre;
+}
+.container {
+	position: relative;
+	text-align: center;
+	color: white;
+}
+
+/* Bottom right text */
+.bottom-right {
+	position: absolute;
+	background-color: rgba(25, 25, 25, 0.5);
+	padding: 5 5 5 5;
+	margin-right: 5;
+	bottom: 0%;
+	right: 0%;
+}

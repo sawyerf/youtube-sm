@@ -109,7 +109,12 @@ class Write_file():
 				pass
 		open(self.path_c(data_file, False), 'a', encoding='utf-8').write("""<!--NEXT -->
 		<div class="video">
-			<a class="left" href="{}"> <img src="{}" ></a>
+			<a class="left" href="{}">
+				<div class="container">
+					<img src="{}">
+					<div class="bottom-right"></div>
+				</div>
+			</a>
 			<a href="{}"><h4>{}</h4> </a>
 			<a href="{}"> <p>{}</p> </a>
 			<p>{}</p>
@@ -226,8 +231,8 @@ def write_css(arg):
 		open('css/sub.css', 'w').write(':root {\n	--Back: white;\n	--DivHover : #e9edf3;\n	--Div: white;\n	--ColorH4: black;\n	--ColorP: grey;\n	--ColorBut: #e2e5e9;\n 	--HeightBut: 0px;\n	--HeightButMob: 0px }\n')
 	else:
 		exit('[!] No such argument: ' + arg)
-	open('css/sub.css', 'a').write('.left { float: left; }\n.clear { clear: both; }\n* { font-family: Arial;}\n\nbody {\n	margin: 0 0 0 0;\n	background-color: var(--Back);}\n\n.But {\n	width: 100%;\n	position: fixed;}\n\n#but {\n	-webkit-appearance: none;\n	border: none;\n	background-color: var(--ColorBut);\n	width: 100%;\n	height: var(--HeightBut); }\n\n#first{\n	margin: 0 27% 0 27%;\n	height: var(--HeightBut); }\n\ndiv.video:hover{ \n	background-color: var(--DivHover); }\n\ndiv.video {\n	background-color: var(--Div);\n	margin: 5px 27% 5px 27%; }\n\nimg {\n	width: 280px;\n	height: 157px;\n	margin-right: 5px; }\n\nh4 {\n	color: var(--ColorH4);\n	line-height: 18px;\n	font-size: 18px;\n	margin: 0px 0px -5px 0px; }\n\np {\n	color: var(--ColorP);\n	line-height: 7px; }\n\na{\n	text-decoration: none;\n	color: black; }\n')
-	open('css/sub_mobile.css', 'w').write('.left { float:left; }\n.clear { clear: both; }\n* { font-family: Arial; }\n\n\n#But{\n	margin: 0 0 0 0;\n	position: fixed;\n	width: 100%;\n}\n\n#but {\n	height: var(--HeightButMob);\n	margin: 0 0 0 0;}\n\n#first{\n	margin: 0 0 0 0;\n	width: 100%;\n	height: var(--HeightButMob);\n}\ndiv.video {\n	margin-left: 0%;\n	margin-right: 0%;\n	margin: 10px 10px 10px 10px; }\n\nimg {\n	width: 380px;\n	height: 214px; }\n\nh4 {\n	line-height: 30px;\n	font-size: 30px;\n	margin: 0px 0px -10px 0px; }\n\np {\n	color: grey;\n	line-height: 5px;\n	font-size: 1.9em; }\n\na {\n	text-decoration: none;\n	color: black; }\n')
+	open('css/sub.css', 'a').write('.left { float: left; }\n.clear { clear: both; }\n* { font-family: Arial;}\n\nbody {\n\tmargin: 0 0 0 0;\n\tbackground-color: var(--Back);}\n\n.But {\n\twidth: 100%;\n\tposition: fixed;}\n\n#but {\n\t-webkit-appearance: none;\n\tborder: none;\n\tbackground-color: var(--ColorBut);\n\twidth: 100%;\n\theight: var(--HeightBut); }\n\n#first{\n\tmargin: 0 27% 0 27%;\n\theight: var(--HeightBut); }\n\ndiv.video:hover{ \n\tbackground-color: var(--DivHover); }\n\ndiv.video {\n\tbackground-color: var(--Div);\n\tmargin: 5px 27% 5px 27%; }\n\nimg {\n\twidth: 280px;\n\theight: 157px;\n\tmargin-right: 5px; }\n\nh4 {\n\tcolor: var(--ColorH4);\n\tline-height: 18px;\n\tfont-size: 18px;\n\tmargin: 0px 0px 10px 0px; }\n\np {\n\tcolor: var(--ColorP);\n\tmargin: 4px 0px 4px 0px;\n}\n\na{\n\ttext-decoration: none;\n\tcolor: black; }\n\n.description {\n\toverflow: hidden;\n\tdisplay: -webkit-box;\n\t-webkit-line-clamp: 3;\n\t-webkit-box-orient: vertical;\n  white-space: pre;\n}\n.container {\n\tposition: relative;\n\ttext-align: center;\n\tcolor: white;\n}\n\n/* Bottom right text */\n.bottom-right {\n\tposition: absolute;\n\tbackground-color: rgba(25, 25, 25, 0.5);\n\tpadding: 5 5 5 5;\n\tmargin-right: 5;\n\tbottom: 0%;\n\tright: 0%;\n}\n')
+	open('css/sub_mobile.css', 'w').write('.left { float:left; }\n.clear { clear: both; }\n* { font-family: Arial; }\n\n\n.description {\n\toverflow: hidden;\n\tdisplay: -webkit-box;\n\t-webkit-line-clamp: 1;\n\t-webkit-box-orient: vertical;\n}\n#But{\n\tmargin: 0 0 0 0;\n\tposition: fixed;\n\twidth: 100%;\n}\n\n#but {\n\theight: var(--HeightButMob);\n\tmargin: 0 0 0 0;}\n\n#first{\n\tmargin: 0 0 0 0;\n\twidth: 100%;\n\theight: var(--HeightButMob);\n}\n\ndiv.video {\n\tmargin-left: 0%;\n\tmargin-right: 0%;\n\tmargin: 10px 10px 10px 10px; }\n\n\nimg {\n\twidth: 380px;\n\theight: 214px; }\n\nh4 {\n\toverflow: hidden;\n\tdisplay: -webkit-box;\n\t-webkit-line-clamp: 3;\n\t-webkit-box-orient: vertical;\n\tline-height: 30px;\n\tfont-size: 30px;\n\tmargin: 0px 0px 0px 0px;\n}\n\np {\n\tcolor: grey;\n\t#line-height: 5px;\n\tfont-size: 1.9em;\n\tmargin: 0 0 0 0;\n}\n\na {\n\ttext-decoration: none;\n\tcolor: black;\n}\n\n.container {\n\tposition: relative;\n\ttext-align: center;\n\tcolor: white;\n}\n\n/* Bottom right text */\n.bottom-right {\n\tposition: absolute;\n\tbackground-color: rgba(25, 25, 25, 0.5);\n\tpadding: 5 5 5 5;\n\tmargin-right: 5;\n\tbottom: 0%;\n\tright: 0%;\n}\n')
 
 def write_log(arg, path, passe):
 	var = ''
