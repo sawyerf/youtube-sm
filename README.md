@@ -116,7 +116,12 @@ https://www.youtube.com/watch?v={video_id}
 ```html
 <!--NEXT -->
 <div class="video">
-	<a class="left" href="https://www.youtube.com/watch?v={video_id}"> <img src="{link_pic}" ></a>
+	<a class="left" href="{video_id}">
+		<div class="container">
+			<img src="{link_pic}">
+			<div class="bottom-right">{time}</div>
+		</div>
+	</a>
 	<a href="https://www.youtube.com/watch?v={video_id}"><h4>{title}</h4> </a>
 	<a href="https://www.youtube.com/channel/{channel_id}"> <p>{channel}</p> </a>
 	<p>{date}</p>

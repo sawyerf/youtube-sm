@@ -11,8 +11,8 @@ def README():
 
 setup(
 	name='youtube_sm',
-	version='2.0.2',
-	url='https://github.com/sawyerf/Youtube_subscription_manager',
+	version='2.0.3',
+	url='https://gitlab.com/sawyerf/Youtube_subscription_manager',
 	author='Sawyerf',
 	author_email='sawyer.flink@protonmail.ch',
 	description='Youtube subscription manager',

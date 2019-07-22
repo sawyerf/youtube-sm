@@ -67,7 +67,7 @@ class Write_file():
 		<div class="But"><input value="" id="but" type="submit" onclick="lol()"></div>
 		<div id="first"></div>
 		<script type="text/javascript" src="css/button.js"></script>
-		""")
+""")
 
 	def append_raw(self, url, title, url_channel, url_img, channel, date, data_file):
 		"""Append the informations wich are been recover 
@@ -107,7 +107,7 @@ class Write_file():
 				os.mkdir(self.path_c(data_file, True))
 			except:
 				pass
-		open(self.path_c(data_file, False), 'a', encoding='utf-8').write("""<!--NEXT -->
+		open(self.path_c(data_file, False), 'a', encoding='utf-8').write("""		<!--NEXT -->
 		<div class="video">
 			<a class="left" href="{}">
 				<div class="container">

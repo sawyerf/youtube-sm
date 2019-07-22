@@ -37,7 +37,7 @@ class	Commands():
 		self.path = path
 		self.passe = 0
 
-	def _h(self, arg):
+	def _h(self):
 		print("""Usage: youtube-sm [OPTIONS]
 
 Options:
@@ -79,7 +79,7 @@ Options:
 
 	def _m(self, arg):
 		self.analyze = True
-		if sys.argv[arg + 1] in ['html', 'raw', 'list', 'view', 'json']:
+		if arg + 1 < len(sys.argv) and sys.argv[arg + 1] in ['html', 'raw', 'list', 'view', 'json']:
 			self.mode = sys.argv[arg + 1]
 		else:
 			exit('[!] Mode file invalid')
@@ -94,7 +94,7 @@ Options:
 			exit('[!] Numbers of day invalid')
 
 	def _a(self, arg):
-		if len(sys.argv) != arg + 2:
+		if arg + 2 < len(sys.argv):
 			add_sub({sys.argv[arg+1]: [sys.argv[arg + 2]]}, self.path)
 		else:
 			exit('[!] You Forgot An Argument (-a)')
@@ -121,13 +121,13 @@ Options:
 			exit("[!] Missing argument after the '-s'")
 
 	def __af(self, arg):
-		if os.path.exists(sys.argv[arg + 1]):
+		if arg + 1 < len(sys.argv) and os.path.exists(sys.argv[arg + 1]):
 			add_sub(open(sys.argv[arg + 1], 'r').read().split('\n'), self.path)
 		else:
 			exit('[!] File not found')
 
 	def __ax(self, arg):
-		if os.path.exists(sys.argv[arg + 1]):
+		if arg + 1 < len(sys.argv) and os.path.exists(sys.argv[arg + 1]):
 			generate_swy(sys.argv[arg + 1], self.path)
 		else:
 			exit('[!] File not found')
@@ -182,15 +182,17 @@ Options:
 		write_log(sys.argv, self.path, self.passe)
 
 	def parser(self):
-		if sys.argv == []: # Default command
+		if sys.argv == [] or sys.argv == ['--debug']: # Default command
 			self.__default()
 		elif sys.argv == ['-h'] or sys.argv == ['--help']:
-			self._h(arg)
+			self._h()
 		else:
 			for arg in range(len(sys.argv)):
-				if len(sys.argv[arg]) > 0 and sys.argv[arg][0] != '-':
+				if len(sys.argv[arg]) == 0:
 					continue
-				if len(sys.argv[arg]) > 1 and sys.argv[arg][1] != '-':
+				if sys.argv[arg][0] != '-':
+					continue
+				elif len(sys.argv[arg]) > 1 and sys.argv[arg][1] != '-':
 					if sys.argv[arg] == '-o':
 						self._o(arg)
 					elif sys.argv[arg] == '-d':

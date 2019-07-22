@@ -23,6 +23,8 @@ test:
         - youtube-sm --debug --init test.swy
         - youtube-sm --debug -t -1 --output testall.html
         - wc -l testall.html
+        - youtube-sm -h
+        - youtube-sm --debug
         only:
         - master
 

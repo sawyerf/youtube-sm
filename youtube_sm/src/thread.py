@@ -39,8 +39,8 @@ def Run_analyze(urls, output, min_date, path='', mode='html', loading=False, fil
 			thr = analyzer(urls[site][i], min_date, mode, method, file, prog)
 			thr.Thread()
 			threads.append(thr)
-			thr.start()
 			print_debug("[*] Thread start ({}{})".format(site, urls[site][i]))
+			thr.start()
 			if i%max_thr == 0 or nb == i+1:
 				for y in threads:
 					y.join()
