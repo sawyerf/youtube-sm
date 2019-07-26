@@ -1,8 +1,16 @@
 stages:
 - test
 
-test:
+install:
+        stage: test
         image: python:latest
+        script:
+        - python3 setup.py install
+        only:
+        - master
+
+download:
+        stage: test
         script:
         - python3 setup.py install
         - youtube-sm --init subscription_manager
@@ -23,9 +31,17 @@ test:
         - youtube-sm --debug --init test.swy
         - youtube-sm --debug -t -1 --output testall.html
         - wc -l testall.html
-        - youtube-sm -h
         - youtube-sm --debug
-        only:
-        - master
 
+commands:
+        stage: test
+        script:
+        - python3 setup.py install
+        - youtube-sm 
+        - youtube-sm -h
+        - youtube-sm --css ""
+        - youtube-sm --css
+        - youtube-sm -a [youtube] UC-lHJZR3Gqxm24_Vd_AJ5Yw --debug
+        - youtube-sm -a [peertube] thinkerview.video:5 --debug
+        - youtube-sm -a [dailymotion] karimdebbache --debug
 
