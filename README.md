@@ -44,25 +44,26 @@ youtube-sm [OPTIONS]
 ## Commands
 
 ```
--h                     Print the help text and exit
--m     [mode]          Choose the type of the output (html, json, raw, list, view)
--t     [nb of days]    Choose how far in the past do you want the program to look for videos
+-a     [site][id]      Append a channel or a playlist at the end of sub.
 -d                     Show the dead channels + those who posted no videos
--o     [nb of months]  Show the channels who didn't post videos in [nb of months] + dead channels
+-e                     Edit your sub list
+-h                     Print this help text and exit
 -l     [site][id]      Analyze only one channel or playlist
+-m     [mode]          Choose the type of the output (html, json, raw, list, view)
+-o     [nb of months]  Show the channels who didn't post videos in [nb of months] + dead channels
 -r                     Remove the cache
 -s     [id/all]        Outputs the stats of the selected channel(s)
--a     [site][id]      Append a channel or a playlist at the end of sub.
---init [file]          Remove all your subs and the cache and init with your subscription file.
+-t     [nb of days]    Choose how far in the past do you want the program to look for videos
 --af   [file]          Append a file with list of channel or a playlist in sub.swy
 --ax   [file]          Append a xml file in sub.swy
---html                 Recover yours subs in the common page web (more videos)
---ultra-html           Recover all the videos with the common page and the button 'load more'
---output [file]        Choose the name of the output file
 --cat                  View your subscriptions
 --css  [style]         Import the css files (light, dark, switch)
 --debug                Print errors and progress
+--html                 Recover yours subs in the common page web (more videos)
+--init [file]          Remove all your subs and the cache and init with your subscription file.
 --loading              Prints a progress bar while running
+--output [file]        Choose the name of the output file
+--ultra-html           Recover all the videos with the common page and the button 'load more'
 ```
 
 ## Example

@@ -18,7 +18,10 @@ def main():
 	# Init variable
 	# Path of the cache
 	print_debug('[*] Hello :)')
-	path = getpath()
+	try:
+		path = getpath()
+	except KeyError:
+		exit('[!] HOME is not set')
 	print_debug('[*] Path: {}'.format(path))
 	try:
 		os.makedirs(path + 'data/')
