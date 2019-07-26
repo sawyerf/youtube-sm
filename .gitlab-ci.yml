@@ -1,13 +1,13 @@
+image: python:latest
+
 stages:
+- build
 - test
 
 install:
-        stage: test
-        image: python:latest
+        stage: build
         script:
         - python3 setup.py install
-        only:
-        - master
 
 download:
         stage: test
