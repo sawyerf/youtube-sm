@@ -18,7 +18,8 @@ from ..src.swy import (
 from ..src.tools import (
 	del_data,
 	check_id,
-	print_debug)
+	print_debug,
+	exit_debug)
 from ..src.time import lcl_time
 
 class	Commands():
@@ -83,7 +84,7 @@ Options:
 		if arg + 1 < len(sys.argv) and sys.argv[arg + 1] in ['html', 'raw', 'list', 'view', 'json']:
 			self.mode = sys.argv[arg + 1]
 		else:
-			exit('[!] Mode file invalid')
+			exit_debug('Mode file invalid', 1)
 
 	def _t(self, arg):
 		self.analyze = True
@@ -92,18 +93,18 @@ Options:
 			if self.count == -1:
 				self.all_time = True
 		except:
-			exit('[!] Numbers of day invalid')
+			exit_debug('Numbers of day invalid', 1)
 
 	def _a(self, arg):
 		if arg + 2 < len(sys.argv):
 			add_sub({sys.argv[arg+1]: [sys.argv[arg + 2]]}, self.path)
 		else:
-			exit('[!] You Forgot An Argument (-a)')
+			exit_debug('You Forgot An Argument (-a)', 1)
 
 	def _e(self, arg):
 		editor = os.getenv('EDITOR')
 		if editor == None:
-			print('[*] The variable `EDITOR` is not set. `vi` is use by default')
+			print('The variable `EDITOR` is not set. `vi` is use by default')
 			editor = '/bin/vi'
 		os.system('{} {}sub.swy'.format(editor, self.path))
 
@@ -112,7 +113,7 @@ Options:
 		self.analyze_only_one = True
 		del_data(self.path, False)
 		if arg + 2 >= len(sys.argv):
-			exit('[!] You forgot an argument after -l')
+			exit_debug('You forgot an argument after -l', 1)
 		else:
 			self.url_data = {sys.argv[arg+1]: [sys.argv[arg+2]]}
 
@@ -126,19 +127,19 @@ Options:
 				from .src.thread import stats
 				stats({sys.argv[arg+1]: {sys.argv[arg+2]: sys.argv[arg+2]}})
 		except IndexError:
-			exit("[!] Missing argument after the '-s'")
+			exit_debug("Missing argument after the '-s'", 1)
 
 	def __af(self, arg):
 		if arg + 1 < len(sys.argv) and os.path.exists(sys.argv[arg + 1]):
 			add_sub(open(sys.argv[arg + 1], 'r').read().split('\n'), self.path)
 		else:
-			exit('[!] File not found')
+			exit_debug('File not found', 1)
 
 	def __ax(self, arg):
 		if arg + 1 < len(sys.argv) and os.path.exists(sys.argv[arg + 1]):
 			generate_swy(sys.argv[arg + 1], self.path)
 		else:
-			exit('[!] File not found')
+			exit_debug('File not found', 1)
 
 	def __cat(self, arg):
 		if os.path.exists(self.path + 'sub.swy'):
@@ -160,7 +161,7 @@ Options:
 		try:
 			os.mkdir('css')
 		except:
-			print_debug('[!] CSS folder already exist or can\'t be created')
+			print_debug('CSS folder already exist or can\'t be created', 1)
 		if len(sys.argv) != arg + 1:
 			write_css(sys.argv[arg+1])
 		else:
@@ -176,7 +177,7 @@ Options:
 
 	def __output(self, arg):
 		if arg + 1 >= len(sys.argv):
-			exit('[!] You forgot an argument after --output')
+			exit_debug('You forgot an argument after --output', 1)
 		self.output = sys.argv[arg+1]
 		self.analyze = True
 
@@ -218,13 +219,13 @@ Options:
 					elif sys.argv[arg] == '-s':
 						self._s(arg)
 					elif sys.argv[arg] == '-h':
-						exit("[!] -h don't work with other options")
+						exit_debug("-h don't work with other options", 1)
 					elif sys.argv[arg] == '-1':
 						pass
 					elif sys.argv[arg] == '-e':
 						self._e(arg)
 					else:
-						exit("[!] No such option: {}".format(sys.argv[arg]))
+						exit_debug("No such option: {}".format(sys.argv[arg]), 1)
 				else:
 					if sys.argv[arg] == '--af':
 						self.__af(arg)
@@ -245,11 +246,11 @@ Options:
 					elif sys.argv[arg] == '--output':
 						self.__output(arg)
 					elif sys.argv[arg] == '--help':
-						exit("[!] -h don't work with other options")
+						exit_debug("-h don't work with other options", 1)
 					elif sys.argv[arg] == '--debug':
 						pass
 					else:
-						exit("[!] No such option: {}".format(sys.argv[arg]))
+						exit_debug("No such option: {}".format(sys.argv[arg]), 1)
 	
 	def	router(self):
 		if self.analyze:
@@ -276,4 +277,4 @@ Options:
 			nb_new = Run_analyze(self.url_data, self.output, lcl_time(int(self.count/30+(30-self.count%30)/30), self.all_time), self.path, self.mode, self.loading, file, self.method)
 			file.sort_file(self.count)
 			write_log(sys.argv, self.path, self.passe)
-		print_debug('[*] Done ({} seconds)'.format(str(time.time() - self.passe)[:7]))
+		print_debug('Done ({} seconds)'.format(str(time.time() - self.passe)[:7]))

@@ -39,21 +39,21 @@ class Write_file():
 			return self.append_json(title, url, url_channel, channel, date, url_img, view, data_file)
 
 	def json_init(self):
-		print_debug('[*] Init json')
+		print_debug('Init json')
 		try:
 			os.makedirs(self.path_cache + 'data/' + self.mode + '/' + self.method)
 		except:
-			print_debug('[!] Cache folder already exist or can\'t be create')
+			print_debug('Cache folder already exist or can\'t be create', 1)
 			pass
 		open(self.output, 'w', encoding='utf8').write('{\n"items" : [\n')
 
 	def html_init(self):
 		"""To init the html file"""
-		print_debug('[*] Init html')
+		print_debug('Init html')
 		try:
 			os.makedirs(self.path_cache + 'data/' + self.mode + '/' + self.method)
 		except:
-			print_debug('[!] Cache folder already exist or can\'t be create')
+			print_debug('Cache folder already exist or can\'t be create')
 			pass
 		open(self.output, 'w', encoding='utf8').write("""<html>
 	<head>
@@ -158,7 +158,7 @@ class Write_file():
 		"""Recover the file in '.../data/.' with all the
 		informations, sort by date and add the informations
 		in './sub.html'. """
-		print_debug('[*] Start sort of {}'.format(self.mode))
+		print_debug('Start sort of {}'.format(self.mode))
 		first = True
 		fch = sorted(os.listdir(self.path_cache + 'data/' + self.mode + '/' + self.method + '/'))
 		if len(fch) < count:

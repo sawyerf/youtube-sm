@@ -1,60 +1,55 @@
 import socket
 import ssl
-import time
+import re
+from time import time
 from .tools import print_debug
 
-def download_http(url, host='youtube.com'):
-	data = b''
-	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	sock.connect((host, 80))
-	sock.send(b"GET " + url + b" HTTP/1.0\r\nHost: www." + host.encode() + b"\r\n\r\n")
-	while True:
-		raw_data = sock.recv(1024)
-		if raw_data == b"":
-			break
-		else:
-			data += raw_data
-	sock.close()
-	try:
-		return data.decode('utf8')
-	except:
-		print_debug('[!] Can\'t decode data recv ({}{})'.format(host, url))
-		return None
+TIMEOUT = 2
 
-def download_https(url, host='youtube.com'):
-	data = b''
-	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	sock.connect((host, 443))
-	sock.settimeout(1);
-	for i in range(5):
-		try:
-			ssock = ssl.wrap_socket(sock)
-		except OSError:
-			time.sleep(1)
-			if i == 4:
-				print_debug('[!] Can\'t start the ssl connection ({}{})'.format(host, url))
-				return None
-		else:
-			break
-	ssock.write(b"GET " + url + b' HTTP/1.1\r\nHost: www.' + host.encode() + b'\r\nAccept-Language: en\r\n\r\n')
-	# Recv the HTML page :
+def recv(sock, url):
+	data = b""
+	trun = time()
 	while True:
+		raw_data = b""
 		try:
-			raw_data = ssock.recv(1000)
-		except ConnectionResetError:
-			print_debug('[!] Connection losted ({}{})'.format(host, url))
-			return None
-		except:
+			raw_data = sock.recv(100000)
+		except socket.timeout:
+			if data != b'':
+				break
+		except Exception as e:
+			print_debug('Error Recv: {}'.format(e), 1)
+			break
+		if time() - trun > TIMEOUT or raw_data == b'':
 			break
 		data += raw_data
-		if b'\r\n0\r\n\r\n' in data[-20:] or raw_data == b'' or b'</rss>' in data[-20:] or b'</html>' in data[-20:]:
-			break
-		if b'200' not in data[:20]:
-			print_debug("[!] {} (https://{}{})".format(data.decode().split('\r\n')[0], host, url.decode()))
-			return None
-	ssock.close()
+	sock.close()
 	try:
-		return data.decode('utf8')
+		data = data.decode('utf8')
+		if not re.match(r'HTTP/1\.[0-1] 200', data):
+			print_debug("Error: {} ({})".format(data.split('\r\n')[0], url), 1)
+			return None
+		return data
 	except:
-		print_debug('[!] Can\'t decode data recv ({}{})'.format(host, url))
+		print_debug('Can\'t decode data recv ({})'.format(url), 1)
 		return None
+
+def download_http(url, host='youtube.com'):
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	sock.connect((host, 80))
+	sock.settimeout(1);
+	sock.send(b"GET " + url + b" HTTP/1.0\r\nHost: www." + host.encode() + b"\r\n\r\n")
+	return recv(sock, host + url.decode())
+
+def download_https(url, host='youtube.com'):
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	context = ssl._create_default_https_context()
+	context.check_hostname = host
+	sock = context.wrap_socket(sock, server_hostname=host)
+	try:
+		sock.connect((host, 443))
+	except Exception as e:
+		print_debug('{} ({}{})'.format(e, host, url), 1)
+		return None
+	sock.settimeout(1);
+	sock.write(b"GET " + url + b' HTTP/1.1\r\nHost: www.' + host.encode() + b'\r\nAccept-Language: en\r\n\r\n')
+	return recv(sock, 'https://' + host + url.decode())

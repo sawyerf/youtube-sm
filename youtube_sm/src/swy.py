@@ -66,7 +66,7 @@ def add_sub(subs, path=''):
 def convert_v1_to_v2(sub_file):
 	"""The sub.swy have evolve and is no more compatible so
 	this function convert the sub.swy version 1.0 to 2.0"""
-	print_debug('[*] Convert swy (v1 to v2)')
+	print_debug('Convert swy (v1 to v2)')
 	data = open(sub_file, 'rb').read().decode('utf8')
 	open(sub_file, 'w', encoding='utf8').write('[v][2.0]\n[site][youtube]\n' + data)
 
@@ -75,7 +75,7 @@ def swy(path, mode=0):
 	mode : 0 --> return a list with only the id
 		   1 --> return a dict with the channel and the id
 		   2 --> return a list wich is not .split('\t')"""
-	print_debug('[*] Start read swy')
+	print_debug('Start read swy')
 	if not exists(path + 'sub.swy'):
 		try:
 			open(path + 'sub.swy', 'w', encoding='utf8')
@@ -108,7 +108,7 @@ def swy(path, mode=0):
 					continue
 				urls[siteid][subs[y].split('\t')[0]] = subs[y].split('\t')[1]
 	for site in urls:
-		print_debug("[*] {} subs for {}".format(len(urls[site]), site))
+		print_debug("{} subs for {}".format(len(urls[site]), site))
 	return urls
 
 def init_swy(path, arg):
@@ -118,9 +118,9 @@ def init_swy(path, arg):
 	try:
 		makedirs(path + 'data/')
 	except:
-		exit('[*] Error We Can\'t Create The Folder')
+		exit('Error We Can\'t Create The Folder')
 	else:
-		print('[*] Data File Create')
+		print('Data File Create')
 	if len(sys.argv) != arg + 1:
 		add_file = sys.argv[arg + 1]
 		if not exists(add_file):
@@ -150,7 +150,7 @@ def init_swy(path, arg):
 			generate_swy('subscription_manager', path=path)
 		else:
 			exit('[!] File Not Found (subscription_manager)')
-	print('[*] Subs append to sub.swy')
-	print('[*] Done')
+	print('Subs append to sub.swy')
+	print('Done')
 	exit(0)
 

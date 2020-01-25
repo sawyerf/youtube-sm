@@ -11,5 +11,5 @@ def return_Analyzer(site):
 	elif site == '[peertube]':
 		return Peertube_Analyzer
 	else:
-		print_debug('[!] Analyzer not found ({})'.format(site))
+		print_debug('Analyzer not found ({})'.format(site), 1)
 		return None

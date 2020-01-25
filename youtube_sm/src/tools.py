@@ -74,6 +74,16 @@ def del_data(path='', prin=True):
 		if prin:
 			print('[!] Data do not exist')
 
-def print_debug(msg):
+def exit_debug(msg, i=0):
+	if i == 0:
+		print('\33[1;36m[*]', msg, '\033[00m')
+	elif i == 1:
+		print('\33[1;31m[!]', msg, '\033[00m')
+	exit()
+
+def print_debug(msg, i=0):
 	if '--debug' in sys.argv:
-		print(msg)
+		if i == 0:
+			print('\33[1;36m[*]', msg, '\033[00m')
+		elif i == 1:
+			print('\33[1;31m[!]', msg, '\033[00m')

@@ -17,16 +17,17 @@ def getpath():
 def main():
 	# Init variable
 	# Path of the cache
-	print_debug('[*] Hello :)')
+	print_debug('Hello :)')
 	try:
 		path = getpath()
 	except KeyError:
-		exit('[!] HOME is not set')
-	print_debug('[*] Path: {}'.format(path))
+		print_debug('HOME is not set', 1)
+		exit()
+	print_debug('Path: {}'.format(path))
 	try:
 		os.makedirs(path + 'data/')
 	except:
-		print_debug('[!] Data already exist or can\'t be create')
+		print_debug('Data already exist or can\'t be create', 1)
 	del sys.argv[0]
 	cmd = Commands(path)
 	cmd.parser()

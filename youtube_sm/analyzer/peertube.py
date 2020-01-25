@@ -45,15 +45,15 @@ class	Peertube_Analyzer(Thread):
 		try:
 			data = download_xml_peertube(sub, False)
 		except socket.gaierror:
-			print("[!] Wrong host ({})".format(sub))
+			print("Wrong host ({})".format(sub), 1)
 			return None
 		if data == None or not '</rss>' in data:
-			print("[!] The channel/playlist can't be add. It could be delete.")
+			print("The channel/playlist can't be add. It could be delete.", 1)
 			return None
 		try:
 			data = re.findall(r'<title>(.*)</title>', data)[0]
 		except:
-			print("[!] The channel/playlist can't be add. It could be delete.")
+			print("The channel/playlist can't be add. It could be delete.", 1)
 			return None
 		else:
 			return sub + '\t' + data
@@ -111,7 +111,7 @@ class	Peertube_Analyzer(Thread):
 				try:
 					self.info_rss(i)
 				except:
-					print_debug('[!] Error during the retrieve of the info ({})'.format(self.id))
+					print_debug('Error during the retrieve of the info ({})'.format(self.id), 1)
 				else:
 					self.write()
 

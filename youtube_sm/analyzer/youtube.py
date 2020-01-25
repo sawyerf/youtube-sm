@@ -76,15 +76,15 @@ class Youtube_Analyzer(Thread):
 				try:
 					self.channel = linfo[0].split('<title>')[1].split('\n')[0]
 				except IndexError:
-					print_debug('[!] Not found the title ({})'.format(self.id))
+					print_debug('Not found the title ({})'.format(self.id), 1)
 				except:
-					print_debug('[!] Not found the title ({})'.format(self.id))
+					print_debug('Not found the title ({})'.format(self.id), 1)
 				del linfo[0]
 			for i in linfo:
 				try:
 					self.info_html(i)
 				except:
-					print_debug('[!] Error during the retrieve of the info ({})'.format(self.id))
+					print_debug('Error during the retrieve of the info ({})'.format(self.id), 1)
 				else:
 					self.write()
 		elif self.method == '2':
@@ -92,15 +92,15 @@ class Youtube_Analyzer(Thread):
 				try:
 					self.channel = linfo[0].split('<title>')[1].split('\n')[0]
 				except IndexError:
-					print_debug('[!] Not found the title ({})'.format(self.id))
+					print_debug('Not found the title ({})'.format(self.id), 1)
 				except:
-					print_debug('[!] Not found the title ({})'.format(self.id))
+					print_debug('Not found the title ({})'.format(self.id), 1)
 				del linfo[0]
 				for i in linfo:
 					try:
 						self.info_html(i)
 					except:
-						print_debug('[!] Error during the retrieve of the info ({})'.format(self.id))
+						print_debug('Error during the retrieve of the info ({})'.format(self.id), 1)
 					else:
 						self.write()
 				try:
@@ -176,7 +176,7 @@ class Youtube_Analyzer(Thread):
 					try:
 						self.info_show_more(i)
 					except:
-						print_debug('[!] Error during the retrieve of the info ({})'.format(self.id))
+						print_debug('Error during the retrieve of the info ({})'.format(self.id), 1)
 					else:
 						self.write()
 				if self.prog != None:
