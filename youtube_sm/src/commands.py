@@ -18,7 +18,7 @@ from ..src.swy import (
 from ..src.tools import (
 	del_data,
 	check_id,
-	print_debug,
+	log,
 	exit_debug)
 from ..src.time import lcl_time
 
@@ -161,7 +161,7 @@ Options:
 		try:
 			os.mkdir('css')
 		except:
-			print_debug('CSS folder already exist or can\'t be created', 1)
+			log.error('CSS folder already exist or can\'t be created')
 		if len(sys.argv) != arg + 1:
 			write_css(sys.argv[arg+1])
 		else:
@@ -224,6 +224,8 @@ Options:
 						pass
 					elif sys.argv[arg] == '-e':
 						self._e(arg)
+					elif sys.argv[arg] == '-v':
+						pass
 					else:
 						exit_debug("No such option: {}".format(sys.argv[arg]), 1)
 				else:
@@ -274,7 +276,7 @@ Options:
 			elif self.mode in ['list', 'raw', 'view']:
 				if os.path.exists(self.output):
 					os.remove(self.output)
-			nb_new = Run_analyze(self.url_data, self.output, lcl_time(int(self.count/30+(30-self.count%30)/30), self.all_time), self.path, self.mode, self.loading, file, self.method)
+			nb_new = Run_analyze(self.url_data, self.output, lcl_time(self.count + 30, self.all_time), self.path, self.mode, self.loading, file, self.method)
 			file.sort_file(self.count)
 			write_log(sys.argv, self.path, self.passe)
-		print_debug('Done ({} seconds)'.format(str(time.time() - self.passe)[:7]))
+		log.info('Done ({} seconds)'.format(str(time.time() - self.passe)[:7]))

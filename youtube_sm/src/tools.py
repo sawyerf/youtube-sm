@@ -82,8 +82,20 @@ def exit_debug(msg, i=0):
 	exit()
 
 def print_debug(msg, i=0):
-	if '--debug' in sys.argv:
+	if '--debug' in sys.argv or '-v' in sys.argv:
 		if i == 0:
 			print('\33[1;36m[*]', msg, '\033[00m')
 		elif i == 1:
 			print('\33[1;31m[!]', msg, '\033[00m')
+
+class log:
+	def info(msg, end='\n'):
+		if '--debug' in sys.argv or '-v' in sys.argv:
+			print('\33[1;36m[*]', msg, '\033[00m', end=end)
+
+	def warning(msg, end='\n'):
+		if '--debug' in sys.argv or '-v' in sys.argv:
+			print('\33[1;33m[!]', msg, '\033[00m', end=end)
+
+	def error(msg, end='\n'):
+			print('\33[1;31m[!]', msg, '\033[00m', end=end)

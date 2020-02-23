@@ -2,7 +2,8 @@ import time
 import os
 
 from .time import since
-from .tools import print_debug
+from .tools import log
+from datetime import datetime, timedelta
 
 class Write_file():
 	def __init__(self, output='sub.html', path_cache='', mode='html', method='0'):
@@ -39,21 +40,21 @@ class Write_file():
 			return self.append_json(title, url, url_channel, channel, date, url_img, view, data_file)
 
 	def json_init(self):
-		print_debug('Init json')
+		log.info('Init json')
 		try:
 			os.makedirs(self.path_cache + 'data/' + self.mode + '/' + self.method)
 		except:
-			print_debug('Cache folder already exist or can\'t be create', 1)
+			log.error('Cache folder already exist or can\'t be create')
 			pass
 		open(self.output, 'w', encoding='utf8').write('{\n"items" : [\n')
 
 	def html_init(self):
 		"""To init the html file"""
-		print_debug('Init html')
+		log.info('Init html')
 		try:
 			os.makedirs(self.path_cache + 'data/' + self.mode + '/' + self.method)
 		except:
-			print_debug('Cache folder already exist or can\'t be create')
+			log.warning('Cache folder already exist or can\'t be create')
 			pass
 		open(self.output, 'w', encoding='utf8').write("""<html>
 	<head>
@@ -147,26 +148,29 @@ class Write_file():
 		else:
 			return '{}data/{}/{}/{}/{}'.format(self.path_cache, self.mode, self.method, data_file[0], data_file[1])
 
-	def sort_file(self, count=7):
+	def sort_file(self, day=7):
 		""" To sort the videos by date or add the videos in the file"""
 		if self.mode == 'html' or self.mode == 'json':
-			self.html_json_end(count)
+			self.html_json_end(day)
 		elif self.mode == 'list' or self.mode == 'raw':
-			self.raw_list_end(count)
+			self.raw_list_end(day)
 
-	def html_json_end(self, count=7, play=True):
+	def html_json_end(self, day=7, play=True):
 		"""Recover the file in '.../data/.' with all the
 		informations, sort by date and add the informations
 		in './sub.html'. """
-		print_debug('Start sort of {}'.format(self.mode))
+		log.info('Start sort of {}'.format(self.mode))
 		first = True
 		fch = sorted(os.listdir(self.path_cache + 'data/' + self.mode + '/' + self.method + '/'))
-		if len(fch) < count:
-			date = 0
-		elif count == -1:
-			date = -1
+		if len(fch) == 0:
+			date		= 0
+			futur_date	= 0
+		elif day == -1:
+			date		= -1
+			futur_date	= 99999999999999
 		else:
-			date = int(since(count)[:8])
+			date		= int(since(day)[:8])
+			futur_date	= int(since(-1 * day)[:8])
 		sub_file = open(self.output, 'a', encoding='utf-8')
 		i = -1
 		while True:
@@ -180,7 +184,7 @@ class Write_file():
 					folder_date = 0
 				else:
 					continue
-			if folder_date > date:
+			if folder_date > date and folder_date < futur_date:
 				fch_in = sorted(os.listdir(self.path_cache + 'data/' + self.mode + '/' + self.method + '/' + fch[-1-i]))
 				for a in range(len(fch_in)):
 					data = open(self.path_cache + 'data/' + self.mode + '/' + self.method + '/' + fch[-1-i] + '/' + fch_in[-1-a], 'r', encoding='utf-8').read()
@@ -195,18 +199,18 @@ class Write_file():
 		elif self.mode == 'json':
 			open(self.output, 'a').write(']}')
 
-	def raw_list_end(self, count=7):
+	def raw_list_end(self, day=7):
 		"""Sorted the videos by date"""
-		print('[*] Start sort of {}'.format(self.mode))
+		log.info('Start sort of {}'.format(self.mode))
 		try:
 			linfo = sorted(open(self.output, 'rb').read().decode('utf8').replace('\r', '').split('\n'))
 		except FileNotFoundError:
 			return 
 		fichier = open(self.output, 'w', encoding='utf8')
-		if count == -1:
+		if day == -1:
 			date = -1
 		else:
-			date = int(since(count)[:8])
+			date = int(since(day)[:8])
 		i = -1
 		while True:
 			i += 1

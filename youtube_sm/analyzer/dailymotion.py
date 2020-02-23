@@ -2,7 +2,7 @@ import re
 
 from time						import strptime
 from threading					import Thread
-from ..src.tools				import print_debug
+from ..src.tools				import log
 from ..downloader.dailymotion	import download_xml_daily
 
 class Dailymotion_Analyzer(Thread):
@@ -32,7 +32,7 @@ class Dailymotion_Analyzer(Thread):
 			self.prog.add()
 
 	def add_sub(self, sub):
-		print_debug("Dailymotion has delete the rss so this functionnality is suspende. Sorry", 1)
+		log.warning("Dailymotion has delete the rss so this functionnality is suspende. Sorry")
 		return None
 		data = download_xml_daily(sub, split=False)
 		if data == None:
@@ -40,7 +40,7 @@ class Dailymotion_Analyzer(Thread):
 		return sub + '\t' + sub
 
 	def analyzer_sub(self):
-		print_debug("Dailymotion has delete the rss so this functionnality is suspende. Sorry", 1)
+		log.warning("Dailymotion has delete the rss so this functionnality is suspende. Sorry")
 		return 
 		if self.method == '0':
 			linfo = self._download_page()
@@ -51,7 +51,7 @@ class Dailymotion_Analyzer(Thread):
 				try:
 					self.info_recup_rss(i)
 				except:
-					print_debug('Error during the retrieve of the info ({})'.format(self.id), 1)
+					lor.warning('Error during the retrieve of the info ({})'.format(self.id))
 				else:
 					self.write()
 

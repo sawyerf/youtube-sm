@@ -12,7 +12,7 @@ from ..src.tools import (
 	Progress_loop,
 	type_id,
 	check_id,
-	print_debug)
+	log)
 from ..src.time import since
 
 class Youtube_Analyzer(Thread):
@@ -46,7 +46,7 @@ class Youtube_Analyzer(Thread):
 		tid = type_id(sub)
 		data = download_xml(sub, type_id=tid, split=False)
 		if data == None:
-			print("[!] The channel/playlist can't be add. It could be delete.")
+			log.warning("The channel/playlist can't be add. It could be delete.")
 			return None
 		try:
 			if tid:
@@ -54,7 +54,7 @@ class Youtube_Analyzer(Thread):
 			else:
 				data = re.findall(r'<title>(.+?)</title>', data)[0]
 		except:
-			print("[!] The channel/playlist can't be add. It could be delete.")
+			log.warning("The channel/playlist can't be add. It could be delete.")
 			return None
 		else:
 			return sub + '\t' + data
@@ -76,15 +76,15 @@ class Youtube_Analyzer(Thread):
 				try:
 					self.channel = linfo[0].split('<title>')[1].split('\n')[0]
 				except IndexError:
-					print_debug('Not found the title ({})'.format(self.id), 1)
+					log.error('Not found the title ({})'.format(self.id))
 				except:
-					print_debug('Not found the title ({})'.format(self.id), 1)
+					log.error('Not found the title ({})'.format(self.id))
 				del linfo[0]
 			for i in linfo:
 				try:
 					self.info_html(i)
 				except:
-					print_debug('Error during the retrieve of the info ({})'.format(self.id), 1)
+					log.error('Error during the retrieve of the info ({})'.format(self.id))
 				else:
 					self.write()
 		elif self.method == '2':
@@ -92,15 +92,15 @@ class Youtube_Analyzer(Thread):
 				try:
 					self.channel = linfo[0].split('<title>')[1].split('\n')[0]
 				except IndexError:
-					print_debug('Not found the title ({})'.format(self.id), 1)
+					log.error('Not found the title ({})'.format(self.id))
 				except:
-					print_debug('Not found the title ({})'.format(self.id), 1)
+					log.error('Not found the title ({})'.format(self.id))
 				del linfo[0]
 				for i in linfo:
 					try:
 						self.info_html(i)
 					except:
-						print_debug('Error during the retrieve of the info ({})'.format(self.id), 1)
+						log.error('Error during the retrieve of the info ({})'.format(self.id))
 					else:
 						self.write()
 				try:
@@ -176,7 +176,7 @@ class Youtube_Analyzer(Thread):
 					try:
 						self.info_show_more(i)
 					except:
-						print_debug('Error during the retrieve of the info ({})'.format(self.id), 1)
+						log.error('Error during the retrieve of the info ({})'.format(self.id))
 					else:
 						self.write()
 				if self.prog != None:

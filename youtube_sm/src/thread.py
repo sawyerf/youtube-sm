@@ -5,7 +5,7 @@ from .tools import (
 	Progress,
 	Progress_loop,
 	type_id,
-	print_debug)
+	log)
 
 
 def Run_analyze(urls, output, min_date, path='', mode='html', loading=False, file=None, method='0'):
@@ -30,7 +30,7 @@ def Run_analyze(urls, output, min_date, path='', mode='html', loading=False, fil
 	elif method == '2':
 		max_thr = 5
 	# Run threads
-	print_debug('Start threads')
+	log.info('Start threads')
 	for site in urls:
 		analyzer = return_Analyzer(site)
 		if analyzer == None:
@@ -39,7 +39,7 @@ def Run_analyze(urls, output, min_date, path='', mode='html', loading=False, fil
 			thr = analyzer(urls[site][i], min_date, mode, method, file, prog)
 			thr.Thread()
 			threads.append(thr)
-			print_debug("Thread start ({}{})".format(site, urls[site][i]))
+			log.info("Thread start ({}{})".format(site, urls[site][i]))
 			thr.start()
 			if i%max_thr == 0 or nb == i+1:
 				for y in threads:
@@ -53,9 +53,9 @@ def Run_analyze(urls, output, min_date, path='', mode='html', loading=False, fil
 		print()
 
 def old(subs, min_tps=12):
-	lcl = lcl_time(min_tps)
+	lcl = lcl_time(min_tps * 31)
 	threads = []
-	print_debug('Start threads')
+	log.info('Start threads')
 	for site in subs:
 		analyzer = return_Analyzer(site)()
 		for url in subs[site]:
@@ -67,7 +67,7 @@ def old(subs, min_tps=12):
 
 def dead(subs):
 	threads = []
-	print_debug('Start threads')
+	log.info('Start threads')
 	for site in subs:
 		analyzer = return_Analyzer(site)()
 		for url in subs[site]:
@@ -79,7 +79,7 @@ def dead(subs):
 
 def stats(subs):
 	threads = []
-	print_debug('Start threads')
+	log.info('Start threads')
 	for site in subs:
 		analyzer = return_Analyzer(site)()
 		for url in subs[site]:

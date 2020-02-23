@@ -4,7 +4,7 @@ import sys
 
 from .src.commands import Commands
 from .src.tools import (
-	print_debug)
+	log)
 
 def getpath():
 	if os.name == 'nt':
@@ -17,17 +17,17 @@ def getpath():
 def main():
 	# Init variable
 	# Path of the cache
-	print_debug('Hello :)')
+	log.info('Hello :)')
 	try:
 		path = getpath()
 	except KeyError:
-		print_debug('HOME is not set', 1)
+		log.error('HOME is not set')
 		exit()
-	print_debug('Path: {}'.format(path))
+	log.info('Path: {}'.format(path))
 	try:
 		os.makedirs(path + 'data/')
 	except:
-		print_debug('Data already exist or can\'t be create', 1)
+		log.warning('Data already exist or can\'t be create')
 	del sys.argv[0]
 	cmd = Commands(path)
 	cmd.parser()

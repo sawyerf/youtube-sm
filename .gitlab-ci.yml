@@ -26,6 +26,10 @@ download:
         - wc -l test.raw
         - youtube-sm -l [peertube] thinkerview.video -m raw -t -1 -r --output test.raw --debug
         - wc -l test.raw
+        - youtube-sm -l [infoconcert] salut-cest-cool-120538 -m raw -t -1 -r --output test.raw --debug
+        - wc -l test.raw
+        - youtube-sm -l [infoconcert] achab-175740 -m raw -t -1 -r --output test.raw --debug
+        - wc -l test.raw
         - youtube-sm -l [test] test -m raw -t -1 -r --output test.raw --debug
         - curl -O https://sawyerf.gitlab.io/youtube_sm/test.swy
         - youtube-sm --debug --init test.swy

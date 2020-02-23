@@ -1,10 +1,12 @@
 import re
 
 from ..src.tools import (
-	print_debug)
+	log
+)
 from ..src.sock	import (
 	download_http,
-	download_https)
+	download_https
+)
 
 def download_page(url_id, type_id=True, split=True, method='0'):
 	if method == '0':
@@ -28,7 +30,7 @@ def download_xml(url_id, type_id=True, split=True):
 		linfo = data.split("<entry>")
 		del linfo[0]
 		if linfo == []:
-			print_debug('No videos ({})'.format(url_id), 1)
+			log.warning('No videos ({})'.format(url_id))
 			return None
 		return linfo
 	else:
@@ -38,12 +40,12 @@ def download_html(url_id, type_id=True, split=True):
 	"""Return a list of informations of each video with the
 	current html page"""
 	if type_id:
-		url = b'/channel/' + url_id.encode() + b'/videos'
+		url = '/channel/' + url_id + '/videos'
 	else:
-		url = b'/playlist?list=' + url_id.encode()
+		url = '/playlist?list=' + url_id
 		data = download_https(url)
 		url = data.split('<a href="/watch?v')[1].split('"')[0]
-		url = b'/watch?v' + url.encode()
+		url = '/watch?v' + url
 	data = download_https(url)
 	if data == None:
 		return None
@@ -51,13 +53,13 @@ def download_html(url_id, type_id=True, split=True):
 		if type_id: #channel
 			linfo = data.split('<div class="yt-lockup-content">')
 			if len(linfo) <= 1:
-				print_debug('No videos ({})'.format(url_id), 1)
+				log.warning('No videos ({})'.format(url_id))
 				return None
 		else: #playlist
 			linfo = data.split('<li class="yt-uix-scroller-scroll-unit  vve-check"')
 			del linfo[0]
 			if linfo == []:
-				print_debug('No videos ({})'.format(url_id), 1)
+				log.warning('No videos ({})'.format(url_id))
 				return None
 		return linfo
 	else:
@@ -70,12 +72,12 @@ def download_html_playlist(url_id, split=True):
 	try:
 		len_play = int(re.findall(r'<span id="playlist-length">(.+?)videos</span>', data)[0])
 	except:
-		print_debug("No video in the page ({})".format(url_id), 1)
+		log.warning("No video in the page ({})".format(url_id))
 		return None, None, None
 	linfo = data.split('<li class="yt-uix-scroller-scroll-unit  vve-check"')
 	del linfo[0]
 	if linfo == []:
-		print_debug("No video in the page ({})".format(url_id), 1)
+		log.warning("No video in the page ({})".format(url_id))
 		return None, None, None
 	try:
 		next_link = '/watch?v=' + re.findall(r'<a href="/watch\?v=(.+?)"', linfo[-1])[0]

@@ -7,7 +7,7 @@ from ..downloader.youtube import download_xml
 from ..analyzer.imports import return_Analyzer
 from .tools import (
 	type_id,
-	print_debug)
+	log)
 
 def generate_swy(sub_file, path=''):
 	"""Add sub in sub.swy"""
@@ -66,7 +66,7 @@ def add_sub(subs, path=''):
 def convert_v1_to_v2(sub_file):
 	"""The sub.swy have evolve and is no more compatible so
 	this function convert the sub.swy version 1.0 to 2.0"""
-	print_debug('Convert swy (v1 to v2)')
+	log.info('Convert swy (v1 to v2)')
 	data = open(sub_file, 'rb').read().decode('utf8')
 	open(sub_file, 'w', encoding='utf8').write('[v][2.0]\n[site][youtube]\n' + data)
 
@@ -75,7 +75,7 @@ def swy(path, mode=0):
 	mode : 0 --> return a list with only the id
 		   1 --> return a dict with the channel and the id
 		   2 --> return a list wich is not .split('\t')"""
-	print_debug('Start read swy')
+	log.info('Start read swy')
 	if not exists(path + 'sub.swy'):
 		try:
 			open(path + 'sub.swy', 'w', encoding='utf8')
@@ -108,7 +108,7 @@ def swy(path, mode=0):
 					continue
 				urls[siteid][subs[y].split('\t')[0]] = subs[y].split('\t')[1]
 	for site in urls:
-		print_debug("{} subs for {}".format(len(urls[site]), site))
+		log.info("{} subs for {}".format(len(urls[site]), site))
 	return urls
 
 def init_swy(path, arg):
