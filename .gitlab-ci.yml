@@ -28,8 +28,6 @@ download:
         - wc -l test.raw
         - youtube-sm -l [infoconcert] salut-cest-cool-120538 -m raw -t -1 -r --output test.raw --debug
         - wc -l test.raw
-        - youtube-sm -l [infoconcert] achab-175740 -m raw -t -1 -r --output test.raw --debug
-        - wc -l test.raw
         - youtube-sm -l [test] test -m raw -t -1 -r --output test.raw --debug
         - curl -O https://sawyerf.gitlab.io/youtube_sm/test.swy
         - youtube-sm --debug --init test.swy
@@ -48,4 +46,5 @@ commands:
         - youtube-sm -a [youtube] UC-lHJZR3Gqxm24_Vd_AJ5Yw --debug
         - youtube-sm -a [peertube] thinkerview.video:5 --debug
         - youtube-sm -a [dailymotion] karimdebbache --debug
-
+        - youtube-sm -a [infoconcert] achab-175740 --debug
+        - youtube-sm -a [infoconcert] https://www.infoconcert.com/artiste/achab-175740/concerts.html --debug
