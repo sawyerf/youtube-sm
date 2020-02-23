@@ -89,7 +89,7 @@ def download_show_more(url, type_id=True):
 	""" Download the page for the method 'ultra-html'
 	and return the data and the next link to download """
 	if type_id:
-		data = download_https(url.encode())
+		data = download_https(url)
 		if data == None:
 			return None, None
 		data = data.replace('\\n', '\n').replace('\\"', '"')
@@ -101,7 +101,7 @@ def download_show_more(url, type_id=True):
 		del data[0]
 		return data, next_link
 	else:
-		data = download_https(url.encode())
+		data = download_https(url)
 		if data == None:
 			return None, None
 		linfo = data.split('<li class="yt-uix-scroller-scroll-unit  vve-check"')

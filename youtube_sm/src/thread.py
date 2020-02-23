@@ -24,7 +24,7 @@ def Run_analyze(urls, output, min_date, path='', mode='html', loading=False, fil
 	else:
 		prog = None
 	if method == '0':
-		max_thr = 200
+		max_thr = 40
 	elif method == '1':
 		max_thr = 50
 	elif method == '2':
@@ -41,7 +41,7 @@ def Run_analyze(urls, output, min_date, path='', mode='html', loading=False, fil
 			threads.append(thr)
 			log.info("Thread start ({}{})".format(site, urls[site][i]))
 			thr.start()
-			if i%max_thr == 0 or nb == i+1:
+			if i > 1 and (i%max_thr == 0 or nb == i+1):
 				for y in threads:
 					y.join()
 				threads = []

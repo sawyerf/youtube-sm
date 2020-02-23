@@ -40,9 +40,12 @@ class InfoConcert_Analyzer(Thread):
 			self.prog.add()
 
 	def extract_id(self, sub):
+		if sub == '':
+			return sub
 		if re.match(r'.*www.infoconcert.com/artiste/.+?/concerts.html', sub):
 			sub = re.findall(r'www.infoconcert.com/artiste/(.+?)/concerts.html', sub)[0]
 		if not re.match(r'^(.*)-([0-9]*)$', sub):
+			print(sub)
 			log.error('Wrong id')
 			return None
 		return sub

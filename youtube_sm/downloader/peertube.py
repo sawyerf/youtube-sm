@@ -11,7 +11,7 @@ def	download_xml_peertube(url_id, split=True):
 	info = url_id.split(':')
 	data = download_https(ptube_crtlink(info, 'xml'), info[0])
 	if data == None:
-		data = download_https(ptube_crtlink(info, 'xml').replace('accountId', 'videoChannelId').encode(), info[0])
+		data = download_https(ptube_crtlink(info, 'xml').replace('accountId', 'videoChannelId'), info[0])
 		if data == None:
 			log.error('Failed to download ({})'.format(info))
 			return None
