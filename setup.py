@@ -1,13 +1,10 @@
-from setuptools import setup, find_packages
-
-params = dict()
-params['entry_points'] = {'console_scripts': ['youtube-sm = youtube_sm.main:main']}
+from setuptools	import setup, find_packages
+from os		import path
 
 def README():
-	try:
-		return open('README.md', 'r', encoding='utf8').read().replace('\r', '')
-	except:
-		return 'Youtube_subscription_manager is an alternative to youtube.com to recover your subscriptions without requires an account.'
+	here = path.abspath(path.dirname(__file__))
+	with open(path.join(here, 'README.md'), 'r', encoding='utf-8') as f:
+		return f.read().replace('\r', '')
 
 setup(
 	name='youtube_sm',
@@ -20,7 +17,9 @@ setup(
 	long_description=README(),
 	keywords='youtube subscription api manager html',
 	license='MLP-2.0',
-	packages=find_packages(),
+	packages=find_packages(include=[
+		'youtube_sm', 'youtube_sm.*',
+	]),
 	classifiers=[
 		'Topic :: Internet :: WWW/HTTP :: Indexing/Search',
 		'Environment :: Console',
@@ -31,5 +30,7 @@ setup(
 		'Programming Language :: Python :: 3',
 		'Programming Language :: Python :: 3 :: Only'
 	],
-	**params
+	entry_points={
+		'console_scripts': ['youtube-sm = youtube_sm.main:main']
+	}
 )
