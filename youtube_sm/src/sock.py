@@ -28,8 +28,6 @@ def recv(sock, url):
 			break
 		data += raw_data
 	sock.close()
-	print(url)
-	print(time() - trun)
 	try:
 		data = data.decode('utf8')
 		if not re.match(r'HTTP/1\.[0-1] 200', data):

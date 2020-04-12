@@ -44,11 +44,11 @@ youtube-sm [OPTIONS]
 ## Commands
 
 ```
--a     [site][id]      Append a channel or a playlist at the end of sub.
+-a     [url]           Append a channel or a playlist at the end of sub.
 -d                     Show the dead channels + those who posted no videos
 -e                     Edit your sub list
 -h                     Print this help text and exit
--l     [site][id]      Analyze only one channel or playlist
+-l     [url]             Analyze only one channel or playlist
 -m     [mode]          Choose the type of the output (html, json, raw, list, view)
 -o     [nb of months]  Show the channels who didn't post videos in [nb of months] + dead channels
 -r                     Remove the cache
@@ -80,12 +80,12 @@ youtube-sm -t 30 --html --css --loading
 
 - All the videos of a channel
 ```
-youtube-sm -l [youtube] UC-lHJZR3Gqxm24_Vd_AJ5Yw -t -1 -m list --loading -r --output test.csv
+youtube-sm -l https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw -t -1 -m list --loading -r --output test.csv
 ```
 
 - Add a sub
 ```
-youtube-sm -a [youtube] UC-lHJZR3Gqxm24_Vd_AJ5Yw
+youtube-sm -a https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw
 ```
 
 ## Type of File

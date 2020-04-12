@@ -44,11 +44,11 @@ class Commands():
 		print("""Usage: youtube-sm [OPTIONS]
 
 Options:
-   -a     [site][id]      Append a channel or a playlist at the end of sub.
+   -a     [url]           Append a channel or a playlist at the end of sub.
    -d                     Show the dead channels + those who posted no videos
    -e                     Edit your sub list
    -h                     Print this help text and exit
-   -l     [site][id]      Analyze only one channel or playlist
+   -l     [url]           Analyze only one channel or playlist
    -m     [mode]          Choose the type of the output (html, json, raw, list, view)
    -o     [nb of months]  Show the channels who didn't post videos in [nb of months] + dead channels
    -r                     Remove the cache
