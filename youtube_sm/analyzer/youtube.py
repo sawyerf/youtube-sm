@@ -1,28 +1,33 @@
 import os
 import re
 
-from threading import Thread
-from ..downloader.youtube import (
+from threading			import Thread
+from .analyzer			import Analyzer
+from ..downloader.youtube	import (
 	download_xml,
 	download_html,
 	download_show_more,
-	download_html_playlist)
-from ..src.tools import (
+	download_html_playlist
+)
+from ..src.tools		import (
 	Progress,
 	Progress_loop,
-	type_id,
-	check_id,
-	log)
-from ..src.time import since
+	log
+)
+from ..src.time			import since
 
-class Youtube_Analyzer(Thread):
-	"""It's a group of fonctions to recover the videos informations"""
+class Youtube_Analyzer(Thread, Analyzer):
+	SITE='[youtube]'
+	URL_MATCH=r'(?:https://|)(?:www\.|)youtube\.com/(?P<type>channel/|user/|playlist\?list=)(?P<ID>[a-zA-Z0-9_-]*)'
+	RE_CHANNEL=r'UC[A-Za-z0-9_-]{22}'
+	RE_PLAYLIST=r'PL[A-Za-z0-9_-]{32}'
+
 	def __init__(self, url_id='', min_date=0, mode='', method='0', file=None, prog=None):
-		self.id = url_id
+		self.id = self.extract_sub(url_id)
 		self.mode = mode # html / raw / list / view
 		self.method = method # 0 --> RSS / 1 --> html / 2 --> ultra-html
 		self.min_date = min_date
-		self.type = self._type_id() # True --> chanel False -- > Playlist
+		self.type = self._type_id(url_id) # True --> chanel False -- > Playlist
 		# Init info videos
 		self.url = "" # id of a video
 		self.url_channel = ""
@@ -42,8 +47,15 @@ class Youtube_Analyzer(Thread):
 		if self.prog != None:
 			self.prog.add()
 
-	def add_sub(self, sub):
-		tid = type_id(sub)
+	def extract_sub(self, url):
+		match = self.match(url)
+		if match:
+			return match.group('ID')
+		return url
+
+	def add_sub(self, url):
+		sub = self.extract_sub(url)
+		tid = self._type_id(sub)
 		data = download_xml(sub, type_id=tid, split=False)
 		if data == None:
 			log.warning("The channel/playlist can't be add. It could be delete.")
@@ -255,8 +267,14 @@ class Youtube_Analyzer(Thread):
 			else:
 				raise Exception('[*] You don\'t specify the mode')
 
-	def _type_id(self):
-		return type_id(self.id)
+	def _type_id(self, id):
+		"""True = Channel; False = Playlist"""
+		if re.match(self.RE_CHANNEL, id):
+			return True
+		elif re.match(self.RE_PLAYLIST, id):
+			return False
+		else:
+			return True
 
 	def _complet_url_channel(self, url_channel):
 		if url_channel[:2] == 'UC':

@@ -4,10 +4,21 @@ from os.path import exists
 from os import makedirs
 
 from ..downloader.youtube import download_xml
-from ..analyzer.imports import return_Analyzer
+from ..analyzer.imports import (
+	return_Analyzer,
+	UrlToAnalyzer,
+)
 from .tools import (
-	type_id,
 	log)
+
+def write_list(list_subs, path):
+	open(path + 'sub.swy', 'w', encoding='utf8').write('[v][2.0]\n')
+	file = open(path + 'sub.swy', 'a', encoding='utf8')
+	for site in list_subs:
+		file.write('[site]' + site + '\n')
+		for i in list_subs[site]:
+			if i != None:
+				file.write(i + '\n')
 
 def generate_swy(sub_file, path=''):
 	"""Add sub in sub.swy"""
@@ -33,14 +44,23 @@ def generate_swy(sub_file, path=''):
 			data_sub['[youtube]'].append(id_chnl + '\t' + channel)
 	write_list(data_sub, path)
 
-def write_list(list_subs, path):
-	open(path + 'sub.swy', 'w', encoding='utf8').write('[v][2.0]\n')
-	file = open(path + 'sub.swy', 'a', encoding='utf8')
-	for site in list_subs:
-		file.write('[site]' + site + '\n')
-		for i in list_subs[site]:
-			if i != None:
-				file.write(i + '\n')
+def add_suburl(url, path=''):
+	list_subs = swy(path, 2)
+	analyzer = UrlToAnalyzer(url)
+	if analyzer == None:
+		print('[!] The url {} is not support'.format(url))
+		return
+	analyzer = analyzer()
+	if analyzer == None:
+		print('[!] The url {} is not support'.format(url))
+		return
+	data = analyzer.add_sub(url)
+	if data != None:
+		try:
+			list_subs[analyzer.SITE].append(data)
+		except KeyError:
+			list_subs[analyzer.SITE] = [data]
+	write_list(list_subs, path)
 
 def add_sub(subs, path=''):
 	"""Add a list of subs in sub.swy"""
@@ -153,4 +173,3 @@ def init_swy(path, arg):
 	print('Subs append to sub.swy')
 	print('Done')
 	exit(0)
-

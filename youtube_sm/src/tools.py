@@ -39,21 +39,6 @@ class Progress_loop():
 		self.x = self.x % 10
 		print('|{}{}{}|'.format(self.bar[:self.x], '█', self.bar[self.x + 1:]), end='\r')
 
-def type_id(id):
-	"""True = Channel; False = Playlist"""
-	if id[:2] == 'UC':
-		return True
-	elif id[:2] == 'PL':
-		return False
-	else:
-		return True
-
-def check_id(id):
-	if id[:2] == 'UC' or id[:2] == 'PL':
-		return True
-	else:
-		return False
-
 def del_data(path='', prin=True):
 	""" delete the data folder"""
 	from shutil import rmtree

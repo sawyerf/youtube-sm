@@ -20,6 +20,9 @@ upload: fclean
 	python3 -m twine check dist/*
 	python3 -m twine upload dist/*
 
+dev: 
+	./dev.sh
+
 re: fclean all
 
 .PHONY: all clean fclean re

@@ -1,24 +1,28 @@
 import re
 
-from time						import strptime
-from threading					import Thread
-from ..src.tools				import log
+from time			import strptime
+from threading			import Thread
+from .analyzer			import Analyzer
+from ..src.tools		import log
 from ..downloader.dailymotion	import download_xml_daily
 
-class Dailymotion_Analyzer(Thread):
+class Dailymotion_Analyzer(Thread, Analyzer):
+	SITE='[dailymotion]'
+	URL_MATCH=r'(https://|)(www\.|)dailymotion\.com/'
+
 	def __init__(self, url_id='', min_date=0, mode='', method='0', file=None, prog=None):
-		self.id = url_id
-		self.mode = mode # html / raw / list / view
-		self.method = method # 0 --> RSS / 1 --> html / 2 --> ultra-html
-		self.min_date = min_date
+		self.id		 = url_id
+		self.mode	 = mode # html / raw / list / view
+		self.method	 = method # 0 --> RSS / 1 --> html / 2 --> ultra-html
+		self.min_date	 = min_date
 		# Init info videos
-		self.url = "" # id of a video
-		self.url_channel = "" 
-		self.url_img = ""
-		self.title = ""
-		self.channel = ""
-		self.date = ""
-		self.data_file = "" #The name of the file where stock the informations in data
+		self.url	 = "" # id of a video
+		self.url_channel = ""
+		self.url_img	 = ""
+		self.title	 = ""
+		self.channel	 = ""
+		self.date	 = ""
+		self.data_file	 = "" #The name of the file where stock the informations in data
 		# Function
 		self.prog = prog # True --> loading / False --> no loading
 		self.file = file
@@ -41,7 +45,7 @@ class Dailymotion_Analyzer(Thread):
 
 	def analyzer_sub(self):
 		log.warning("Dailymotion has delete the rss so this functionnality is suspende. Sorry")
-		return 
+		return
 		if self.method == '0':
 			linfo = self._download_page()
 			print(linfo)

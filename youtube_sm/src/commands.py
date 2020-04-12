@@ -1,3 +1,4 @@
+import re
 import time
 import os
 import sys
@@ -14,15 +15,16 @@ from ..src.swy import (
 	swy,
 	generate_swy,
 	add_sub,
+	add_suburl,
 	init_swy)
 from ..src.tools import (
 	del_data,
-	check_id,
 	log,
 	exit_debug)
+from ..analyzer.imports import UrlToAnalyzer
 from ..src.time import lcl_time
 
-class	Commands():
+class Commands():
 	def __init__(self, path):
 		self.url_data = []
 		self.analyze = False
@@ -63,7 +65,7 @@ Options:
    --output [file]        Choose the name of the output file
    --ultra-html           Recover all the videos with the common page and the button 'load more'
 """, end='')
-		
+
 	def _o(self, arg):
 		self.url_data = swy(self.path)
 		print('[*]Start of analysis')
@@ -96,8 +98,10 @@ Options:
 			exit_debug('Numbers of day invalid', 1)
 
 	def _a(self, arg):
-		if arg + 2 < len(sys.argv):
+		if re.match('\[.*\]', sys.argv[arg+1]) and arg + 2 < len(sys.argv):
 			add_sub({sys.argv[arg+1]: [sys.argv[arg + 2]]}, self.path)
+		elif arg + 1 < len(sys.argv):
+			add_suburl(sys.argv[arg+1], self.path)
 		else:
 			exit_debug('You Forgot An Argument (-a)', 1)
 
@@ -112,10 +116,13 @@ Options:
 		self.analyze = True
 		self.analyze_only_one = True
 		del_data(self.path, False)
-		if arg + 2 >= len(sys.argv):
-			exit_debug('You forgot an argument after -l', 1)
-		else:
+		if re.match('\[.*\]', sys.argv[arg+1]) and arg + 2 < len(sys.argv):
 			self.url_data = {sys.argv[arg+1]: [sys.argv[arg+2]]}
+		elif arg + 1 < len(sys.argv):
+			analyzer = UrlToAnalyzer(sys.argv[arg+1])
+			self.url_data = {analyzer.SITE: [sys.argv[arg+1]]}
+		else:
+			exit_debug('You forgot an argument after -l', 1)
 
 	def _s(self, arg):
 		try:
@@ -191,7 +198,7 @@ Options:
 		write_log(sys.argv, self.path, self.passe)
 
 	def parser(self):
-		if sys.argv == [] or sys.argv == ['--debug']: # Default command
+		if sys.argv in [[], ['--debug'], ['-v']]: # Default command
 			self.__default()
 		elif sys.argv == ['-h'] or sys.argv == ['--help']:
 			self._h()
@@ -253,8 +260,8 @@ Options:
 						pass
 					else:
 						exit_debug("No such option: {}".format(sys.argv[arg]), 1)
-	
-	def	router(self):
+
+	def router(self):
 		if self.analyze:
 			self.passe = time.time()
 			if not self.analyze_only_one:

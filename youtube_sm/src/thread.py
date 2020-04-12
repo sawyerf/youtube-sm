@@ -4,7 +4,6 @@ from .time import lcl_time
 from .tools import (
 	Progress,
 	Progress_loop,
-	type_id,
 	log)
 
 
