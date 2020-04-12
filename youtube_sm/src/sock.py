@@ -19,7 +19,7 @@ def recv(sock, url):
 			if lenght != None and len(data) > lenght:
 				break
 		except Exception as e:
-			log.warning('Error Recv: {}'.format(e))
+			log.Warning('Error Recv: {}'.format(e))
 			break
 		if lenght == None and ( b'Content-Length:' in data or b'content-length:' in data ):
 			headers = data.split(b'\r\n\r\n')[0].decode()
@@ -28,10 +28,12 @@ def recv(sock, url):
 			break
 		data += raw_data
 	sock.close()
+	print(url)
+	print(time() - trun)
 	try:
 		data = data.decode('utf8')
 		if not re.match(r'HTTP/1\.[0-1] 200', data):
-			log.warning("Error: {} ({})".format(data.split('\r\n')[0], url))
+			log.Warning("Error: {} ({})".format(data.split('\r\n')[0], url))
 			return None
 		return data
 	except:
@@ -41,7 +43,7 @@ def recv(sock, url):
 				body = zlib.decompress(body, 16+zlib.MAX_WBITS)
 				return body.decode()
 			except:
-				log.warning('Can\'t decode data recv ({})'.format(url))
+				log.Warning('Can\'t decode data recv ({})'.format(url))
 				return None
 
 def download_http(url, host='www.youtube.com'):
@@ -65,7 +67,7 @@ def download_https(url, host='www.youtube.com'):
 	try:
 		sock.connect((host, 443))
 	except Exception as e:
-		log.error('{} ({}{})'.format(e, host, url))
+		log.Error('{} ({}{})'.format(e, host, url))
 		return None
 	sock.settimeout(0.1);
 	sock.write("""GET {} HTTP/1.1

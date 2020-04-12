@@ -1,10 +1,9 @@
 from setuptools	import setup, find_packages
 from os		import path
 
-def README():
-	here = path.abspath(path.dirname(__file__))
-	with open(path.join(here, 'README.md'), 'r', encoding='utf-8') as f:
-		return f.read().replace('\r', '')
+here = path.abspath(path.dirname(__file__))
+with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+	README = f.read()
 
 setup(
 	name='youtube_sm',

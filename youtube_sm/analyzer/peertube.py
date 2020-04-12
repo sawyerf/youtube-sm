@@ -124,7 +124,7 @@ class Peertube_Analyzer(Thread, Analyzer):
 				try:
 					self.info_rss(i)
 				except:
-					log.error('Error during the retrieve of the info ({})'.format(self.id))
+					log.Error('Error during the retrieve of the info ({})'.format(self.id))
 				else:
 					self.write()
 

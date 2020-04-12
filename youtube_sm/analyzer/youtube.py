@@ -58,18 +58,13 @@ class Youtube_Analyzer(Thread, Analyzer):
 		tid = self._type_id(sub)
 		data = download_xml(sub, type_id=tid, split=False)
 		if data == None:
-			log.warning("The channel/playlist can't be add. It could be delete.")
+			log.Error("The channel/playlist can't be add. It could be delete.")
 			return None
-		try:
-			if tid:
-				data = re.findall(r'<name>(.+?)</name>', data)[0]
-			else:
-				data = re.findall(r'<title>(.+?)</title>', data)[0]
-		except:
-			log.warning("The channel/playlist can't be add. It could be delete.")
-			return None
-		else:
-			return sub + '\t' + data
+		match = re.findall(r'<(?:title|name)>(.+?)</(?:title|name)>', data)
+		if match != []:
+			return sub + '\t' + match[0]
+		log.Warning("The channel/playlist can't be add. It could be delete.")
+		return None
 
 	def analyzer_sub(self):
 		"""Recover all the videos of a channel or a playlist
@@ -79,49 +74,41 @@ class Youtube_Analyzer(Thread, Analyzer):
 			return
 		if self.method == '0':
 			for i in linfo:
-				date = int(i.split("<published>")[1].split("</published>")[0].replace('-', '').replace('+00:00', '').replace('T', '').replace(':', ''))
+				date = int(re.findall('<published>(.+?)</published>', i)[0].replace('-', '').replace('+00:00', '').replace('T', '').replace(':', ''))
 				if self.min_date <= date:
 					self.info_rss(i)
 					self.write()
 		elif self.method == '1':
 			if self.type: #Channel
 				try:
-					self.channel = linfo[0].split('<title>')[1].split('\n')[0]
-				except IndexError:
-					log.error('Not found the title ({})'.format(self.id))
+					self.channel = re.findall('<title>(.*)', linfo[0])[0]
 				except:
-					log.error('Not found the title ({})'.format(self.id))
+					log.Error('Not found the title ({})'.format(self.id))
 				del linfo[0]
 			for i in linfo:
 				try:
 					self.info_html(i)
-				except:
-					log.error('Error during the retrieve of the info ({})'.format(self.id))
-				else:
 					self.write()
+				except:
+					log.Error('Error during the retrieve of the info ({})'.format(self.id))
 		elif self.method == '2':
 			if self.type:
 				try:
-					self.channel = linfo[0].split('<title>')[1].split('\n')[0]
-				except IndexError:
-					log.error('Not found the title ({})'.format(self.id))
+					self.channel = re.findall('<title>(.*)', linfo[0])[0]
 				except:
-					log.error('Not found the title ({})'.format(self.id))
+					log.Error('Not found the title ({})'.format(self.id))
 				del linfo[0]
 				for i in linfo:
 					try:
 						self.info_html(i)
-					except:
-						log.error('Error during the retrieve of the info ({})'.format(self.id))
-					else:
 						self.write()
+					except:
+						log.Error('Error during the retrieve of the info ({})'.format(self.id))
 				try:
 					self.next = re.findall(r'data-uix-load-more-href="([^"]*)"', linfo[-1])[0]
 				except:
 					return
-				self.show_more()
-			else:
-				self.show_more()
+			self.show_more()
 
 	def _download_page(self):
 		""" To download a page with the id of a channel/Playlist """
@@ -175,8 +162,8 @@ class Youtube_Analyzer(Thread, Analyzer):
 			return self.file.write(view=self.view)
 
 	def show_more(self):
-		""" The continuation of analyzer_sub for the mode 'ultra-html' 
-		This function recover and write the information recover in 
+		""" The continuation of analyzer_sub for the mode 'ultra-html'
+		This function recover and write the information recover in
 		in the link in the button 'load more'"""
 		data = ''
 		if self.type:
@@ -188,7 +175,7 @@ class Youtube_Analyzer(Thread, Analyzer):
 					try:
 						self.info_show_more(i)
 					except:
-						log.error('Error during the retrieve of the info ({})'.format(self.id))
+						log.Error('Error during the retrieve of the info ({})'.format(self.id))
 					else:
 						self.write()
 				if self.prog != None:
@@ -263,9 +250,9 @@ class Youtube_Analyzer(Thread, Analyzer):
 				return re.findall(r'class="yt-lockup-meta-info"\\u003e\\u003cli\\u003e(.+?) views', i)[0].replace(',', '')
 		else:
 			if not self.type:
-				raise Exception('[*] The mode view don\' work with playlist')
+				raise Exception('[!] The mode view don\' work with playlist')
 			else:
-				raise Exception('[*] You don\'t specify the mode')
+				raise Exception('[!] You don\'t specify the mode')
 
 	def _type_id(self, id):
 		"""True = Channel; False = Playlist"""
@@ -289,7 +276,7 @@ class Youtube_Analyzer(Thread, Analyzer):
 		""" Convert the date which are recover in the html page
 		in a date we can easily sort.
 		like this: '2 day' --> '20180525'
-		           '2 months' --> '20180300' 
+		           '2 months' --> '20180300'
 		           '2 years' --> '20160000' """
 		sdate = self.date.split(' ')
 		if 'year' in sdate[1]:
@@ -317,14 +304,9 @@ class Youtube_Analyzer(Thread, Analyzer):
 		elif linfo == None:
 			print('[  no video  ]', url)
 		else:
-			tps_vd = linfo[0].split("<published>")[1].split("</published>")[0].replace('-', '').replace('+00:00', '').replace('T', '').replace(':', '')
-			if lcl > int(tps_vd):
-				try:
-					print('[ ' + tps_vd[:4] + '/' + tps_vd[4:6] + '/' + tps_vd[6:8] + ' ] ' + linfo[0].split('<name>')[1].split('</name>')[0])
-				except UnicodeEncodeError:
-					print('[ ' + tps_vd[:4] + '/' + tps_vd[4:6] + '/' + tps_vd[6:8] + ' ]', linfo[0].split('<name>')[1].split('</name>')[0].encode())
-				except:
-					print("[   erreur   ]", url)
+			tps_vd = re.findall(r'<published>([0-9-]{10})T.+?</published>', linfo[0])[0]
+			if lcl > int(tps_vd.replace('-', '')):
+				print('[ {} ] {}'.format(tps_vd.replace('-', '/'), re.findall('<name>(.+?)</name>', linfo[0])[0]))
 
 	def dead(self, url):
 		""" Print the dead channel """
@@ -358,13 +340,9 @@ class Youtube_Analyzer(Thread, Analyzer):
 
 
 	def info_stats(self, data):
-		raw = data.split("<media:community>")[1].split("</media:community>")[0]
 		try:
-			mark = float(data.split("average=\"")[1].split("\"")[0])
+			mark = float(re.findall('average="(.+?)"', data)[0])
+			view = int(re.findall('views="(.+?)"', data)[0])
 		except:
-			mark = None
-		try:
-			view = int(data.split("views=\"")[1].split("\"")[0])
-		except:
-			view = 0
+			return None, None
 		return mark, view

@@ -15,7 +15,7 @@ def return_Analyzer(site):
 	for anal in analyzers:
 		if anal.SITE == site:
 			return anal
-	log.error('Analyzer not found ({})'.format(site))
+	log.Error('Analyzer not found ({})'.format(site))
 	return None
 
 def UrlToAnalyzer(url):

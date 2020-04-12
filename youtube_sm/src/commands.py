@@ -168,7 +168,7 @@ Options:
 		try:
 			os.mkdir('css')
 		except:
-			log.error('CSS folder already exist or can\'t be created')
+			log.Error('CSS folder already exist or can\'t be created')
 		if len(sys.argv) != arg + 1:
 			write_css(sys.argv[arg+1])
 		else:
@@ -286,4 +286,4 @@ Options:
 			nb_new = Run_analyze(self.url_data, self.output, lcl_time(self.count + 30, self.all_time), self.path, self.mode, self.loading, file, self.method)
 			file.sort_file(self.count)
 			write_log(sys.argv, self.path, self.passe)
-		log.info('Done ({} seconds)'.format(str(time.time() - self.passe)[:7]))
+		log.Info('Done ({} seconds)'.format(str(time.time() - self.passe)[:7]))

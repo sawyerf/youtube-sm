@@ -40,21 +40,21 @@ class Write_file():
 			return self.append_json(title, url, url_channel, channel, date, url_img, view, data_file)
 
 	def json_init(self):
-		log.info('Init json')
+		log.Info('Init json')
 		try:
 			os.makedirs(self.path_cache + 'data/' + self.mode + '/' + self.method)
 		except:
-			log.error('Cache folder already exist or can\'t be create')
+			log.Error('Cache folder already exist or can\'t be create')
 			pass
 		open(self.output, 'w', encoding='utf8').write('{\n"items" : [\n')
 
 	def html_init(self):
 		"""To init the html file"""
-		log.info('Init html')
+		log.Info('Init html')
 		try:
 			os.makedirs(self.path_cache + 'data/' + self.mode + '/' + self.method)
 		except:
-			log.warning('Cache folder already exist or can\'t be create')
+			log.Warning('Cache folder already exist or can\'t be create')
 			pass
 		open(self.output, 'w', encoding='utf8').write("""<html>
 	<head>
@@ -159,7 +159,7 @@ class Write_file():
 		"""Recover the file in '.../data/.' with all the
 		informations, sort by date and add the informations
 		in './sub.html'. """
-		log.info('Start sort of {}'.format(self.mode))
+		log.Info('Start sort of {}'.format(self.mode))
 		first = True
 		fch = sorted(os.listdir(self.path_cache + 'data/' + self.mode + '/' + self.method + '/'))
 		if len(fch) == 0:
@@ -201,7 +201,7 @@ class Write_file():
 
 	def raw_list_end(self, day=7):
 		"""Sorted the videos by date"""
-		log.info('Start sort of {}'.format(self.mode))
+		log.Info('Start sort of {}'.format(self.mode))
 		try:
 			linfo = sorted(open(self.output, 'rb').read().decode('utf8').replace('\r', '').split('\n'))
 		except FileNotFoundError:

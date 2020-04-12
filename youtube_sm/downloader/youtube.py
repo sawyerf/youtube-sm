@@ -30,7 +30,7 @@ def download_xml(url_id, type_id=True, split=True):
 		linfo = data.split("<entry>")
 		del linfo[0]
 		if linfo == []:
-			log.warning('No videos ({})'.format(url_id))
+			log.Warning('No videos ({})'.format(url_id))
 			return None
 		return linfo
 	else:
@@ -53,13 +53,13 @@ def download_html(url_id, type_id=True, split=True):
 		if type_id: #channel
 			linfo = data.split('<div class="yt-lockup-content">')
 			if len(linfo) <= 1:
-				log.warning('No videos ({})'.format(url_id))
+				log.Warning('No videos ({})'.format(url_id))
 				return None
 		else: #playlist
 			linfo = data.split('<li class="yt-uix-scroller-scroll-unit  vve-check"')
 			del linfo[0]
 			if linfo == []:
-				log.warning('No videos ({})'.format(url_id))
+				log.Warning('No videos ({})'.format(url_id))
 				return None
 		return linfo
 	else:
@@ -72,12 +72,12 @@ def download_html_playlist(url_id, split=True):
 	try:
 		len_play = int(re.findall(r'<span id="playlist-length">(.+?)videos</span>', data)[0])
 	except:
-		log.warning("No video in the page ({})".format(url_id))
+		log.Warning("No video in the page ({})".format(url_id))
 		return None, None, None
 	linfo = data.split('<li class="yt-uix-scroller-scroll-unit  vve-check"')
 	del linfo[0]
 	if linfo == []:
-		log.warning("No video in the page ({})".format(url_id))
+		log.Warning("No video in the page ({})".format(url_id))
 		return None, None, None
 	try:
 		next_link = '/watch?v=' + re.findall(r'<a href="/watch\?v=(.+?)"', linfo[-1])[0]

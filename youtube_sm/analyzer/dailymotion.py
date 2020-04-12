@@ -36,7 +36,7 @@ class Dailymotion_Analyzer(Thread, Analyzer):
 			self.prog.add()
 
 	def add_sub(self, sub):
-		log.warning("Dailymotion has delete the rss so this functionnality is suspende. Sorry")
+		log.Warning("Dailymotion has delete the rss so this functionnality is suspende. Sorry")
 		return None
 		data = download_xml_daily(sub, split=False)
 		if data == None:
@@ -44,7 +44,7 @@ class Dailymotion_Analyzer(Thread, Analyzer):
 		return sub + '\t' + sub
 
 	def analyzer_sub(self):
-		log.warning("Dailymotion has delete the rss so this functionnality is suspende. Sorry")
+		log.Warning("Dailymotion has delete the rss so this functionnality is suspende. Sorry")
 		return
 		if self.method == '0':
 			linfo = self._download_page()

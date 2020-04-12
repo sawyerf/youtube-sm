@@ -74,13 +74,19 @@ def print_debug(msg, i=0):
 			print('\33[1;31m[!]', msg, '\033[00m')
 
 class log:
-	def info(msg, end='\n'):
+	def Info(msg, end='\n'):
 		if '--debug' in sys.argv or '-v' in sys.argv:
 			print('\33[1;36m[*]', msg, '\033[00m', end=end)
 
-	def warning(msg, end='\n'):
+	def Warning(msg, end='\n'):
 		if '--debug' in sys.argv or '-v' in sys.argv:
 			print('\33[1;33m[!]', msg, '\033[00m', end=end)
 
-	def error(msg, end='\n'):
+	def RInfo(msg, end='\n'):
+		print('\33[1;36m[*]', msg, '\033[00m', end=end)
+
+	def RWarning(msg, end='\n'):
+		print('\33[1;33m[!]', msg, '\033[00m', end=end)
+
+	def Error(msg, end='\n'):
 			print('\33[1;31m[!]', msg, '\033[00m', end=end)
