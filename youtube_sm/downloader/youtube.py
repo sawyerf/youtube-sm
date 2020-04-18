@@ -1,9 +1,9 @@
 import re
 
-from ..src.tools import (
+from ..core.tools	import (
 	log
 )
-from ..src.sock	import (
+from ..core.sock	import (
 	download_http,
 	download_https
 )

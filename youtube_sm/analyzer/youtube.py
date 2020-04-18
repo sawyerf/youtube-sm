@@ -9,12 +9,12 @@ from ..downloader.youtube	import (
 	download_show_more,
 	download_html_playlist
 )
-from ..src.tools		import (
+from ..core.tools		import (
 	Progress,
 	Progress_loop,
 	log
 )
-from ..src.time			import since
+from ..core.time			import since
 
 class Youtube_Analyzer(Thread, Analyzer):
 	SITE='[youtube]'

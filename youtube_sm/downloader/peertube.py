@@ -1,5 +1,5 @@
-from ..src.sock	import download_https
-from ..src.tools import (
+from ..core.sock	import download_https
+from ..core.tools import (
 	log)
 
 def ptube_crtlink(info, type_file):

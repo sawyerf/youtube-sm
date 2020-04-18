@@ -5,9 +5,12 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 	README = f.read()
 
+exec(compile(open('youtube_sm/version.py').read(),
+             'youtube_sm/version.py', 'exec'))
+
 setup(
 	name='youtube_sm',
-	version='2.1.0',
+	version=__version__
 	url='https://gitlab.com/sawyerf/Youtube_subscription_manager',
 	author='Sawyerf',
 	author_email='sawyer.flink@protonmail.ch',

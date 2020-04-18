@@ -2,9 +2,10 @@ import time
 import os
 import sys
 
-from .src.commands import Commands
-from .src.tools import (
+from .core.commands import Commands
+from .core.tools import (
 	log)
+from .version	import __version__
 
 def getpath():
 	if os.name == 'nt':
@@ -17,12 +18,14 @@ def getpath():
 def main():
 	# Init variable
 	# Path of the cache
-	log.Info('Hello :)')
 	try:
 		path = getpath()
 	except KeyError:
 		log.Error('HOME is not set')
 		exit()
+	log.cache = path + 'verbose.log'
+	log.Info('Hello :)')
+	log.Info('Version: ', __version__)
 	log.Info('Path: {}'.format(path))
 	try:
 		os.makedirs(path + 'data/')

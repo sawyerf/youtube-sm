@@ -1,4 +1,4 @@
-from ..src.tools	import log
+from ..core.tools	import log
 from .dailymotion	import Dailymotion_Analyzer
 from .infoconcert	import InfoConcert_Analyzer
 from .peertube		import Peertube_Analyzer

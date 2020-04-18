@@ -4,7 +4,7 @@ import	socket
 from threading			import	Thread
 from datetime			import	datetime
 from .analyzer			import Analyzer
-from ..src.tools		import log
+from ..core.tools		import log
 from ..downloader.peertube	import	(
 	download_xml_peertube,
 	download_atom_peertube)

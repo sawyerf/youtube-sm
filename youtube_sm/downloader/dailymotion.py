@@ -1,4 +1,4 @@
-from ..src.sock	import download_https
+from ..core.sock	import download_https
 
 
 def download_xml_daily(url_id, split=True):

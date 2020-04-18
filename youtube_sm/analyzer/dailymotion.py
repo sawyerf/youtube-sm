@@ -3,7 +3,7 @@ import re
 from time			import strptime
 from threading			import Thread
 from .analyzer			import Analyzer
-from ..src.tools		import log
+from ..core.tools		import log
 from ..downloader.dailymotion	import download_xml_daily
 
 class Dailymotion_Analyzer(Thread, Analyzer):

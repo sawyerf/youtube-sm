@@ -1,4 +1,8 @@
 import sys
+from time	import time, strftime, gmtime
+# from datetime	import datetime
+
+TRUN=time()
 
 class Progress():
 	"""Print a progress bar"""
@@ -66,27 +70,34 @@ def exit_debug(msg, i=0):
 		print('\33[1;31m[!]', msg, '\033[00m')
 	exit()
 
-def print_debug(msg, i=0):
-	if '--debug' in sys.argv or '-v' in sys.argv:
-		if i == 0:
-			print('\33[1;36m[*]', msg, '\033[00m')
-		elif i == 1:
-			print('\33[1;31m[!]', msg, '\033[00m')
-
 class log:
-	def Info(msg, end='\n'):
+	cache=''
+	def Info(*msg, end='\n'):
 		if '--debug' in sys.argv or '-v' in sys.argv:
-			print('\33[1;36m[*]', msg, '\033[00m', end=end)
+			log.print('\33[1;36m', '[*] ', msg, end)
 
-	def Warning(msg, end='\n'):
+	def Warning(*msg, end='\n'):
 		if '--debug' in sys.argv or '-v' in sys.argv:
-			print('\33[1;33m[!]', msg, '\033[00m', end=end)
+			log.print('\33[1;33m', '[!] ', msg, end)
 
-	def RInfo(msg, end='\n'):
-		print('\33[1;36m[*]', msg, '\033[00m', end=end)
+	def RInfo(*msg, end='\n'):
+		log.print('\33[1;36m', '[*] ', msg, end)
 
-	def RWarning(msg, end='\n'):
-		print('\33[1;33m[!]', msg, '\033[00m', end=end)
+	def RWarning(*msg, end='\n'):
+		log.print('\33[1;33m', '[!] ', msg, end)
 
-	def Error(msg, end='\n'):
-			print('\33[1;31m[!]', msg, '\033[00m', end=end)
+	def Error(*msg, end='\n'):
+		log.print('\33[1;31m', '[!] ', msg, end)
+
+	def Join(msgs):
+		fin = ''
+		for msg in msgs:
+			fin += str(msg)
+		return fin
+
+	def print(color, init, msgs, end):
+		date = '[{}]'.format(strftime("%H:%M:%S", gmtime(time() - TRUN)))
+		msg = log.Join(msgs)
+		print(color, init, msg, "\033[00m", end=end, sep='')
+		if log.cache != '':
+			open(log.cache, 'a').write(date + init + str(msg) + '\n')

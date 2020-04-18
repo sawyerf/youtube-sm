@@ -3,29 +3,56 @@ import time
 import os
 import sys
 
-from ..src.write import (
+from .write import (
 	Write_file,
 	write_css,
 	write_log)
-from ..src.thread import (
+from .thread import (
 	Run_analyze,
 	old,
+	stats,
 	dead)
-from ..src.swy import (
+from .swy import (
 	swy,
 	generate_swy,
 	add_sub,
 	add_suburl,
 	init_swy)
-from ..src.tools import (
+from .tools import (
 	del_data,
 	log,
 	exit_debug)
+from .time import lcl_time
+from ..version	import __version__
 from ..analyzer.imports import UrlToAnalyzer
-from ..src.time import lcl_time
 
 class Commands():
 	def __init__(self, path):
+		self.params = {
+			'-a':			{'func': self._a,			'option': '[url]',		'description': "Append a channel or a playlist at the end of sub."},
+			'-d':			{'func': self._d,			'option': '',			'description': "Show the dead channels + those who posted no videos"},
+			'-e':			{'func': self._e,			'option': '',			'description': "Edit your sub list"},
+			'-h':			{'func': self._h,			'option': '',			'description': "Print this help text and exit"},
+			'-l':			{'func': self._l,			'option': '[url]',		'description': "Analyze only one channel or playlist"},
+			'-m':			{'func': self._m,			'option': '[mode]',		'description': "Choose the type of the output (html, json, raw, list, view)"},
+			'-o':			{'func': self._o,			'option': '[months]',	'description': "Show the channels who didn\'t post videos in [nb of months] + dead channels"},
+			'-r':			{'func': self._r,			'option': '',			'description': "Remove the cache"},
+			'-s':			{'func': self._s,			'option': '[url]',		'description': "utputs the stats of the selected channel(s)"},
+			'-t':			{'func': self._t,			'option': '[days]',		'description': "Choose how far in the past do you want the program to look for videos"},
+			'-v':			{'func': self.nothing,		'option': '',			'description': "Verbose"},
+			'--af':			{'func': self.__af,			'option': '[file]',		'description': "Append a file with list of channel or a playlist in sub.swy"},
+			'--ax':			{'func': self.__ax,			'option': '[file]',		'description': "Append a xml file in sub.swy"},
+			'--cat':		{'func': self.__cat,		'option': '',			'description': "View your subscriptions"},
+			'--css':		{'func': self.__css,		'option': '[style]',	'description': "Import the css files (light, dark, switch)"},
+			'--debug':		{'func': self.nothing,		'option': '',			'description': "Print errors and progress"},
+			'--help':		{'func': self._h,			'option': '',			'description': "Print this help text and exit"},
+			'--html':		{'func': self.__html,		'option': '',			'description': "Recover yours subs in the common page web (more videos)"},
+			'--init':		{'func': self.__init,		'option': '[file]',		'description': "Remove all your subs and the cache and init with your subscription file."},
+			'--loading':	{'func': self.__loading,	'option': '',			'description': "Prints a progress bar while running"},
+			'--output':		{'func': self.__output,		'option': '[file]',		'description': "Choose the name of the output file"},
+			'--ultra-html':	{'func': self.__ultra_html,	'option': '',			'description': "Recover all the videos with the common page and the button 'load more'"},
+			'--version':	{'func': self.__version,	'option': '',			'description': "Print version"},
+		}
 		self.url_data = []
 		self.analyze = False
 		self.analyze_only_one = False
@@ -35,40 +62,23 @@ class Commands():
 		self.count = 7
 		self.all_time = False
 		self.output = ''
-		self.sub_file = 'subscription_manager'
-		self.site = 'youtube'
+		# self.sub_file = 'subscription_manager'
+		# self.site = 'youtube'
 		self.path = path
-		self.passe = 0
+		self.trun = time.time()
 
 	def _h(self):
-		print("""Usage: youtube-sm [OPTIONS]
-
-Options:
-   -a     [url]           Append a channel or a playlist at the end of sub.
-   -d                     Show the dead channels + those who posted no videos
-   -e                     Edit your sub list
-   -h                     Print this help text and exit
-   -l     [url]           Analyze only one channel or playlist
-   -m     [mode]          Choose the type of the output (html, json, raw, list, view)
-   -o     [nb of months]  Show the channels who didn't post videos in [nb of months] + dead channels
-   -r                     Remove the cache
-   -s     [id/all]        Outputs the stats of the selected channel(s)
-   -t     [nb of days]    Choose how far in the past do you want the program to look for videos
-   --af   [file]          Append a file with list of channel or a playlist in sub.swy
-   --ax   [file]          Append a xml file in sub.swy
-   --cat                  View your subscriptions
-   --css  [style]         Import the css files (light, dark, switch)
-   --debug                Print errors and progress
-   --html                 Recover yours subs in the common page web (more videos)
-   --init [file]          Remove all your subs and the cache and init with your subscription file.
-   --loading              Prints a progress bar while running
-   --output [file]        Choose the name of the output file
-   --ultra-html           Recover all the videos with the common page and the button 'load more'
-""", end='')
+		print('Usage: youtube-sm [OPTIONS]')
+		print()
+		print('Options:')
+		for name in self.params:
+				param = self.params[name]
+				print('  {:12} {:8}  {}'.format(name, param['option'], param['description']))
+		exit()
 
 	def _o(self, arg):
 		self.url_data = swy(self.path)
-		print('[*]Start of analysis')
+		self.RInfo('[*]Start of analysis')
 		try:
 			min_tps = int(sys.argv[arg + 1])
 		except:
@@ -78,7 +88,7 @@ Options:
 
 	def _d(self, arg):
 		self.url_data = swy(self.path)
-		print('[*]Start of analysis')
+		self.RInfo('Start of analysis')
 		dead(self.url_data)
 
 	def _m(self, arg):
@@ -108,7 +118,7 @@ Options:
 	def _e(self, arg):
 		editor = os.getenv('EDITOR')
 		if editor == None:
-			print('The variable `EDITOR` is not set. `vi` is use by default')
+			self.RWarning('The variable `EDITOR` is not set. `vi` is use by default')
 			editor = '/bin/vi'
 		os.system('{} {}sub.swy'.format(editor, self.path))
 
@@ -127,14 +137,18 @@ Options:
 	def _s(self, arg):
 		try:
 			if sys.argv[arg+1] == 'all':
-				from .src.thread import stats
 				subs = swy(self.path, 1)
 				stats(subs)
 			else:
-				from .src.thread import stats
 				stats({sys.argv[arg+1]: {sys.argv[arg+2]: sys.argv[arg+2]}})
 		except IndexError:
 			exit_debug("Missing argument after the '-s'", 1)
+
+	def _r(self, arg):
+		del_data(self.path, True)
+
+	def __init(self, arg):
+		init_swy(self.path, arg)
 
 	def __af(self, arg):
 		if arg + 1 < len(sys.argv) and os.path.exists(sys.argv[arg + 1]):
@@ -188,14 +202,19 @@ Options:
 		self.output = sys.argv[arg+1]
 		self.analyze = True
 
+	def __version(self, arg):
+		log.RInfo('Version: {}'.format(__version__))
+
 	def __default(self):
-		self.passe = time.time()
 		self.url_data = swy(self.path)
 		file = Write_file('sub.html', self.path, 'html', '0')
 		file.html_init()
 		Run_analyze(self.url_data, 'sub.html', lcl_time(), self.path, 'html', False, file, '0')
 		file.html_json_end()
-		write_log(sys.argv, self.path, self.passe)
+		write_log(sys.argv, self.path, self.trun)
+
+	def nothing(self, arg):
+		pass
 
 	def parser(self):
 		if sys.argv in [[], ['--debug'], ['-v']]: # Default command
@@ -204,66 +223,16 @@ Options:
 			self._h()
 		else:
 			for arg in range(len(sys.argv)):
-				if len(sys.argv[arg]) == 0:
+				if len(sys.argv[arg]) == 0 or sys.argv[arg][0] != '-' or sys.argv[arg] == '-1':
 					continue
-				if sys.argv[arg][0] != '-':
-					continue
-				elif len(sys.argv[arg]) > 1 and sys.argv[arg][1] != '-':
-					if sys.argv[arg] == '-o':
-						self._o(arg)
-					elif sys.argv[arg] == '-d':
-						self._d(arg)
-					elif sys.argv[arg] == '-m':
-						self._m(arg)
-					elif sys.argv[arg] == '-t':
-						self._t(arg)
-					elif sys.argv[arg] == '-a':
-						self._a(arg)
-					elif sys.argv[arg] == '-l':
-						self._l(arg)
-					elif sys.argv[arg] == '-r':
-						del_data(self.path, True)
-					elif sys.argv[arg] == '-s':
-						self._s(arg)
-					elif sys.argv[arg] == '-h':
-						exit_debug("-h don't work with other options", 1)
-					elif sys.argv[arg] == '-1':
-						pass
-					elif sys.argv[arg] == '-e':
-						self._e(arg)
-					elif sys.argv[arg] == '-v':
-						pass
-					else:
-						exit_debug("No such option: {}".format(sys.argv[arg]), 1)
-				else:
-					if sys.argv[arg] == '--af':
-						self.__af(arg)
-					elif sys.argv[arg] == '--ax':
-						self.__ax(arg)
-					elif sys.argv[arg] == '--cat':
-						self.__cat(arg)
-					elif sys.argv[arg] == '--html':
-						self.__html(arg)
-					elif sys.argv[arg] == '--css':
-						self.__css(arg)
-					elif sys.argv[arg] == '--init':
-						init_swy(self.path, arg)
-					elif sys.argv[arg] == '--ultra-html':
-						self.__ultra_html(arg)
-					elif sys.argv[arg] == '--loading':
-						self.__loading(arg)
-					elif sys.argv[arg] == '--output':
-						self.__output(arg)
-					elif sys.argv[arg] == '--help':
-						exit_debug("-h don't work with other options", 1)
-					elif sys.argv[arg] == '--debug':
-						pass
+				elif len(sys.argv[arg]) > 1:
+					if sys.argv[arg] in self.params:
+						self.params[sys.argv[arg]]['func'](arg)
 					else:
 						exit_debug("No such option: {}".format(sys.argv[arg]), 1)
 
 	def router(self):
 		if self.analyze:
-			self.passe = time.time()
 			if not self.analyze_only_one:
 				self.url_data = swy(self.path, 0)
 			if self.output == '':
@@ -285,5 +254,5 @@ Options:
 					os.remove(self.output)
 			nb_new = Run_analyze(self.url_data, self.output, lcl_time(self.count + 30, self.all_time), self.path, self.mode, self.loading, file, self.method)
 			file.sort_file(self.count)
-			write_log(sys.argv, self.path, self.passe)
-		log.Info('Done ({} seconds)'.format(str(time.time() - self.passe)[:7]))
+			write_log(sys.argv, self.path, self.trun)
+		log.Info('Done ({} seconds)'.format(str(time.time() - self.trun)[:7]))
