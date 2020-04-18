@@ -62,8 +62,6 @@ class Commands():
 		self.count = 7
 		self.all_time = False
 		self.output = ''
-		# self.sub_file = 'subscription_manager'
-		# self.site = 'youtube'
 		self.path = path
 		self.trun = time.time()
 
