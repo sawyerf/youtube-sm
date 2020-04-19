@@ -29,29 +29,28 @@ from ..analyzer.imports import UrlToAnalyzer
 class Commands():
 	def __init__(self, path):
 		self.params = {
-			'-a':			{'func': self._a,			'option': '[url]',		'description': "Append a channel or a playlist at the end of sub."},
-			'-d':			{'func': self._d,			'option': '',			'description': "Show the dead channels + those who posted no videos"},
-			'-e':			{'func': self._e,			'option': '',			'description': "Edit your sub list"},
-			'-h':			{'func': self._h,			'option': '',			'description': "Print this help text and exit"},
-			'-l':			{'func': self._l,			'option': '[url]',		'description': "Analyze only one channel or playlist"},
-			'-m':			{'func': self._m,			'option': '[mode]',		'description': "Choose the type of the output (html, json, raw, list, view)"},
-			'-o':			{'func': self._o,			'option': '[months]',	'description': "Show the channels who didn\'t post videos in [nb of months] + dead channels"},
-			'-r':			{'func': self._r,			'option': '',			'description': "Remove the cache"},
-			'-s':			{'func': self._s,			'option': '[url]',		'description': "utputs the stats of the selected channel(s)"},
-			'-t':			{'func': self._t,			'option': '[days]',		'description': "Choose how far in the past do you want the program to look for videos"},
-			'-v':			{'func': self.nothing,		'option': '',			'description': "Verbose"},
-			'--af':			{'func': self.__af,			'option': '[file]',		'description': "Append a file with list of channel or a playlist in sub.swy"},
-			'--ax':			{'func': self.__ax,			'option': '[file]',		'description': "Append a xml file in sub.swy"},
-			'--cat':		{'func': self.__cat,		'option': '',			'description': "View your subscriptions"},
-			'--css':		{'func': self.__css,		'option': '[style]',	'description': "Import the css files (light, dark, switch)"},
-			'--debug':		{'func': self.nothing,		'option': '',			'description': "Print errors and progress"},
-			'--help':		{'func': self._h,			'option': '',			'description': "Print this help text and exit"},
-			'--html':		{'func': self.__html,		'option': '',			'description': "Recover yours subs in the common page web (more videos)"},
-			'--init':		{'func': self.__init,		'option': '[file]',		'description': "Remove all your subs and the cache and init with your subscription file."},
-			'--loading':	{'func': self.__loading,	'option': '',			'description': "Prints a progress bar while running"},
-			'--output':		{'func': self.__output,		'option': '[file]',		'description': "Choose the name of the output file"},
-			'--ultra-html':	{'func': self.__ultra_html,	'option': '',			'description': "Recover all the videos with the common page and the button 'load more'"},
-			'--version':	{'func': self.__version,	'option': '',			'description': "Print version"},
+			'-a':			{'func': self._a,			'option': 'URL',		'description': "Add a sub to your sub list."},
+			'-e':			{'func': self._e,			'option': '',			'description': "Edit your sub list."},
+			'-h':			{'func': self._h,			'option': '',			'description': "Print this help text and exit."},
+			'-l':			{'func': self._l,			'option': 'URL',		'description': "Analyze only one sub."},
+			'-m':			{'func': self._m,			'option': 'MODE',		'description': "Choose the type of the output file (html, json, raw, list, view)."},
+			'-r':			{'func': self._r,			'option': '',			'description': "Remove the cache."},
+			'-s':			{'func': self._s,			'option': 'URL',		'description': "Stats of the selected channel(s)."},
+			'-t':			{'func': self._t,			'option': 'DAYS',		'description': "Select how many DAYS ago the last content written to your file will be dated ."},
+			'-v':			{'func': self.nothing,		'option': '',			'description': "Verbose."},
+			'--af':			{'func': self.__af,			'option': 'FILE',		'description': "Add a list of sub to your sub list."},
+			'--ax':			{'func': self.__ax,			'option': 'FILE',		'description': "Add a xml file in your sub list."},
+			'--cat':		{'func': self.__cat,		'option': '',			'description': "View your subscriptions."},
+			'--css':		{'func': self.__css,		'option': 'STYLE',		'description': "Export the css files (light, dark, switch)."},
+			'--dead':		{'func': self.__dead,		'option': '',			'description': "Show the dead channels + those who posted no videos."},
+			'--help':		{'func': self._h,			'option': '',			'description': "Print this help text and exit."},
+			'--html':		{'func': self.__html,		'option': '',			'description': "Recover sub with html page instead of RSS. This method recover more video."},
+			'--init':		{'func': self.__init,		'option': 'FILE',		'description': "Remove all your subs and add new."},
+			'--loading':	{'func': self.__loading,	'option': '',			'description': "Print a progress bar."},
+			'--old':		{'func': self.__old,		'option': 'MONTHS',		'description': "Show channels who didn\'t post videos since MONTHS + dead channels."},
+			'--output':		{'func': self.__output,		'option': 'FILE',		'description': "Write the output in FILE."},
+			'--ultra-html':	{'func': self.__ultra_html,	'option': '',			'description': "An advanced version of --html."},
+			'--version':	{'func': self.__version,	'option': '',			'description': "Print version."},
 		}
 		self.url_data = []
 		self.analyze = False
@@ -73,21 +72,6 @@ class Commands():
 				param = self.params[name]
 				print('  {:12} {:8}  {}'.format(name, param['option'], param['description']))
 		exit()
-
-	def _o(self, arg):
-		self.url_data = swy(self.path)
-		self.RInfo('[*]Start of analysis')
-		try:
-			min_tps = int(sys.argv[arg + 1])
-		except:
-			old(self.url_data)
-		else:
-			old(self.url_data, min_tps)
-
-	def _d(self, arg):
-		self.url_data = swy(self.path)
-		self.RInfo('Start of analysis')
-		dead(self.url_data)
 
 	def _m(self, arg):
 		self.analyze = True
@@ -176,6 +160,21 @@ class Commands():
 		self.method = '1'
 		self.analyze = True
 
+	def __old(self, arg):
+		self.url_data = swy(self.path)
+		self.RInfo('[*]Start of analysis')
+		try:
+			min_tps = int(sys.argv[arg + 1])
+		except:
+			old(self.url_data)
+		else:
+			old(self.url_data, min_tps)
+
+	def __dead(self, arg):
+		self.url_data = swy(self.path)
+		self.RInfo('Start of analysis')
+		dead(self.url_data)
+
 	def __css(self, arg):
 		try:
 			os.mkdir('css')
@@ -215,7 +214,7 @@ class Commands():
 		pass
 
 	def parser(self):
-		if sys.argv in [[], ['--debug'], ['-v']]: # Default command
+		if sys.argv in [[], ['-v']]: # Default command
 			self.__default()
 		elif sys.argv == ['-h'] or sys.argv == ['--help']:
 			self._h()

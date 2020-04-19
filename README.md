@@ -9,6 +9,7 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Commands](#commands)
+- [Support Platforms](#support-platforms)
 - [Example](#example)
 - [Type of File](#type-of-file)
 - [Cache](#cache)
@@ -44,27 +45,35 @@ youtube-sm [OPTIONS]
 ## Commands
 
 ```
--a     [url]           Append a channel or a playlist at the end of sub.
--d                     Show the dead channels + those who posted no videos
--e                     Edit your sub list
--h                     Print this help text and exit
--l     [url]             Analyze only one channel or playlist
--m     [mode]          Choose the type of the output (html, json, raw, list, view)
--o     [nb of months]  Show the channels who didn't post videos in [nb of months] + dead channels
--r                     Remove the cache
--s     [id/all]        Outputs the stats of the selected channel(s)
--t     [nb of days]    Choose how far in the past do you want the program to look for videos
---af   [file]          Append a file with list of channel or a playlist in sub.swy
---ax   [file]          Append a xml file in sub.swy
---cat                  View your subscriptions
---css  [style]         Import the css files (light, dark, switch)
---debug                Print errors and progress
---html                 Recover yours subs in the common page web (more videos)
---init [file]          Remove all your subs and the cache and init with your subscription file.
---loading              Prints a progress bar while running
---output [file]        Choose the name of the output file
---ultra-html           Recover all the videos with the common page and the button 'load more'
+-a           URL       Add a sub to your sub list.
+-e                     Edit your sub list.
+-h                     Print this help text and exit.
+-l           URL       Analyze only one sub.
+-m           MODE      Choose the type of the output file (html, json, raw, list, view).
+-r                     Remove the cache.
+-s           URL       Stats of the selected channel(s).
+-t           DAYS      Select how many DAYS ago the last content written to your file will be dated .
+-v                     Verbose.
+--af         FILE      Add a list of sub to your sub list.
+--ax         FILE      Add a xml file in your sub list.
+--cat                  View your subscriptions.
+--css        STYLE     Export the css files (light, dark, switch).
+--dead                 Show the dead channels + those who posted no videos.
+--help                 Print this help text and exit.
+--html                 Recover sub with html page instead of RSS. This method recover more video.
+--init       FILE      Remove all your subs and add new.
+--loading              Print a progress bar.
+--old        MONTHS    Show channels who didn't post videos since MONTHS + dead channels.
+--output     FILE      Write the output in FILE.
+--ultra-html           An advanced version of --html.
+--version              Print version.
 ```
+
+## Support Platforms
+- Dailymotion
+- Infoconcert
+- Peertube
+- Youtube
 
 ## Example
 
@@ -75,7 +84,7 @@ youtube-sm
 
 - Your sub since 1 month
 ```
-youtube-sm -t 30 --html --css --loading
+youtube-sm -t 30 --css --loading
 ```
 
 - All the videos of a channel

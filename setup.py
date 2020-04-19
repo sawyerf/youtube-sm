@@ -11,7 +11,7 @@ exec(compile(open('youtube_sm/version.py').read(),
 setup(
 	name='youtube_sm',
 	version=__version__,
-	url='https://gitlab.com/sawyerf/Youtube_subscription_manager',
+	url='https://github.com/sawyerf/youtube-sm',
 	author='Sawyerf',
 	author_email='sawyer.flink@protonmail.ch',
 	description='Youtube subscription manager',

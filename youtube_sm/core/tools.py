@@ -73,11 +73,11 @@ def exit_debug(msg, i=0):
 class log:
 	cache=''
 	def Info(*msg, end='\n'):
-		if '--debug' in sys.argv or '-v' in sys.argv:
+		if '-v' in sys.argv:
 			log.print('\33[1;36m', '[*] ', msg, end)
 
 	def Warning(*msg, end='\n'):
-		if '--debug' in sys.argv or '-v' in sys.argv:
+		if '-v' in sys.argv:
 			log.print('\33[1;33m', '[!] ', msg, end)
 
 	def RInfo(*msg, end='\n'):
