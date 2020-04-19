@@ -16,28 +16,28 @@ download:
         - youtube-sm --init subscription_manager
         - youtube-sm
         - wc -l sub.html
-        - youtube-sm --debug -m json --output test.json
+        - youtube-sm -v -m json --output test.json
         - wc -l test.json
-        - youtube-sm --html -l [youtube] UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list -t -1 --output test.list -r --debug
+        - youtube-sm --html -l [youtube] UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list -t -1 --output test.list -r -v
         - wc -l test.list
-        - youtube-sm --html -l https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list -t -1 --output test.list -r --debug
+        - youtube-sm --html -l https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list -t -1 --output test.list -r -v
         - wc -l test.list
-        - youtube-sm --ultra-html -l [youtube] UCEcNXmr7DYq1XxpWHSxaN0w -m raw -t -1 -r --output test.raw --debug
+        - youtube-sm --ultra-html -l [youtube] UCEcNXmr7DYq1XxpWHSxaN0w -m raw -t -1 -r --output test.raw -v
         - wc -l test.raw
-        - youtube-sm -l [peertube] thinkerview.video:5 -m raw -t -1 -r --output test.raw --debug
+        - youtube-sm -l [peertube] thinkerview.video:5 -m raw -t -1 -r --output test.raw -v
         - wc -l test.raw
-        - youtube-sm -l [peertube] thinkerview.video -m raw -t -1 -r --output test.raw --debug
+        - youtube-sm -l [peertube] thinkerview.video -m raw -t -1 -r --output test.raw -v
         - wc -l test.raw
-        - youtube-sm -l https://thinkerview.video/feeds/videos.xml?accountId=5 -m raw -t -1 -r --output test.raw --debug
+        - youtube-sm -l https://thinkerview.video/feeds/videos.xml?accountId=5 -m raw -t -1 -r --output test.raw -v
         - wc -l test.raw
-        - youtube-sm -l [infoconcert] salut-cest-cool-120538 -m raw -t -1 -r --output test.raw --debug
+        - youtube-sm -l [infoconcert] salut-cest-cool-120538 -m raw -t -1 -r --output test.raw -v
         - wc -l test.raw
-        - youtube-sm -l [test] test -m raw -t -1 -r --output test.raw --debug
+        - youtube-sm -l [test] test -m raw -t -1 -r --output test.raw -v
         - curl -O https://sawyerf.gitlab.io/youtube_sm/test.swy
-        - youtube-sm --debug --init test.swy
-        - youtube-sm --debug -t -1 --output testall.html
+        - youtube-sm -v --init test.swy
+        - youtube-sm -v -t -1 --output testall.html
         - wc -l testall.html
-        - youtube-sm --debug
+        - youtube-sm -v
 
 commands:
         stage: test
@@ -47,11 +47,11 @@ commands:
         - youtube-sm -h
         - youtube-sm --css ""
         - youtube-sm --css
-        - youtube-sm -a [youtube] UC-lHJZR3Gqxm24_Vd_AJ5Yw --debug
-        - youtube-sm -a https://www.youtube.com/channel/UCyg3MF1KU3dUK0HJBBoRYOw --debug
-        - youtube-sm -a [peertube] thinkerview.video:5 --debug
-        - youtube-sm -a https://thinkerview.video/feeds/videos.xml?accountId=5 --debug
-        - youtube-sm -a [dailymotion] karimdebbache --debug
-        - youtube-sm -a https://dailymotion.com/karimdebbache --debug
-        - youtube-sm -a [infoconcert] achab-175740 --debug
-        - youtube-sm -a https://www.infoconcert.com/artiste/achab-175740/concerts.html --debug
+        - youtube-sm -a [youtube] UC-lHJZR3Gqxm24_Vd_AJ5Yw -v
+        - youtube-sm -a https://www.youtube.com/channel/UCyg3MF1KU3dUK0HJBBoRYOw -v
+        - youtube-sm -a [peertube] thinkerview.video:5 -v
+        - youtube-sm -a https://thinkerview.video/feeds/videos.xml?accountId=5 -v
+        - youtube-sm -a [dailymotion] karimdebbache -v
+        - youtube-sm -a https://dailymotion.com/karimdebbache -v
+        - youtube-sm -a [infoconcert] achab-175740 -v
+        - youtube-sm -a https://www.infoconcert.com/artiste/achab-175740/concerts.html -v

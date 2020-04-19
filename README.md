@@ -1,7 +1,7 @@
 # Youtube_subscription_manager
 
 
-[![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)](http://pypi.python.org/pypi/youtube-sm/) [![example](https://sawyerf.gitlab.io/youtube_sm/exampleshield.svg)](https://sawyerf.gitlab.io/youtube_sm/example.html) [![GitLab](https://sawyerf.gitlab.io/youtube_sm/gitlab.jpg)](https://gitlab.com/sawyerf/Youtube_subscription_manager) 
+[![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)](http://pypi.python.org/pypi/youtube-sm/) [![example](https://sawyerf.gitlab.io/youtube_sm/exampleshield.svg)](https://sawyerf.gitlab.io/youtube_sm/example.html) [<img alt="Github" src="https://ionogy.github.io/kernel.css/GitHub-Mark.png" width="22px">](https://github.com/sawyerf/youtube-sm) [![GitLab](https://sawyerf.gitlab.io/youtube_sm/gitlab.jpg)](https://gitlab.com/sawyerf/youtube-sm)
 
 <p><img align='right' width=400px height=auto src='https://sawyerf.gitlab.io/youtube_sm/binome.jpg' /></p>
 
@@ -24,8 +24,8 @@ Youtube_subscription_manager is an alternative to youtube.com to retrieve the vi
 It can gather informations about every video in a playlist, a channel or your subsciptions feed and outputs it as a html page, a detailed list or a list of links.
 
 ## Installation
-1. Clone the project: `git clone https://gitlab.com/sawyerf/Youtube_suscription_manager.git`
-2. Open the folder you just cloned : `cd Youtube_subscription_manager`
+1. Clone the project: `git clone https://github.com/sawyerf/youtube-sm.git`
+2. Open the folder you just cloned : `cd youtube-sm`
 3. Execute the setup: `sudo python3 setup.py install`
 4. Recover your subscription file in youtube and you are ready to go !
 
