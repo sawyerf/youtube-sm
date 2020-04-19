@@ -127,39 +127,16 @@ class Youtube_Analyzer(Thread, Analyzer):
 
 	def write(self):
 		"""Write the information in a file"""
-		if self.mode == 'html':
-			return self.file.write(
-				url='https://www.youtube.com/watch?v='+self.url,
-				title=self.title,
-				url_channel=self._complet_url_channel(self.url_channel),
-				url_img='https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url),
-				channel=self.channel,
-				date=self.date,
-				data_file=self.data_file)
-		elif self.mode == 'json':
-			return self.file.write(
-				title=self.title,
-				url=self.url,
-				url_channel=self.url_channel,
-				channel=self.channel,
-				date=self.date,
-				url_img='https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url),
-				view=self.view,
-				data_file=self.data_file)
-		elif self.mode == 'raw':
-			return self.file.write(
-				url=self.url,
-				title=self.title,
-				url_channel=self.url_channel,
-				channel=self.channel,
-				date=self.date,
-				data_file=self.data_file)
-		elif self.mode == 'list':
-			return self.file.write(
-				url='https://www.youtube.com/watch?v='+self.url,
-				data_file=self.data_file)
-		elif self.mode == 'view':
-			return self.file.write(view=self.view)
+		return self.file.write(
+			channel=self.channel,
+			date=self.date,
+			title=self.title,
+			url='https://www.youtube.com/watch?v='+self.url,
+			url_channel=self._complet_url_channel(self.url_channel),
+			url_img='https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url),
+			view=self.view,
+			data_file=self.data_file,
+		)
 
 	def show_more(self):
 		""" The continuation of analyzer_sub for the mode 'ultra-html'

@@ -63,13 +63,10 @@ class Peertube_Analyzer(Thread, Analyzer):
 		if data == None or not '</rss>' in data:
 			print("The channel/playlist can't be add. It could be delete.", 1)
 			return None
-		try:
-			data = re.findall(r'<title>(.*)</title>', data)[0]
-		except:
-			print("The channel/playlist can't be add. It could be delete.", 1)
-			return None
-		else:
-			return sub + '\t' + data
+		data = re.match(r'<title>(.*)</title>', data)
+		if data:
+			return sub + '\t' + data.group(0)
+		print("The channel/playlist can't be add. It could be delete.", 1)
 
 	def _download_page(self):
 		if self.method == '0':
@@ -79,39 +76,16 @@ class Peertube_Analyzer(Thread, Analyzer):
 
 	def write(self):
 		"""Write the information in a file"""
-		if self.mode == 'html':
-			return self.file.write(
-				url=self.url,
-				title=self.title,
-				url_channel=self.url_channel,
-				url_img=self.url_img,
-				channel=self.channel,
-				date=self.date,
-				data_file=self.data_file)
-		elif self.mode == 'json':
-			return self.file.write(
-				title=self.title,
-				url=self.url,
-				url_channel=self.url_channel,
-				channel=self.channel,
-				date=self.date,
-				url_img=self.url_img,
-				view=self.view,
-				data_file=self.data_file)
-		elif self.mode == 'raw':
-			return self.file.write(
-				url=self.url,
-				title=self.title,
-				url_channel=self.url_channel,
-				channel=self.channel,
-				date=self.date,
-				data_file=self.data_file)
-		elif self.mode == 'list':
-			return self.file.write(
-				url=self.url,
-				data_file=self.data_file)
-		elif self.mode == 'view':
-			return None
+		return self.file.write(
+			channel=self.channel,
+			data_file=self.data_file,
+			date=self.date,
+			title=self.title,
+			url=self.url,
+			url_channel=self.url_channel,
+			url_img=self.url_img,
+			view=self.view,
+		)
 
 	def analyzer_sub(self):
 		""" The main function  wich retrieve the informations and and write it
