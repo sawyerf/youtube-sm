@@ -23,12 +23,12 @@ class InfoConcert_Analyzer(Thread, Analyzer):
 		###############################
 		# Init the video informations #
 		###############################
-		self.url	 = ""
-		self.url_channel = ""
-		self.title	 = ""
-		self.location	 = ""
-		self.date	 = ""
-		self.data_file	 = ""
+		self.channel = ''
+		self.data_file = ''
+		self.date = ''
+		self.title = ''
+		self.url = ''
+		self.url_img = ''
 		################
 		# The function #
 		################

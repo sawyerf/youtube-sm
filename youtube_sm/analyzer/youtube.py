@@ -29,12 +29,14 @@ class Youtube_Analyzer(Thread, Analyzer):
 		self.min_date = min_date
 		self.type = self._type_id(url_id) # True --> chanel False -- > Playlist
 		# Init info videos
-		self.url = "" # id of a video
-		self.url_channel = ""
-		self.title = ""
-		self.channel = ""
-		self.date = ""
+		self.channel = ''
 		self.data_file = [] #The name of the file where stock the informations in data
+		self.date = ''
+		self.title = ''
+		self.url = ''
+		self.url_channel = ''
+		self.url_img = ''
+		self.view = ''
 		# Function
 		self.prog = prog # True --> loading / False --> no loading
 		self.file = file

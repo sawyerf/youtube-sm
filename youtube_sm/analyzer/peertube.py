@@ -26,12 +26,14 @@ class Peertube_Analyzer(Thread, Analyzer):
 		###############################
 		# Init the video informations #
 		###############################
-		self.url	 = ""
-		self.url_channel = ""
-		self.title	 = ""
-		self.channel	 = ""
-		self.date	 = ""
-		self.data_file	 = ""
+		self.channel	 = ''
+		self.data_file	 = ''
+		self.date		 = ''
+		self.title		 = ''
+		self.url		 = ''
+		self.url_channel = ''
+		self.url_img	 = ''
+		self.view		 = ''
 		################
 		# The function #
 		################
