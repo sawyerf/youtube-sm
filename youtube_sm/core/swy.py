@@ -49,18 +49,18 @@ def add_suburl(url, path=''):
 	list_subs = swy(path, 2)
 	analyzer = UrlToAnalyzer(url)
 	if analyzer is None:
-		print('[!] The url {} is not support'.format(url))
+		log.Error('The url {} is not support'.format(url))
 		return
 	analyzer = analyzer()
 	if analyzer is None:
-		print('[!] The url {} is not support'.format(url))
+		log.Error('The url {} is not support'.format(url))
 		return
 	data = analyzer.add_sub(url)
-	print(data)
+	log.Info(data)
 	if data is not None:
-		try:
+		if analyzer.SITE in list_subs:
 			list_subs[analyzer.SITE].append(data)
-		except KeyError:
+		else:
 			list_subs[analyzer.SITE] = [data]
 	write_list(list_subs, path)
 
@@ -73,18 +73,18 @@ def add_sub(subs, path=''):
 	for site in subs:
 		analyzer = return_Analyzer(site)
 		if analyzer is None:
-			print('[!] The site {} is not support'.format(site))
+			log.Error('The site {} is not support'.format(site))
 			continue
 		analyzer = analyzer()
 		if analyzer is None:
-			print('[!] The site {} is not support'.format(site))
+			log.Error('The site {} is not support'.format(site))
 			continue
 		for sub in subs[site]:
 			data = analyzer.add_sub(sub)
 			if data is not None:
-				try:
+				if site in list_subs:
 					list_subs[site].append(data)
-				except KeyError:
+				else:
 					list_subs[site] = [data]
 	write_list(list_subs, path)
 
@@ -101,7 +101,7 @@ def swy(path, mode=0):
 		try:
 			open(path + 'sub.swy', 'w', encoding='utf8')
 		except:
-			print('[!] You didn\'t initialize')
+			log.Error('You didn\'t initialize')
 	urls = dict()
 	data_sub = open(path + 'sub.swy', 'rb').read().decode("utf8").split('[site]')
 	del data_sub[0]
@@ -134,12 +134,8 @@ def swy(path, mode=0):
 def init_swy(path, arg):
 	if exists(path):
 		rmtree(path)
-	try:
-		makedirs(path + 'data/')
-	except:
-		exit('Error We Can\'t Create The Folder')
-	else:
-		print('Data File Create')
+	makedirs(path + 'data/')
+	self.Info('Data Folder Create')
 	if len(sys.argv) != arg + 1:
 		add_file = sys.argv[arg + 1]
 		if not exists(add_file):
@@ -154,7 +150,7 @@ def init_swy(path, arg):
 					elif line == '':
 						break
 					else:
-						print('[!] No tabs in line ' + str(nb_line))
+						log.Error('No tabs in line ' + str(nb_line))
 		elif add_file[len(add_file) - 5:] == '.json':
 			subs = dict()
 			data = open(add_file, 'rb').read().decode('utf8')
@@ -168,7 +164,7 @@ def init_swy(path, arg):
 		if exists('subscription_manager'):
 			generate_swy('subscription_manager', path=path)
 		else:
-			exit('[!] File Not Found (subscription_manager)')
-	print('Subs append to sub.swy')
-	print('Done')
+			self.Error('File Not Found (subscription_manager)')
+			exit()
+	log.Info('Done')
 	exit(0)

@@ -25,7 +25,7 @@ class Dailymotion_Analyzer(Analyzer):
 		self.file = file
 
 	def add_sub(self, sub):
-		log.Warning("Dailymotion has delete the rss so this functionnality is suspende. Sorry")
+		log.Warning("Dailymotion has suspended RSS. Sorry")
 		return None
 		data = download_xml_daily(sub, split=False)
 		if data is None:
@@ -33,20 +33,18 @@ class Dailymotion_Analyzer(Analyzer):
 		return sub + '\t' + sub
 
 	def real_analyzer(self):
-		log.Warning("Dailymotion has delete the rss so this functionnality is suspende. Sorry")
+		log.Warning("Dailymotion has suspended RSS. Sorry")
 		return
 		if self.method == '0':
 			linfo = self._download_page()
-			print(linfo)
 			if linfo is False or linfo is None:
 				return
 			for i in linfo:
 				try:
 					self.info_recup_rss(i)
+					self.write()
 				except:
 					log.Warning('Error during the retrieve of the info ({})'.format(self.id))
-				else:
-					self.write()
 
 	def _download_page(self):
 		if self.method == '0':

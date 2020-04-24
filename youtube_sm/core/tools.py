@@ -1,4 +1,6 @@
+import os
 import sys
+from shutil import rmtree
 from time import time, strftime, gmtime
 
 TRUN=time()
@@ -45,32 +47,25 @@ class Progress_loop():
 		print('|{}{}{}|'.format(self.bar[:self.x], '█', self.bar[self.x + 1:]), end='\r')
 
 
-def del_data(path='', prin=True):
-	""" delete the data folder"""
-	from shutil import rmtree
-	import os
+def del_data(path):
+	"""
+	delete the data folder
+	"""
 	if os.path.exists(path + 'data'):
-		for i in range(2):
-			try:
-				rmtree(path + 'data')
-			except:
-				pass
-			else:
-				continue
 		try:
-			os.makedirs(path + 'data/')
+			rmtree(path + 'data')
 		except:
 			pass
+		os.makedirs(path + 'data/')
 	else:
-		if prin:
-			print('[!] Data do not exist')
+		self.Warning('Data folder don\'t exist')
 
 
 def exit_debug(msg, i=0):
 	if i == 0:
-		print('\33[1;36m[*]', msg, '\033[00m')
+		log.RInfo(msg)
 	elif i == 1:
-		print('\33[1;31m[!]', msg, '\033[00m')
+		log.Error(msg)
 	exit()
 
 

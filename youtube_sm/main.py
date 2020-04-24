@@ -29,10 +29,11 @@ def main():
 	log.Info('Hello :)')
 	log.Info('Version: ', __version__)
 	log.Info('Path: {}'.format(path))
-	try:
-		os.makedirs(path + 'data/')
-	except:
-		log.Warning('Data already exist or can\'t be create')
+	if not os.path.exists(path + 'data/'):
+		try:
+			os.makedirs(path + 'data/')
+		except:
+			log.Warning('Data can\'t be create')
 	del sys.argv[0]
 	cmd = Commands(path)
 	cmd.parser()

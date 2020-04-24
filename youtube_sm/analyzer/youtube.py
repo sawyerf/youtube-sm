@@ -64,10 +64,11 @@ class Youtube_Analyzer(Analyzer):
 				self.write()
 		elif self.method == '1':
 			if self.type:  # Channel
-				try:
-					self.channel = re.findall('<title>(.*)', linfo[0])[0]
-				except:
-					log.Error('Not found the title ({})'.format(self.id))
+				channel = re.findall('<title>(.*)', linfo[0])
+				if channel == []:
+					log.Error('Title not found ({})'.format(self.id))
+				else:
+					self.channel = channel[0]
 				del linfo[0]
 			for i in linfo:
 				try:
@@ -77,10 +78,11 @@ class Youtube_Analyzer(Analyzer):
 					log.Error('Error during the retrieve of the info ({})'.format(self.id))
 		elif self.method == '2':
 			if self.type:
-				try:
-					self.channel = re.findall('<title>(.*)', linfo[0])[0]
-				except:
-					log.Error('Not found the title ({})'.format(self.id))
+				channel = re.findall('<title>(.*)', linfo[0])[0]
+				if channel == []:
+					log.Error('Title not found ({})'.format(self.id))
+				else:
+					self.channel = channel[0]
 				del linfo[0]
 				for i in linfo:
 					try:
@@ -88,10 +90,10 @@ class Youtube_Analyzer(Analyzer):
 						self.write()
 					except:
 						log.Error('Error during the retrieve of the info ({})'.format(self.id))
-				try:
-					self.next = re.findall(r'data-uix-load-more-href="([^"]*)"', linfo[-1])[0]
-				except:
+				nexts = re.findall(r'data-uix-load-more-href="([^"]*)"', linfo[-1])
+				if nexts == []:
 					return
+				self.next = nexts[0]
 			self.show_more()
 
 	def _download_page(self):
@@ -134,10 +136,9 @@ class Youtube_Analyzer(Analyzer):
 				for i in data:
 					try:
 						self.info_show_more(i)
+						self.write()
 					except:
 						log.Error('Error during the retrieve of the info ({})'.format(self.id))
-					else:
-						self.write()
 				if self.prog is not None:
 					self.prog.add()
 		else:
@@ -147,16 +148,14 @@ class Youtube_Analyzer(Analyzer):
 				if data is None:
 					return
 				for i in data:
-					try:
-						if nb < int(re.findall(r'tch\?v=.*;index=([0-9]+)', i)[0]):
-							nb += 1
+					index = re.findall(r'tch\?v=.*;index=([0-9]+?)', i)
+					if index != [] and nb < int(index[0]):
+						nb += 1
+						try:
 							self.info_html(i)
-						else:
-							continue
-					except:
-						pass
-					else:
-						self.write()
+							self.write()
+						except:
+							log.Error('Error during the retrieve of the info ({})'.format(self.id))
 				if self.prog is not None:
 					self.prog.add()
 		print()

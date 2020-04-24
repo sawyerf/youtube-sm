@@ -32,27 +32,27 @@ from ..analyzer.imports import UrlToAnalyzer
 class Commands():
 	def __init__(self, path):
 		self.params = {
-			'-a':			{'func': self._a,			'option': 'URL',		'description': "Add a sub to your sub list."},
-			'-e':			{'func': self._e,			'option': '',			'description': "Edit your sub list."},
-			'-h':			{'func': self._h,			'option': '',			'description': "Print this help text and exit."},
-			'-l':			{'func': self._l,			'option': 'URL',		'description': "Analyze only one sub."},
-			'-m':			{'func': self._m,			'option': 'MODE',		'description': "Choose the type of the output file (html, json, raw, list)."},
-			'-r':			{'func': self._r,			'option': '',			'description': "Remove the cache."},
-			'-t':			{'func': self._t,			'option': 'DAYS',		'description': "Select how many DAYS ago the last content written to your file will be dated ."},
-			'-v':			{'func': self.nothing,		'option': '',			'description': "Verbose."},
-			'--af':			{'func': self.__af,			'option': 'FILE',		'description': "Add a list of sub to your sub list."},
-			'--ax':			{'func': self.__ax,			'option': 'FILE',		'description': "Add a xml file in your sub list."},
-			'--cat':		{'func': self.__cat,		'option': '',			'description': "View your subscriptions."},
-			'--css':		{'func': self.__css,		'option': 'STYLE',		'description': "Export the css files (light, dark, switch)."},
-			'--dead':		{'func': self.__dead,		'option': '',			'description': "Show the dead channels + those who posted no videos."},
-			'--help':		{'func': self._h,			'option': '',			'description': "Print this help text and exit."},
-			'--html':		{'func': self.__html,		'option': '',			'description': "Recover sub with html page instead of RSS. This method recover more video."},
-			'--init':		{'func': self.__init,		'option': 'FILE',		'description': "Remove all your subs and add new."},
-			'--loading':	{'func': self.__loading,	'option': '',			'description': "Print a progress bar."},
-			'--old':		{'func': self.__old,		'option': 'MONTHS',		'description': "Show channels who didn\'t post videos since MONTHS + dead channels."},
-			'--output':		{'func': self.__output,		'option': 'FILE',		'description': "Write the output in FILE."},
-			'--ultra-html':	{'func': self.__ultra_html,	'option': '',			'description': "An advanced version of --html."},
-			'--version':	{'func': self.__version,	'option': '',			'description': "Print version."},
+			'-a':           {'func': self._a,           'option': 'URL',    'description': "Add a sub to your sub list."},
+			'-e':           {'func': self._e,           'option': '',       'description': "Edit your sub list."},
+			'-h':           {'func': self._h,           'option': '',       'description': "Print this help text and exit."},
+			'-l':           {'func': self._l,           'option': 'URL',    'description': "Analyze only one sub."},
+			'-m':           {'func': self._m,           'option': 'MODE',   'description': "Choose the type of the output file (html, json, raw, list)."},
+			'-r':           {'func': self._r,           'option': '',       'description': "Remove the cache."},
+			'-t':           {'func': self._t,           'option': 'DAYS',   'description': "Select how many DAYS ago the last content written to your file will be dated ."},
+			'-v':           {'func': self.nothing,      'option': '',       'description': "Verbose."},
+			'--af':         {'func': self.__af,         'option': 'FILE',   'description': "Add a list of sub to your sub list."},
+			'--ax':         {'func': self.__ax,         'option': 'FILE',   'description': "Add a xml file in your sub list."},
+			'--cat':        {'func': self.__cat,        'option': '',       'description': "View your subscriptions."},
+			'--css':        {'func': self.__css,        'option': 'STYLE',  'description': "Export the css files (light, dark, switch)."},
+			'--dead':       {'func': self.__dead,       'option': '',       'description': "Show the dead channels + those who posted no videos."},
+			'--help':       {'func': self._h,           'option': '',       'description': "Print this help text and exit."},
+			'--html':       {'func': self.__html,       'option': '',       'description': "Recover sub with html page instead of RSS. This method recover more video."},
+			'--init':       {'func': self.__init,       'option': 'FILE',   'description': "Remove all your subs and add new."},
+			'--loading':    {'func': self.__loading,    'option': '',       'description': "Print a progress bar."},
+			'--old':        {'func': self.__old,        'option': 'MONTHS', 'description': "Show channels who didn\'t post videos since MONTHS + dead channels."},
+			'--output':     {'func': self.__output,     'option': 'FILE',   'description': "Write the output in FILE."},
+			'--ultra-html': {'func': self.__ultra_html, 'option': '',       'description': "An advanced version of --html."},
+			'--version':    {'func': self.__version,    'option': '',       'description': "Print version."},
 		}
 		self.url_data = []
 		self.analyze = False
@@ -91,9 +91,7 @@ class Commands():
 			self.all_time = True
 
 	def _a(self, arg):
-		if re.match(r'\[.*\]', sys.argv[arg+1]) and arg + 2 < len(sys.argv):
-			add_sub({sys.argv[arg+1]: [sys.argv[arg + 2]]}, self.path)
-		elif arg + 1 < len(sys.argv):
+		if arg + 1 < len(sys.argv):
 			add_suburl(sys.argv[arg+1], self.path)
 		else:
 			exit_debug('You Forgot An Argument (-a)', 1)
@@ -108,7 +106,7 @@ class Commands():
 	def _l(self, arg):
 		self.analyze = True
 		self.analyze_only_one = True
-		del_data(self.path, False)
+		del_data(self.path)
 		if re.match(r'\[.*\]', sys.argv[arg+1]) and arg + 2 < len(sys.argv):
 			self.url_data = {sys.argv[arg+1]: [sys.argv[arg+2]]}
 		elif arg + 1 < len(sys.argv):
@@ -118,7 +116,7 @@ class Commands():
 			exit_debug('You forgot an argument after -l', 1)
 
 	def _r(self, arg):
-		del_data(self.path, True)
+		del_data(self.path)
 
 	def __init(self, arg):
 		init_swy(self.path, arg)
@@ -151,12 +149,11 @@ class Commands():
 	def __old(self, arg):
 		self.url_data = swy(self.path)
 		self.RInfo('[*]Start of analysis')
-		try:
+		if re.match('[0-9]*$', sys.argv[arg + 1]):
 			min_tps = int(sys.argv[arg + 1])
-		except:
-			old(self.url_data)
-		else:
 			old(self.url_data, min_tps)
+		else:
+			old(self.url_data)
 
 	def __dead(self, arg):
 		self.url_data = swy(self.path)

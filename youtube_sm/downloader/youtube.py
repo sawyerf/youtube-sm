@@ -80,12 +80,12 @@ def download_html_playlist(url_id, split=True):
 	try:
 		len_play = int(re.findall(r'<span id="playlist-length">(.+?)videos</span>', data)[0])
 	except:
-		log.Warning("No video in the page ({})".format(url_id))
+		log.Warning("No video in this page ({})".format(url_id))
 		return None, None, None
 	linfo = data.split('<li class="yt-uix-scroller-scroll-unit  vve-check"')
 	del linfo[0]
 	if linfo == []:
-		log.Warning("No video in the page ({})".format(url_id))
+		log.Warning("No video in this page ({})".format(url_id))
 		return None, None, None
 	try:
 		next_link = '/watch?v=' + re.findall(r'<a href="/watch\?v=(.+?)"', linfo[-1])[0]
