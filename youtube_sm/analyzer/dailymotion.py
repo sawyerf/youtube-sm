@@ -1,35 +1,34 @@
 import re
 
-from time				import strptime
-from threading			import Thread
-from .analyzer			import Analyzer
-from ..core.tools		import log
-from ..downloader.dailymotion	import download_xml_daily
+from time          import strptime
+from .analyzer     import Analyzer
+from ..core.tools  import log
+from ..downloader.dailymotion import download_xml_daily
+
 
 class Dailymotion_Analyzer(Analyzer):
 	SITE='[dailymotion]'
 	URL_MATCH=r'(https://|)(www\.|)dailymotion\.com/'
 
-	def __init__(self, url_id='', mode='', method='0', file=None, prog=None):
-		self.id		 = url_id
-		self.mode	 = mode # html / raw / list / view
-		self.method	 = method # 0 --> RSS / 1 --> html / 2 --> ultra-html
+	def __init__(self, url_id='', method='0', file=None, prog=None):
+		self.id          = url_id
+		self.method      = method
 		# Init info videos
-		self.url	 = "" # id of a video
+		self.url         = ""
 		self.url_channel = ""
-		self.url_img	 = ""
-		self.title	 = ""
-		self.channel	 = ""
-		self.date	 = ""
+		self.url_img     = ""
+		self.title       = ""
+		self.channel     = ""
+		self.date        = ""
 		# Function
-		self.prog = prog # True --> loading / False --> no loading
+		self.prog = prog
 		self.file = file
 
 	def add_sub(self, sub):
 		log.Warning("Dailymotion has delete the rss so this functionnality is suspende. Sorry")
 		return None
 		data = download_xml_daily(sub, split=False)
-		if data == None:
+		if data is None:
 			return None
 		return sub + '\t' + sub
 
@@ -39,13 +38,13 @@ class Dailymotion_Analyzer(Analyzer):
 		if self.method == '0':
 			linfo = self._download_page()
 			print(linfo)
-			if linfo == False or linfo == None:
+			if linfo is False or linfo is None:
 				return
 			for i in linfo:
 				try:
 					self.info_recup_rss(i)
 				except:
-					lor.warning('Error during the retrieve of the info ({})'.format(self.id))
+					log.Warning('Error during the retrieve of the info ({})'.format(self.id))
 				else:
 					self.write()
 
@@ -91,7 +90,7 @@ class Dailymotion_Analyzer(Analyzer):
 
 	def old(self, url, lcl):
 		data = download_xml_daily(url)
-		if data == None:
+		if data is None:
 			print('[ channel dead ]', url)
 		else:
 			try:
@@ -105,5 +104,5 @@ class Dailymotion_Analyzer(Analyzer):
 
 	def dead(self, url):
 		data = download_xml_daily(url)
-		if data == None or data == False:
+		if data is None or data is False:
 			print('[ channel dead ]', url)

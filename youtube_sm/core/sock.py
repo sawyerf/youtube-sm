@@ -7,6 +7,7 @@ from .tools import log
 
 TIMEOUT = 2
 
+
 def recv(sock, url):
 	data = b""
 	trun = time()
@@ -16,12 +17,12 @@ def recv(sock, url):
 		try:
 			raw_data = sock.recv(100000)
 		except socket.timeout:
-			if lenght != None and len(data) > lenght:
+			if lenght is not None and len(data) > lenght:
 				break
 		except Exception as e:
 			log.Warning('Error Recv: {}'.format(e))
 			break
-		if lenght == None and ( b'Content-Length:' in data or b'content-length:' in data ):
+		if lenght is None and (b'Content-Length:' in data or b'content-length:' in data):
 			headers = data.split(b'\r\n\r\n')[0].decode()
 			lenght = int(re.findall(r'[Cc]ontent-[Ll]ength: (.*)\r', headers)[0]) + len(headers)
 		if time() - trun > TIMEOUT:
@@ -44,10 +45,11 @@ def recv(sock, url):
 				log.Warning('Can\'t decode data recv ({})'.format(url))
 				return None
 
+
 def download_http(url, host='www.youtube.com'):
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	sock.connect((host, 80))
-	sock.settimeout(0.1);
+	sock.settimeout(0.1)
 	sock.send("""GET {} HTTP/1.1
 Host:{}
 Accept-Language: en
@@ -56,6 +58,7 @@ Accept-Encoding: gzip, raw
 
 """.format(url.decode(), host).replace('\n', '\r\n').encode())
 	return recv(sock, host + url.decode())
+
 
 def download_https(url, host='www.youtube.com'):
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -67,7 +70,7 @@ def download_https(url, host='www.youtube.com'):
 	except Exception as e:
 		log.Error('{} ({}{})'.format(e, host, url))
 		return None
-	sock.settimeout(0.1);
+	sock.settimeout(0.1)
 	sock.write("""GET {} HTTP/1.1
 Host:{}
 Accept-Language: en

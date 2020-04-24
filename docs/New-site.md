@@ -19,14 +19,12 @@ git checkout -b name_of_the_platform
     class Platform_Analyzer(Analyzer):
     	SITE='[platform]'
     	URL_MATCH=r'(?:https://|)(?:www\.|)site\.com/(?P<ID>.*)'
-    	def __init__(self, url_id='', min_date=0, mode='', method='0', file=None, prog=None):
+    	def __init__(self, url_id='', method='0', file=None, prog=None):
     		###################### 
     		# The basic variable #
     		######################
     		self.id = url_id
-    		self.mode = mode 
     		self.method = method 
-    		self.min_date = min_date
     		###############################
     		# Init the video informations #
     		###############################
@@ -35,7 +33,6 @@ git checkout -b name_of_the_platform
     		self.title = ""
     		self.channel = ""
     		self.date = ""
-    		self.data_file = "" 
     		################
     		# The function #
     		################

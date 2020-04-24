@@ -4,7 +4,6 @@ from os.path import exists
 from os import makedirs
 from shutil import rmtree
 
-from ..downloader.youtube import download_xml
 from ..analyzer.imports import (
 	return_Analyzer,
 	UrlToAnalyzer,
@@ -12,17 +11,21 @@ from ..analyzer.imports import (
 from .tools import (
 	log)
 
+
 def write_list(list_subs, path):
 	open(path + 'sub.swy', 'w', encoding='utf8').write('[v][2.0]\n')
 	file = open(path + 'sub.swy', 'a', encoding='utf8')
 	for site in list_subs:
 		file.write('[site]' + site + '\n')
 		for i in list_subs[site]:
-			if i != None:
+			if i is not None:
 				file.write(i + '\n')
 
+
 def generate_swy(sub_file, path=''):
-	"""Add sub in sub.swy"""
+	"""
+	Add sub in sub.swy
+	"""
 	if exists(sub_file):
 		data = open(sub_file, 'r', encoding="utf8").read()
 	else:
@@ -34,62 +37,65 @@ def generate_swy(sub_file, path=''):
 		data_sub = {'[youtube]': []}
 	else:
 		data_sub = swy(path, 2)
-	try:
-		var = data_sub['[youtube]']
-	except:
-		data_sub['[youtube]'] = []
 	for i in liste:
 		channel = re.findall(r'title="(.+?)"', i)[0]
 		id_chnl = re.findall(r'channel_id=(.+?)"', i)[0]
-		if not id_chnl+'\t'+channel in data_sub['[youtube]']:
+		if id_chnl+'\t'+channel not in data_sub['[youtube]']:
 			data_sub['[youtube]'].append(id_chnl + '\t' + channel)
 	write_list(data_sub, path)
+
 
 def add_suburl(url, path=''):
 	list_subs = swy(path, 2)
 	analyzer = UrlToAnalyzer(url)
-	if analyzer == None:
+	if analyzer is None:
 		print('[!] The url {} is not support'.format(url))
 		return
 	analyzer = analyzer()
-	if analyzer == None:
+	if analyzer is None:
 		print('[!] The url {} is not support'.format(url))
 		return
 	data = analyzer.add_sub(url)
 	print(data)
-	if data != None:
+	if data is not None:
 		try:
 			list_subs[analyzer.SITE].append(data)
 		except KeyError:
 			list_subs[analyzer.SITE] = [data]
 	write_list(list_subs, path)
 
+
 def add_sub(subs, path=''):
-	"""Add a list of subs in sub.swy"""
+	"""
+	Add a list of subs in sub.swy
+	"""
 	list_subs = swy(path, 2)
 	for site in subs:
 		analyzer = return_Analyzer(site)
-		if analyzer == None:
+		if analyzer is None:
 			print('[!] The site {} is not support'.format(site))
 			continue
 		analyzer = analyzer()
-		if analyzer == None:
+		if analyzer is None:
 			print('[!] The site {} is not support'.format(site))
 			continue
 		for sub in subs[site]:
 			data = analyzer.add_sub(sub)
-			if data != None:
+			if data is not None:
 				try:
 					list_subs[site].append(data)
 				except KeyError:
 					list_subs[site] = [data]
 	write_list(list_subs, path)
 
+
 def swy(path, mode=0):
-	"""Return a list of sub wich are in sub.swy
-	mode : 0 --> return a list with only the id
-		   1 --> return a dict with the channel and the id
-		   2 --> return a list wich is not .split('\t')"""
+	"""
+	Return a list of sub wich are in sub.swy
+	mode :	0 --> return a list with only the id
+			1 --> return a dict with the channel and the id
+			2 --> return a list wich is not .split('\t')
+	"""
 	log.Info('Start read swy')
 	if not exists(path + 'sub.swy'):
 		try:
@@ -123,6 +129,7 @@ def swy(path, mode=0):
 	for site in urls:
 		log.Info("{} subs for {}".format(len(urls[site]), site))
 	return urls
+
 
 def init_swy(path, arg):
 	if exists(path):

@@ -1,8 +1,8 @@
 import sys
-from time	import time, strftime, gmtime
-# from datetime	import datetime
+from time import time, strftime, gmtime
 
 TRUN=time()
+
 
 class Progress():
 	"""Print a progress bar"""
@@ -22,11 +22,12 @@ class Progress():
 			pc = (self.xmin/self.xmax)
 		for i in range(int(pc*40)):
 			load += '█'
-		for i in range(int(40 - pc*40 + (pc*40)%1)):
+		for i in range(int(40 - pc * 40 + (pc * 40) % 1)):
 			load += ' '
 		print('{} %|{}| {}/{} analyzed'.format(str(pc*100)[:3], load, str(self.xmin), str(self.xmax)), end='\r')
 		if pc == 1:
 			print()
+
 
 class Progress_loop():
 	def __init__(self):
@@ -42,6 +43,7 @@ class Progress_loop():
 	def progress_bar(self):
 		self.x = self.x % 10
 		print('|{}{}{}|'.format(self.bar[:self.x], '█', self.bar[self.x + 1:]), end='\r')
+
 
 def del_data(path='', prin=True):
 	""" delete the data folder"""
@@ -63,6 +65,7 @@ def del_data(path='', prin=True):
 		if prin:
 			print('[!] Data do not exist')
 
+
 def exit_debug(msg, i=0):
 	if i == 0:
 		print('\33[1;36m[*]', msg, '\033[00m')
@@ -70,8 +73,10 @@ def exit_debug(msg, i=0):
 		print('\33[1;31m[!]', msg, '\033[00m')
 	exit()
 
+
 class log:
 	cache=''
+
 	def Info(*msg, end='\n'):
 		if '-v' in sys.argv:
 			log.print('\33[1;36m', '[*] ', msg, end)

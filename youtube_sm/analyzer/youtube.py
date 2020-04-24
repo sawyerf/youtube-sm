@@ -1,19 +1,15 @@
-import os
 import re
 
-from datetime			import datetime, timedelta
-from .analyzer			import Analyzer
-from ..downloader.youtube	import (
+from datetime     import datetime, timedelta
+from ..core.tools import log
+from .analyzer    import Analyzer
+from ..downloader.youtube import (
 	download_xml,
 	download_html,
 	download_show_more,
 	download_html_playlist
 )
-from ..core.tools		import (
-	Progress,
-	Progress_loop,
-	log
-)
+
 
 class Youtube_Analyzer(Analyzer):
 	SITE='[youtube]'
@@ -21,11 +17,10 @@ class Youtube_Analyzer(Analyzer):
 	RE_CHANNEL=r'UC[A-Za-z0-9_-]{22}'
 	RE_PLAYLIST=r'PL[A-Za-z0-9_-]{32}'
 
-	def __init__(self, url_id='', mode='', method='0', file=None, prog=None):
+	def __init__(self, url_id='', method='0', file=None, prog=None):
 		self.id = self.extract_sub(url_id)
-		self.mode = mode # html / raw / list / view
-		self.method = method # 0 --> RSS / 1 --> html / 2 --> ultra-html
-		self.type = self._type_id(url_id) # True --> chanel False -- > Playlist
+		self.method = method
+		self.type = self._type_id(url_id)  # True --> chanel False -- > Playlist
 		# Init info videos
 		self.channel = ''
 		self.date = ''
@@ -35,7 +30,7 @@ class Youtube_Analyzer(Analyzer):
 		self.url_img = ''
 		self.view = ''
 		# Function
-		self.prog = prog # True --> loading / False --> no loading
+		self.prog = prog
 		self.file = file
 
 	def extract_sub(self, url):
@@ -48,7 +43,7 @@ class Youtube_Analyzer(Analyzer):
 		sub = self.extract_sub(url)
 		tid = self._type_id(sub)
 		data = download_xml(sub, type_id=tid, split=False)
-		if data == None:
+		if data is None:
 			log.Error("The channel/playlist can't be add. It could be delete.")
 			return None
 		match = re.findall(r'<(?:title|name)>(.+?)</(?:title|name)>', data)
@@ -61,14 +56,14 @@ class Youtube_Analyzer(Analyzer):
 		"""Recover all the videos of a channel or a playlist
 		and add the informations in $HOME/.cache/youtube_sm/data/."""
 		linfo = self._download_page()
-		if linfo == False or linfo == None:
+		if linfo is False or linfo is None:
 			return
 		if self.method == '0':
 			for i in linfo:
 				self.info_rss(i)
 				self.write()
 		elif self.method == '1':
-			if self.type: #Channel
+			if self.type:  # Channel
 				try:
 					self.channel = re.findall('<title>(.*)', linfo[0])[0]
 				except:
@@ -132,9 +127,9 @@ class Youtube_Analyzer(Analyzer):
 		in the link in the button 'load more'"""
 		data = ''
 		if self.type:
-			while self.next != None:
+			while self.next is not None:
 				data, self.next = download_show_more(self.next, True)
-				if data == None:
+				if data is None:
 					return
 				for i in data:
 					try:
@@ -143,13 +138,13 @@ class Youtube_Analyzer(Analyzer):
 						log.Error('Error during the retrieve of the info ({})'.format(self.id))
 					else:
 						self.write()
-				if self.prog != None:
+				if self.prog is not None:
 					self.prog.add()
 		else:
 			nb = 0
 			while nb < self.len_play:
 				data, self.next = download_show_more(self.next, False)
-				if data == None:
+				if data is None:
 					return
 				for i in data:
 					try:
@@ -162,7 +157,7 @@ class Youtube_Analyzer(Analyzer):
 						pass
 					else:
 						self.write()
-				if self.prog != None:
+				if self.prog is not None:
 					self.prog.add()
 		print()
 
@@ -177,46 +172,29 @@ class Youtube_Analyzer(Analyzer):
 
 	def info_html(self, i):
 		"""Recover the informations of the html page"""
-		if self.type: #Channel
-			self.url			= re.findall(r'href="/watch\?v=(.{11})"', i)[0]
-			self.url_channel	= self.id
-			self.title			= re.findall(r'dir="ltr" title="(.+?)"', i)[0]
-			date				= re.findall(r'</li><li>(.+?)</li>', i)[0]
-			self.date			= self.date_convert(date)
-			self.view			= re.findall(r'class="yt-lockup-meta-info"><li>(.+?)\ views', i)[0].replace(',', '')
-		else: #Playlist
-			self.url			= re.findall(r'data-video-id="(.{11})"', i)[0]
-			self.title			= re.findall(r'data-video-title="(.+?)"', i)[0]
-			self.channel		= re.findall(r'data-video-username="(.+?)"', i)[0]
-			self.url_channel	= self.id
-			self.date			= datetime.now()
+		if self.type:  # Channel
+			self.url         = re.findall(r'href="/watch\?v=(.{11})"', i)[0]
+			self.url_channel = self.id
+			self.title       = re.findall(r'dir="ltr" title="(.+?)"', i)[0]
+			date             = re.findall(r'</li><li>(.+?)</li>', i)[0]
+			self.date        = self.date_convert(date)
+			self.view        = re.findall(r'class="yt-lockup-meta-info"><li>(.+?)\ views', i)[0].replace(',', '')
+		else:  # Playlist
+			self.url         = re.findall(r'data-video-id="(.{11})"', i)[0]
+			self.title       = re.findall(r'data-video-title="(.+?)"', i)[0]
+			self.channel     = re.findall(r'data-video-username="(.+?)"', i)[0]
+			self.url_channel = self.id
+			self.date        = datetime.now()
 
 	def info_rss(self, i):
 		"""Recover the informations of a rss page"""
-		self.url			= re.findall(r'<yt:videoId>(.{11})</yt:videoId>', i)[0]
-		self.url_channel	= re.findall(r'<yt:channelId>(.*)</yt:channelId>', i)[0]
-		self.title			= re.findall(r'<media:title>(.*)</media:title>', i)[0]
-		self.channel		= re.findall(r'<name>(.*)</name>', i)[0]
-		date				= re.findall(r'<published>(.*)\+', i)[0]
-		self.date			= datetime.strptime(date, '%Y-%m-%dT%H:%M:%S')
-		self.view			= re.findall(r'views="(.+?)"', i)[0].replace(',', '')
-
-	def _view(self, i):
-		""" Return the views of a videos"""
-		if self.method == '0':
-			return re.findall(r'views="(.+?)"', i)[0].replace(',', '')
-		elif self.method == '1' and self.type:
-			return re.findall(r'class="yt-lockup-meta-info"><li>(.+?)\ views', i)[0].replace(',', '')
-		elif self.method == '2' and self.type:
-			if '<ul class="yt-lockup-meta-info"><li>' in i:
-				return re.findall(r'class="yt-lockup-meta-info"><li>(.+?) views', i)[0].replace(',', '')
-			elif 'class="yt-lockup-meta-info"\\u003e\\u003cli\\u003e' in i:
-				return re.findall(r'class="yt-lockup-meta-info"\\u003e\\u003cli\\u003e(.+?) views', i)[0].replace(',', '')
-		else:
-			if not self.type:
-				raise Exception('[!] The mode view don\' work with playlist')
-			else:
-				raise Exception('[!] You don\'t specify the mode')
+		self.url         = re.findall(r'<yt:videoId>(.{11})</yt:videoId>', i)[0]
+		self.url_channel = re.findall(r'<yt:channelId>(.*)</yt:channelId>', i)[0]
+		self.title       = re.findall(r'<media:title>(.*)</media:title>', i)[0]
+		self.channel     = re.findall(r'<name>(.*)</name>', i)[0]
+		date             = re.findall(r'<published>(.*)\+', i)[0]
+		self.date        = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S')
+		self.view        = re.findall(r'views="(.+?)"', i)[0].replace(',', '')
 
 	def _type_id(self, id):
 		"""True = Channel; False = Playlist"""
@@ -255,9 +233,9 @@ class Youtube_Analyzer(Analyzer):
 
 	def old(self, url, lcl):
 		linfo = download_xml(url)
-		if linfo == False:
+		if linfo is False:
 			print('[channel dead]', url)
-		elif linfo == None:
+		elif linfo is None:
 			print('[  no video  ]', url)
 		else:
 			tps_vd = re.findall(r'<published>([0-9-]{10})T.+?</published>', linfo[0])[0]
@@ -267,7 +245,7 @@ class Youtube_Analyzer(Analyzer):
 	def dead(self, url):
 		""" Print the dead channel """
 		linfo = download_xml(url)
-		if linfo == False:
+		if linfo is False:
 			print('[channel dead]\t', url)
-		elif linfo == None:
+		elif linfo is None:
 			print('[  no video  ]\t', url)

@@ -1,9 +1,9 @@
-from ..core.sock	import download_https
+from ..core.sock import download_https
 
 
 def download_xml_daily(url_id, split=True):
 	data = download_https('/rss/user/' + url_id, 'www.dailymotion.com')
-	if data == None:
+	if data is None:
 		return None
 	if split:
 		linfo = data.split('<item>')
@@ -13,4 +13,3 @@ def download_xml_daily(url_id, split=True):
 		return linfo
 	else:
 		return data
-

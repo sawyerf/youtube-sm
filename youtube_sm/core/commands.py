@@ -6,24 +6,28 @@ import sys
 from .write import (
 	Write_file,
 	write_css,
-	write_log)
+	write_log
+)
 from .thread import (
 	Run_analyze,
 	old,
-	dead)
+	dead
+)
 from .swy import (
 	swy,
 	generate_swy,
 	add_sub,
 	add_suburl,
-	init_swy)
+	init_swy
+)
 from .tools import (
 	del_data,
 	log,
-	exit_debug)
-from .time import lcl_time
-from ..version	import __version__
+	exit_debug
+)
+from ..version import __version__
 from ..analyzer.imports import UrlToAnalyzer
+
 
 class Commands():
 	def __init__(self, path):
@@ -32,7 +36,7 @@ class Commands():
 			'-e':			{'func': self._e,			'option': '',			'description': "Edit your sub list."},
 			'-h':			{'func': self._h,			'option': '',			'description': "Print this help text and exit."},
 			'-l':			{'func': self._l,			'option': 'URL',		'description': "Analyze only one sub."},
-			'-m':			{'func': self._m,			'option': 'MODE',		'description': "Choose the type of the output file (html, json, raw, list, view)."},
+			'-m':			{'func': self._m,			'option': 'MODE',		'description': "Choose the type of the output file (html, json, raw, list)."},
 			'-r':			{'func': self._r,			'option': '',			'description': "Remove the cache."},
 			'-t':			{'func': self._t,			'option': 'DAYS',		'description': "Select how many DAYS ago the last content written to your file will be dated ."},
 			'-v':			{'func': self.nothing,		'option': '',			'description': "Verbose."},
@@ -80,15 +84,14 @@ class Commands():
 
 	def _t(self, arg):
 		self.analyze = True
-		try:
-			self.count = int(sys.argv[arg + 1])
-			if self.count == -1:
-				self.all_time = True
-		except:
+		if not re.match('(-|)[0-9]*$', sys.argv[arg + 1]):
 			exit_debug('Numbers of day invalid', 1)
+		self.count = int(sys.argv[arg + 1])
+		if self.count == -1:
+			self.all_time = True
 
 	def _a(self, arg):
-		if re.match('\[.*\]', sys.argv[arg+1]) and arg + 2 < len(sys.argv):
+		if re.match(r'\[.*\]', sys.argv[arg+1]) and arg + 2 < len(sys.argv):
 			add_sub({sys.argv[arg+1]: [sys.argv[arg + 2]]}, self.path)
 		elif arg + 1 < len(sys.argv):
 			add_suburl(sys.argv[arg+1], self.path)
@@ -97,7 +100,7 @@ class Commands():
 
 	def _e(self, arg):
 		editor = os.getenv('EDITOR')
-		if editor == None:
+		if editor is None:
 			self.RWarning('The variable `EDITOR` is not set. `vi` is use by default')
 			editor = '/bin/vi'
 		os.system('{} {}sub.swy'.format(editor, self.path))
@@ -106,7 +109,7 @@ class Commands():
 		self.analyze = True
 		self.analyze_only_one = True
 		del_data(self.path, False)
-		if re.match('\[.*\]', sys.argv[arg+1]) and arg + 2 < len(sys.argv):
+		if re.match(r'\[.*\]', sys.argv[arg+1]) and arg + 2 < len(sys.argv):
 			self.url_data = {sys.argv[arg+1]: [sys.argv[arg+2]]}
 		elif arg + 1 < len(sys.argv):
 			analyzer = UrlToAnalyzer(sys.argv[arg+1])
@@ -139,10 +142,7 @@ class Commands():
 					line = file.readline()
 					if line == '':
 						break
-					try:
-						print(line, end='')
-					except:
-						print(line.encode())
+					print(line, end='')
 
 	def __html(self, arg):
 		self.method = '1'
@@ -193,7 +193,7 @@ class Commands():
 	def __default(self):
 		self.url_data = swy(self.path)
 		file = Write_file('sub.html', self.path, 'html', '0', 7)
-		Run_analyze(self.url_data, 'html', False, file, '0')
+		Run_analyze(self.url_data, False, file, '0')
 		file.write()
 		write_log(sys.argv, self.path, self.trun)
 
@@ -201,7 +201,7 @@ class Commands():
 		pass
 
 	def parser(self):
-		if sys.argv in [[], ['-v']]: # Default command
+		if sys.argv in [[], ['-v']]:  # Default command
 			self.__default()
 		elif sys.argv == ['-h'] or sys.argv == ['--help']:
 			self._h()
@@ -229,7 +229,7 @@ class Commands():
 				elif self.mode == 'json':
 					self.output = 'sub.json'
 			file = Write_file(self.output, self.path, self.mode, self.method, self.count)
-			nb_new = Run_analyze(self.url_data, self.mode, self.loading, file, self.method)
+			Run_analyze(self.url_data, self.loading, file, self.method)
 			file.write()
 			write_log(sys.argv, self.path, self.trun)
 		log.Info('Done ({} seconds)'.format(str(time.time() - self.trun)[:7]))

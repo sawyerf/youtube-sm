@@ -1,5 +1,6 @@
 import re
-from threading			import Thread
+from threading import Thread
+
 
 class Analyzer(Thread):
 	"""
@@ -10,7 +11,7 @@ class Analyzer(Thread):
 
 	def run(self):
 		self.real_analyzer()
-		if self.prog != None:
+		if self.prog is not None:
 			self.prog.add()
 
 	def match(self, url):

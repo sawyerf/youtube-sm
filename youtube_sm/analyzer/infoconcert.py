@@ -1,24 +1,21 @@
 import re
-from datetime		import datetime
-from threading		import Thread
-from .analyzer		import Analyzer
-from ..downloader.infoconcert	import (
+
+from datetime  import datetime
+from .analyzer import Analyzer
+from ..downloader.infoconcert import (
 	download_html_infoconcert
 )
-from ..core.tools	import (
-	log
-)
+
 
 class InfoConcert_Analyzer(Analyzer):
 	SITE='[infoconcert]'
 	URL_MATCH=r'(?:https://|)(?:www\.|)infoconcert\.com/artiste/(?P<ID>[a-z0-9-]*-[0-9]*)'
 
-	def __init__(self, url_id='', mode='', method='0', file=None, prog=None):
+	def __init__(self, url_id='', method='0', file=None, prog=None):
 		######################
 		# The basic variable #
 		######################
 		self.id = self.extract_id(url_id)
-		self.mode = mode
 		self.method = method
 		###############################
 		# Init the video informations #
@@ -50,26 +47,20 @@ class InfoConcert_Analyzer(Analyzer):
 		)
 
 	def info_html(self, ele):
-			date			= re.findall(r'<time itemprop="startDate" datetime="(.+?)"', ele)[0]
-			self.date		= datetime.strptime(date, '%Y-%m-%dT%H:%M:%S')
-			self.url		= 'https://www.infoconcert.com' + re.findall(r'itemprop="url"\n.*href="(.+?)"', ele)[0]
-			self.location	= re.findall(r'<span itemprop="name">(.+?)</span>', ele)[0]
-			self.location	+= ' - ' + re.findall(r'<span itemprop="locality">(.+?)</span>', ele)[0]
-			raw_singers		= re.findall('<div class="spectacle">(.+?)</div>', ele, re.DOTALL)[0]
-			singers			= re.findall('>(.+?)</a>', raw_singers)
-			i = False
-			self.title		= ""
-			for singer in singers:
-				if i:
-					self.title += '/'
-				i = True
-				self.title += singer
+			date          = re.findall(r'<time itemprop="startDate" datetime="(.+?)"', ele)[0]
+			self.date     = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S')
+			self.url      = 'https://www.infoconcert.com' + re.findall(r'itemprop="url"\n.*href="(.+?)"', ele)[0]
+			self.location = re.findall(r'<span itemprop="name">(.+?)</span>', ele)[0]
+			self.location += ' - ' + re.findall(r'<span itemprop="locality">(.+?)</span>', ele)[0]
+			raw_singers   = re.findall('<div class="spectacle">(.+?)</div>', ele, re.DOTALL)[0]
+			singers       = re.findall('>(.+?)</a>', raw_singers)
+			self.title    = '/'.join(singers)
 
 	def real_analyzer(self):
 		""" The main function wich retrieve the informations and and write it
 		in a file"""
 		data = download_html_infoconcert(self.id)
-		if data == None:
+		if data is None:
 			return
 		for ele in data:
 			self.info_html(ele)

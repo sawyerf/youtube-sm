@@ -7,7 +7,7 @@ from .tools import (
 	log)
 
 
-def Run_analyze(urls, mode='html', loading=False, file=None, method='0'):
+def Run_analyze(urls, loading=False, file=None, method='0'):
 	"""Run all the analyze in a thread"""
 	threads = []
 	nb = 0
@@ -31,10 +31,10 @@ def Run_analyze(urls, mode='html', loading=False, file=None, method='0'):
 	log.Info('Start threads')
 	for site in urls:
 		analyzer = return_Analyzer(site)
-		if analyzer == None:
+		if analyzer is None:
 			continue
 		for i in range(len(urls[site])):
-			thr = analyzer(urls[site][i], mode, method, file, prog)
+			thr = analyzer(urls[site][i], method, file, prog)
 			thr.Thread()
 			threads.append(thr)
 			log.Info("Thread start ({}{})".format(site, urls[site][i]))
@@ -50,6 +50,7 @@ def Run_analyze(urls, mode='html', loading=False, file=None, method='0'):
 		prog.progress_bar()
 		print()
 
+
 def old(subs, min_tps=12):
 	lcl = lcl_time(min_tps * 31)
 	threads = []
@@ -62,6 +63,7 @@ def old(subs, min_tps=12):
 			thr.start()
 	for i in threads:
 		i.join()
+
 
 def dead(subs):
 	threads = []

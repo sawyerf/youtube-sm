@@ -1,11 +1,12 @@
-import time
 import os
 import sys
 
 from .core.commands import Commands
 from .core.tools import (
-	log)
-from .version	import __version__
+	log
+)
+from .version import __version__
+
 
 def getpath():
 	if os.name == 'nt':
@@ -14,6 +15,7 @@ def getpath():
 		if os.uname().sysname == 'Linux' or os.uname().sysname == 'Darwin':
 			path = os.environ['HOME'] + '/.cache/youtube_sm/'
 	return path
+
 
 def main():
 	# Init variable
