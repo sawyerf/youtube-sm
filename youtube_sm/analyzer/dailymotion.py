@@ -10,11 +10,10 @@ class Dailymotion_Analyzer(Thread, Analyzer):
 	SITE='[dailymotion]'
 	URL_MATCH=r'(https://|)(www\.|)dailymotion\.com/'
 
-	def __init__(self, url_id='', min_date=0, mode='', method='0', file=None, prog=None):
+	def __init__(self, url_id='', mode='', method='0', file=None, prog=None):
 		self.id		 = url_id
 		self.mode	 = mode # html / raw / list / view
 		self.method	 = method # 0 --> RSS / 1 --> html / 2 --> ultra-html
-		self.min_date	 = min_date
 		# Init info videos
 		self.url	 = "" # id of a video
 		self.url_channel = ""
@@ -30,7 +29,7 @@ class Dailymotion_Analyzer(Thread, Analyzer):
 		Thread.__init__(self)
 
 	def run(self):
-		self.analyzer_sub()
+		self.real_analyzer()
 		if self.prog != None:
 			self.prog.add()
 
@@ -42,7 +41,7 @@ class Dailymotion_Analyzer(Thread, Analyzer):
 			return None
 		return sub + '\t' + sub
 
-	def analyzer_sub(self):
+	def real_analyzer(self):
 		log.Warning("Dailymotion has delete the rss so this functionnality is suspende. Sorry")
 		return
 		if self.method == '0':

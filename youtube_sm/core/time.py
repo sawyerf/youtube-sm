@@ -9,4 +9,3 @@ def lcl_time(day=31, all_time=False):
 def since(day):
 	date	= datetime.now() - timedelta(days=day)
 	return date.strftime("%Y%m%d000000")
-	

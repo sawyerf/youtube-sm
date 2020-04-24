@@ -205,7 +205,7 @@ class Commands():
 	def __default(self):
 		self.url_data = swy(self.path)
 		file = Write_file('sub.html', self.path, 'html', '0', 7)
-		Run_analyze(self.url_data, 'sub.html', lcl_time(), self.path, 'html', False, file, '0')
+		Run_analyze(self.url_data, 'html', False, file, '0')
 		file.write()
 		write_log(sys.argv, self.path, self.trun)
 
@@ -241,7 +241,7 @@ class Commands():
 				elif self.mode == 'json':
 					self.output = 'sub.json'
 			file = Write_file(self.output, self.path, self.mode, self.method, self.count)
-			nb_new = Run_analyze(self.url_data, self.output, lcl_time(self.count + 30, self.all_time), self.path, self.mode, self.loading, file, self.method)
+			nb_new = Run_analyze(self.url_data, self.mode, self.loading, file, self.method)
 			file.write()
 			write_log(sys.argv, self.path, self.trun)
 		log.Info('Done ({} seconds)'.format(str(time.time() - self.trun)[:7]))

@@ -22,11 +22,10 @@ class Youtube_Analyzer(Thread, Analyzer):
 	RE_CHANNEL=r'UC[A-Za-z0-9_-]{22}'
 	RE_PLAYLIST=r'PL[A-Za-z0-9_-]{32}'
 
-	def __init__(self, url_id='', min_date=0, mode='', method='0', file=None, prog=None):
+	def __init__(self, url_id='', mode='', method='0', file=None, prog=None):
 		self.id = self.extract_sub(url_id)
 		self.mode = mode # html / raw / list / view
 		self.method = method # 0 --> RSS / 1 --> html / 2 --> ultra-html
-		self.min_date = min_date
 		self.type = self._type_id(url_id) # True --> chanel False -- > Playlist
 		# Init info videos
 		self.channel = ''
@@ -44,7 +43,7 @@ class Youtube_Analyzer(Thread, Analyzer):
 		Thread.__init__(self)
 
 	def run(self):
-		self.analyzer_sub()
+		self.real_analyzer()
 		if self.prog != None:
 			self.prog.add()
 
@@ -67,7 +66,7 @@ class Youtube_Analyzer(Thread, Analyzer):
 		log.Warning("The channel/playlist can't be add. It could be delete.")
 		return None
 
-	def analyzer_sub(self):
+	def real_analyzer(self):
 		"""Recover all the videos of a channel or a playlist
 		and add the informations in $HOME/.cache/youtube_sm/data/."""
 		linfo = self._download_page()
@@ -75,10 +74,8 @@ class Youtube_Analyzer(Thread, Analyzer):
 			return
 		if self.method == '0':
 			for i in linfo:
-				date = int(re.findall('<published>(.+?)</published>', i)[0].replace('-', '').replace('+00:00', '').replace('T', '').replace(':', ''))
-				if self.min_date <= date:
-					self.info_rss(i)
-					self.write()
+				self.info_rss(i)
+				self.write()
 		elif self.method == '1':
 			if self.type: #Channel
 				try:
@@ -139,7 +136,7 @@ class Youtube_Analyzer(Thread, Analyzer):
 		)
 
 	def show_more(self):
-		""" The continuation of analyzer_sub for the mode 'ultra-html'
+		""" The continuation of real_analyzer for the mode 'ultra-html'
 		This function recover and write the information recover in
 		in the link in the button 'load more'"""
 		data = ''

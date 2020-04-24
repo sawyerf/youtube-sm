@@ -15,14 +15,13 @@ class Peertube_Analyzer(Thread, Analyzer):
 	#'
 	URL_MATCH=r'(?:http[s]?://|)(?P<Host>%s)/feeds/videos\.xml\?accountId=(?P<ID>[0-9]*)' % INSTANCES
 
-	def __init__(self, url_id='', min_date=0, mode='', method='0', file=None, prog=None):
+	def __init__(self, url_id='', mode='', method='0', file=None, prog=None):
 		######################
 		# The basic variable #
 		######################
 		self.id		 = self.extract_sub(url_id)
 		self.mode	 = mode
 		self.method	 = method
-		self.min_date	 = min_date
 		###############################
 		# Init the video informations #
 		###############################
@@ -42,7 +41,7 @@ class Peertube_Analyzer(Thread, Analyzer):
 		Thread.__init__(self)
 
 	def run(self):
-		self.analyzer_sub()
+		self.real_analyzer()
 		if self.prog != None:
 			self.prog.add()
 
@@ -69,10 +68,7 @@ class Peertube_Analyzer(Thread, Analyzer):
 		print("The channel/playlist can't be add. It could be delete.", 1)
 
 	def _download_page(self):
-		if self.method == '0':
-			return download_xml_peertube(self.id)
-		else:
-			return False
+		return download_xml_peertube(self.id)
 
 	def write(self):
 		"""Write the information in a file"""
@@ -85,20 +81,18 @@ class Peertube_Analyzer(Thread, Analyzer):
 			image=self.url_img,
 		)
 
-	def analyzer_sub(self):
+	def real_analyzer(self):
 		""" The main function  wich retrieve the informations and and write it
 		in a file"""
-		if self.method == '0':
-			linfo = self._download_page()
-			if linfo == False or linfo == None:
-				return
-			for i in linfo:
-				try:
-					self.info_rss(i)
-				except:
-					log.Error('Error during the retrieve of the info ({})'.format(self.id))
-				else:
-					self.write()
+		linfo = self._download_page()
+		if linfo == False or linfo == None:
+			return
+		for i in linfo:
+			try:
+				self.info_rss(i)
+				self.write()
+			except:
+				log.Error('Error during the retrieve of the info ({})'.format(self.id))
 
 	def info_rss(self, i):
 		self.url		= re.findall(r'<link>(.*)</link>', i)[0]

@@ -2,6 +2,7 @@ import re
 import sys
 from os.path import exists
 from os import makedirs
+from shutil import rmtree
 
 from ..downloader.youtube import download_xml
 from ..analyzer.imports import (
@@ -84,13 +85,6 @@ def add_sub(subs, path=''):
 					list_subs[site] = [data]
 	write_list(list_subs, path)
 
-def convert_v1_to_v2(sub_file):
-	"""The sub.swy have evolve and is no more compatible so
-	this function convert the sub.swy version 1.0 to 2.0"""
-	log.Info('Convert swy (v1 to v2)')
-	data = open(sub_file, 'rb').read().decode('utf8')
-	open(sub_file, 'w', encoding='utf8').write('[v][2.0]\n[site][youtube]\n' + data)
-
 def swy(path, mode=0):
 	"""Return a list of sub wich are in sub.swy
 	mode : 0 --> return a list with only the id
@@ -104,8 +98,6 @@ def swy(path, mode=0):
 			print('[!] You didn\'t initialize')
 	urls = dict()
 	data_sub = open(path + 'sub.swy', 'rb').read().decode("utf8").split('[site]')
-	if not '[v][' in data_sub[0]:
-		convert_v1_to_v2(path + 'sub.swy')
 	del data_sub[0]
 	if mode == 0 or mode == 2:
 		for i in data_sub:
@@ -133,7 +125,6 @@ def swy(path, mode=0):
 	return urls
 
 def init_swy(path, arg):
-	from shutil import rmtree
 	if exists(path):
 		rmtree(path)
 	try:

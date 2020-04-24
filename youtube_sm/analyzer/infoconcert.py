@@ -1,7 +1,7 @@
 import re
 from datetime		import datetime
 from threading		import Thread
-from .analyzer			import Analyzer
+from .analyzer		import Analyzer
 from ..downloader.infoconcert	import (
 	download_html_infoconcert
 )
@@ -13,14 +13,13 @@ class InfoConcert_Analyzer(Thread, Analyzer):
 	SITE='[infoconcert]'
 	URL_MATCH=r'(?:https://|)(?:www\.|)infoconcert\.com/artiste/(?P<ID>[a-z0-9-]*-[0-9]*)'
 
-	def __init__(self, url_id='', min_date=0, mode='', method='0', file=None, prog=None):
+	def __init__(self, url_id='', mode='', method='0', file=None, prog=None):
 		######################
 		# The basic variable #
 		######################
 		self.id = self.extract_id(url_id)
 		self.mode = mode
 		self.method = method
-		self.min_date = min_date
 		###############################
 		# Init the video informations #
 		###############################
@@ -39,7 +38,7 @@ class InfoConcert_Analyzer(Thread, Analyzer):
 		Thread.__init__(self)
 
 	def run(self):
-		self.analyzer_sub()
+		self.real_analyzer()
 		if self.prog != None:
 			self.prog.add()
 
@@ -74,7 +73,7 @@ class InfoConcert_Analyzer(Thread, Analyzer):
 				i = True
 				self.title += singer
 
-	def analyzer_sub(self):
+	def real_analyzer(self):
 		""" The main function wich retrieve the informations and and write it
 		in a file"""
 		data = download_html_infoconcert(self.id)
