@@ -107,20 +107,3 @@ class Dailymotion_Analyzer(Analyzer):
 		data = download_xml_daily(url)
 		if data == None or data == False:
 			print('[ channel dead ]', url)
-
-	def stat(self, sub, name=''):
-		view, like = 0, 0
-		data = download_xml_daily(sub, False)
-		views = re.findall(r'views>(.+?)</dm', data)
-		likes = re.findall(r'dm:favorites>(.+?)</', data)
-		for i in views:
-			try:
-				view += int(i)
-			except:
-				pass
-		for i in likes:
-			try:
-				like += int(i)
-			except:
-				pass
-		print(like, 'likes for', sub, '(' + str(view) + ' views)')

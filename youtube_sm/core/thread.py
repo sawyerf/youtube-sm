@@ -74,15 +74,3 @@ def dead(subs):
 			thr.start()
 	for i in threads:
 		i.join()
-
-def stats(subs):
-	threads = []
-	log.Info('Start threads')
-	for site in subs:
-		analyzer = return_Analyzer(site)()
-		for url in subs[site]:
-			thr = Thread(target=analyzer.stat, args=(url, subs[site][url],))
-			threads.append(thr)
-			thr.start()
-	for i in threads:
-		i.join()

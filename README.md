@@ -2,7 +2,7 @@
 
 [![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)](http://pypi.python.org/pypi/youtube-sm/)
 [![example](https://sawyerf.gitlab.io/youtube_sm/exampleshield.svg)](https://sawyerf.gitlab.io/youtube_sm/example.html)
-[![docs](https://img.shields.io/static/v1?label=docs&message=master&color=brightgreen)](docs/)
+[![docs](https://img.shields.io/static/v1?label=docs&message=master&color=brightgreen)](docs/Home.md)
 [<img alt="Github" src="https://ionogy.github.io/kernel.css/GitHub-Mark.png" width="22px">](https://github.com/sawyerf/youtube-sm)
 [![GitLab](https://sawyerf.gitlab.io/youtube_sm/gitlab.jpg)](https://gitlab.com/sawyerf/youtube-sm)
 
@@ -48,28 +48,27 @@ youtube-sm [OPTIONS]
 ## Commands
 
 ```
--a           URL       Add a sub to your sub list.
--e                     Edit your sub list.
--h                     Print this help text and exit.
--l           URL       Analyze only one sub.
--m           MODE      Choose the type of the output file (html, json, raw, list, view).
--r                     Remove the cache.
--s           URL       Stats of the selected channel(s).
--t           DAYS      Select how many DAYS ago the last content written to your file will be dated .
--v                     Verbose.
---af         FILE      Add a list of sub to your sub list.
---ax         FILE      Add a xml file in your sub list.
---cat                  View your subscriptions.
---css        STYLE     Export the css files (light, dark, switch).
---dead                 Show the dead channels + those who posted no videos.
---help                 Print this help text and exit.
---html                 Recover sub with html page instead of RSS. This method recover more video.
---init       FILE      Remove all your subs and add new.
---loading              Print a progress bar.
---old        MONTHS    Show channels who didn't post videos since MONTHS + dead channels.
---output     FILE      Write the output in FILE.
---ultra-html           An advanced version of --html.
---version              Print version.
+  -a           URL       Add a sub to your sub list.
+  -e                     Edit your sub list.
+  -h                     Print this help text and exit.
+  -l           URL       Analyze only one sub.
+  -m           MODE      Choose the type of the output file (html, json, raw, list, view).
+  -r                     Remove the cache.
+  -t           DAYS      Select how many DAYS ago the last content written to your file will be dated .
+  -v                     Verbose.
+  --af         FILE      Add a list of sub to your sub list.
+  --ax         FILE      Add a xml file in your sub list.
+  --cat                  View your subscriptions.
+  --css        STYLE     Export the css files (light, dark, switch).
+  --dead                 Show the dead channels + those who posted no videos.
+  --help                 Print this help text and exit.
+  --html                 Recover sub with html page instead of RSS. This method recover more video.
+  --init       FILE      Remove all your subs and add new.
+  --loading              Print a progress bar.
+  --old        MONTHS    Show channels who didn't post videos since MONTHS + dead channels.
+  --output     FILE      Write the output in FILE.
+  --ultra-html           An advanced version of --html.
+  --version              Print version.
 ```
 
 ## Support Platforms

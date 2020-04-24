@@ -66,18 +66,3 @@ class RevolutionPermanente_Analyzer(Analyzer):
 			except:
 				pass
 			self.write()
-
-	def old(self, url, lcl):
-		""" The function wich is call with the option -o
-		This function print the old channel or the dead channel."""
-		pass
-
-	def dead(self, url):
-		""" The function wich is call with the option -d
-		This function print the dead channel."""
-		pass
-
-	def stat(self, sub, name):
-		""" The function wich is call with the option -s
-		This function print the views and the ratio of like of a video"""
-		pass

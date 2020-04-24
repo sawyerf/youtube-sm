@@ -10,7 +10,6 @@ from .write import (
 from .thread import (
 	Run_analyze,
 	old,
-	stats,
 	dead)
 from .swy import (
 	swy,
@@ -35,7 +34,6 @@ class Commands():
 			'-l':			{'func': self._l,			'option': 'URL',		'description': "Analyze only one sub."},
 			'-m':			{'func': self._m,			'option': 'MODE',		'description': "Choose the type of the output file (html, json, raw, list, view)."},
 			'-r':			{'func': self._r,			'option': '',			'description': "Remove the cache."},
-			'-s':			{'func': self._s,			'option': 'URL',		'description': "Stats of the selected channel(s)."},
 			'-t':			{'func': self._t,			'option': 'DAYS',		'description': "Select how many DAYS ago the last content written to your file will be dated ."},
 			'-v':			{'func': self.nothing,		'option': '',			'description': "Verbose."},
 			'--af':			{'func': self.__af,			'option': 'FILE',		'description': "Add a list of sub to your sub list."},
@@ -115,16 +113,6 @@ class Commands():
 			self.url_data = {analyzer.SITE: [sys.argv[arg+1]]}
 		else:
 			exit_debug('You forgot an argument after -l', 1)
-
-	def _s(self, arg):
-		try:
-			if sys.argv[arg+1] == 'all':
-				subs = swy(self.path, 1)
-				stats(subs)
-			else:
-				stats({sys.argv[arg+1]: {sys.argv[arg+2]: sys.argv[arg+2]}})
-		except IndexError:
-			exit_debug("Missing argument after the '-s'", 1)
 
 	def _r(self, arg):
 		del_data(self.path, True)

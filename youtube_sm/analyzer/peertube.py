@@ -37,14 +37,6 @@ class Peertube_Analyzer(Analyzer):
 		self.prog = prog
 		self.file = file
 
-	def Thread(self):
-		Thread.__init__(self)
-
-	def run(self):
-		self.real_analyzer()
-		if self.prog != None:
-			self.prog.add()
-
 	def extract_sub(self, url):
 		match = self.match(url)
 		if match:
@@ -111,9 +103,4 @@ class Peertube_Analyzer(Analyzer):
 	def dead(self, url):
 		""" The function wich is call with the option -d
 		This function print the dead channel."""
-		pass
-
-	def stat(self, sub, name):
-		""" The function wich is call with the option -s
-		This function print the views and the ratio of like of a video"""
 		pass

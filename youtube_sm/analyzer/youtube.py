@@ -271,34 +271,3 @@ class Youtube_Analyzer(Analyzer):
 			print('[channel dead]\t', url)
 		elif linfo == None:
 			print('[  no video  ]\t', url)
-
-
-	def stat(self, sub, name=''):
-		"""Print the mark and the views of a channel"""
-		data = download_xml(sub)
-		if data == None or data == False:
-			return
-		marks = 0
-		views = 0
-		count_marks = 0
-		for i in data:
-			mark, view = self.info_stats(i)
-			if mark != None:
-				marks += mark
-				count_marks += 1
-			views += view
-		marks = marks / (count_marks / 2)
-		prin = str(marks)[:4] + " for " + name + ' (' + str(views) + ' views)'
-		try:
-			print(prin)
-		except:
-			print(prin.encode())
-
-
-	def info_stats(self, data):
-		try:
-			mark = float(re.findall('average="(.+?)"', data)[0])
-			view = int(re.findall('views="(.+?)"', data)[0])
-		except:
-			return None, None
-		return mark, view

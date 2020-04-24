@@ -57,10 +57,6 @@ git checkout -b name_of_the_platform
     	def dead(self, url):
     		""" The function wich is call with the option -d 
     		This function print the dead channel."""
-    
-    	def stat(self, sub, name):
-    		""" The function wich is call with the option -s
-    		This function print the views and the ratio of like of a video"""
     ```
 
 5. Return you class in the function return_Analyzer() :

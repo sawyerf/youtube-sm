@@ -82,8 +82,3 @@ class InfoConcert_Analyzer(Analyzer):
 	def dead(self, url):
 		""" The function wich is call with the option -d
 		This function print the dead channel."""
-
-	def stat(self, sub, name):
-		""" The function wich is call with the option -s
-		This function print the views and the ratio of like of a video"""
-
