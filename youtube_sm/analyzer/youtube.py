@@ -1,7 +1,7 @@
 import os
 import re
 
-from datetime			import datetime
+from datetime			import datetime, timedelta
 from threading			import Thread
 from .analyzer			import Analyzer
 from ..downloader.youtube	import (
@@ -15,7 +15,6 @@ from ..core.tools		import (
 	Progress_loop,
 	log
 )
-from ..core.time			import since
 
 class Youtube_Analyzer(Thread, Analyzer):
 	SITE='[youtube]'
@@ -201,7 +200,7 @@ class Youtube_Analyzer(Thread, Analyzer):
 			self.url			= re.findall(r'data-video-id="(.{11})"', i)[0]
 			self.title			= re.findall(r'data-video-title="(.+?)"', i)[0]
 			self.channel		= re.findall(r'data-video-username="(.+?)"', i)[0]
-			self.url_channel	= 'results?sp=EgIQAkIECAESAA%253D%253D&search_query=' + self.channel.replace(' ', '+')
+			self.url_channel	= self.id
 			self.date			= datetime.now()
 
 	def info_rss(self, i):
@@ -253,9 +252,18 @@ class Youtube_Analyzer(Thread, Analyzer):
 		"""
 		Convert "2 day ago" -> datetime format
 		"""
-		value, unit, _ = string_delta.split()
-		delta = datetime.timedelta(**{unit: float(value)})
-		return datetime.now() - delta
+		value, unit, _ = date.split()
+		if unit in ['month', 'months']:
+			unit = 'days'
+			value = int(value) * 31
+		elif unit in ['year', 'years']:
+			unit = 'days'
+			value = int(value) * 365
+		elif unit in ['minute', 'hour', 'day', 'week']:
+			unit += 's'
+		delta = timedelta(**{unit: int(value)})
+		date = datetime.now() - delta
+		return date
 
 	def old(self, url, lcl):
 		linfo = download_xml(url)

@@ -37,9 +37,13 @@ class Write_file():
 				f.close()
 			for content in self.contents:
 				if content['date'] != '':
-					content['date'] = datetime.strptime(content['date'], '%Y-%m-%d %H:%M:%S')
+					try:
+						content['date'] = datetime.strptime(content['date'], '%Y-%m-%d %H:%M:%S')
+					except:
+						print(content['date'])
 
 	def add(self, url='', title='', url_uploader='', image='', uploader='', date='', view=''):
+		date = date.replace(microsecond=0)
 		for content in self.contents:
 			if content['url']['content'] == url:
 				return
