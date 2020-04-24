@@ -9,7 +9,7 @@ from ..core.tools	import (
 	log
 )
 
-class InfoConcert_Analyzer(Thread, Analyzer):
+class InfoConcert_Analyzer(Analyzer):
 	SITE='[infoconcert]'
 	URL_MATCH=r'(?:https://|)(?:www\.|)infoconcert\.com/artiste/(?P<ID>[a-z0-9-]*-[0-9]*)'
 
@@ -33,14 +33,6 @@ class InfoConcert_Analyzer(Thread, Analyzer):
 		################
 		self.prog = prog
 		self.file = file
-
-	def Thread(self):
-		Thread.__init__(self)
-
-	def run(self):
-		self.real_analyzer()
-		if self.prog != None:
-			self.prog.add()
 
 	def add_sub(self, url):
 		""" This function return the informations wich are write in sub.swy ."""

@@ -6,7 +6,7 @@ from .analyzer			import Analyzer
 from ..core.tools		import log
 from ..downloader.dailymotion	import download_xml_daily
 
-class Dailymotion_Analyzer(Thread, Analyzer):
+class Dailymotion_Analyzer(Analyzer):
 	SITE='[dailymotion]'
 	URL_MATCH=r'(https://|)(www\.|)dailymotion\.com/'
 
@@ -24,14 +24,6 @@ class Dailymotion_Analyzer(Thread, Analyzer):
 		# Function
 		self.prog = prog # True --> loading / False --> no loading
 		self.file = file
-
-	def Thread(self):
-		Thread.__init__(self)
-
-	def run(self):
-		self.real_analyzer()
-		if self.prog != None:
-			self.prog.add()
 
 	def add_sub(self, sub):
 		log.Warning("Dailymotion has delete the rss so this functionnality is suspende. Sorry")

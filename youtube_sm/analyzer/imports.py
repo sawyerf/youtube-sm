@@ -4,6 +4,7 @@ from .infoconcert	import InfoConcert_Analyzer
 from .peertube		import Peertube_Analyzer
 from .youtube		import Youtube_Analyzer
 from .revolutionpermanente import RevolutionPermanente_Analyzer
+
 analyzers = [
 	Dailymotion_Analyzer,
 	InfoConcert_Analyzer,

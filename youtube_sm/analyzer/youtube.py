@@ -2,7 +2,6 @@ import os
 import re
 
 from datetime			import datetime, timedelta
-from threading			import Thread
 from .analyzer			import Analyzer
 from ..downloader.youtube	import (
 	download_xml,
@@ -16,7 +15,7 @@ from ..core.tools		import (
 	log
 )
 
-class Youtube_Analyzer(Thread, Analyzer):
+class Youtube_Analyzer(Analyzer):
 	SITE='[youtube]'
 	URL_MATCH=r'(?:https://|)(?:www\.|)youtube\.com/(?P<type>channel/|user/|playlist\?list=)(?P<ID>[a-zA-Z0-9_-]*)'
 	RE_CHANNEL=r'UC[A-Za-z0-9_-]{22}'
@@ -38,14 +37,6 @@ class Youtube_Analyzer(Thread, Analyzer):
 		# Function
 		self.prog = prog # True --> loading / False --> no loading
 		self.file = file
-
-	def Thread(self):
-		Thread.__init__(self)
-
-	def run(self):
-		self.real_analyzer()
-		if self.prog != None:
-			self.prog.add()
 
 	def extract_sub(self, url):
 		match = self.match(url)

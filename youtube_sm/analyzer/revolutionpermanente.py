@@ -9,7 +9,7 @@ from ..downloader.revolutionpermanente	import (
 	download_xml_revolutionpermanente
 )
 
-class RevolutionPermanente_Analyzer(Thread, Analyzer):
+class RevolutionPermanente_Analyzer(Analyzer):
 	SITE='[revolutionpermanente]'
 	URL_MATCH=r'(?:https://|)(?:www\.|)revolutionpermanente\.fr.*'
 
@@ -32,14 +32,6 @@ class RevolutionPermanente_Analyzer(Thread, Analyzer):
 		################
 		self.prog = prog
 		self.file = file
-
-	def Thread(self):
-		Thread.__init__(self)
-
-	def run(self):
-		self.real_analyzer()
-		if self.prog != None:
-			self.prog.add()
 
 	def add_sub(self, url):
 		""" This function return the informations wich are write in sub.swy ."""

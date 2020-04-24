@@ -1,7 +1,10 @@
 # Youtube_subscription_manager
 
-
-[![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)](http://pypi.python.org/pypi/youtube-sm/) [![example](https://sawyerf.gitlab.io/youtube_sm/exampleshield.svg)](https://sawyerf.gitlab.io/youtube_sm/example.html) [<img alt="Github" src="https://ionogy.github.io/kernel.css/GitHub-Mark.png" width="22px">](https://github.com/sawyerf/youtube-sm) [![GitLab](https://sawyerf.gitlab.io/youtube_sm/gitlab.jpg)](https://gitlab.com/sawyerf/youtube-sm)
+[![PyPI](http://img.shields.io/pypi/v/youtube-sm.svg)](http://pypi.python.org/pypi/youtube-sm/)
+[![example](https://sawyerf.gitlab.io/youtube_sm/exampleshield.svg)](https://sawyerf.gitlab.io/youtube_sm/example.html)
+[![docs](https://img.shields.io/static/v1?label=docs&message=master&color=brightgreen)](docs/)
+[<img alt="Github" src="https://ionogy.github.io/kernel.css/GitHub-Mark.png" width="22px">](https://github.com/sawyerf/youtube-sm)
+[![GitLab](https://sawyerf.gitlab.io/youtube_sm/gitlab.jpg)](https://gitlab.com/sawyerf/youtube-sm)
 
 <p><img align='right' width=400px height=auto src='https://sawyerf.gitlab.io/youtube_sm/binome.jpg' /></p>
 
