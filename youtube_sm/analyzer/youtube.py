@@ -1,6 +1,7 @@
 import os
 import re
 
+from datetime			import datetime
 from threading			import Thread
 from .analyzer			import Analyzer
 from ..downloader.youtube	import (
@@ -30,7 +31,6 @@ class Youtube_Analyzer(Thread, Analyzer):
 		self.type = self._type_id(url_id) # True --> chanel False -- > Playlist
 		# Init info videos
 		self.channel = ''
-		self.data_file = [] #The name of the file where stock the informations in data
 		self.date = ''
 		self.title = ''
 		self.url = ''
@@ -129,15 +129,14 @@ class Youtube_Analyzer(Thread, Analyzer):
 
 	def write(self):
 		"""Write the information in a file"""
-		return self.file.write(
-			channel=self.channel,
+		return self.file.add(
+			uploader=self.channel,
 			date=self.date,
 			title=self.title,
 			url='https://www.youtube.com/watch?v='+self.url,
-			url_channel=self._complet_url_channel(self.url_channel),
-			url_img='https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url),
+			url_uploader=self._complet_url_channel(self.url_channel),
+			image='https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.url),
 			view=self.view,
-			data_file=self.data_file,
 		)
 
 	def show_more(self):
@@ -185,36 +184,35 @@ class Youtube_Analyzer(Thread, Analyzer):
 		self.url = re.findall(r'href="\\/watch\?v=(.{11})"', i)[0]
 		self.url_channel = self.id
 		self.title = re.findall(r'ltr"\ title="(.+?)"', i)[0]
-		self.date = re.findall(r'/li\\u003e\\u003cli\\u003e(.*)\\u003c\\/li', i)[0]
+		date = re.findall(r'/li\\u003e\\u003cli\\u003e(.*)\\u003c\\/li', i)[0]
+		self.date = self.date_convert(date)
 		self.view = re.findall(r'class="yt-lockup-meta-info"\\u003e\\u003cli\\u003e(.+?) views', i)[0].replace(',', '')
-		self.data_file = [self.date_convert(), '000000']
 
 	def info_html(self, i):
 		"""Recover the informations of the html page"""
 		if self.type: #Channel
-			self.url = re.findall(r'href="/watch\?v=(.{11})"', i)[0]
-			self.url_channel = self.id
-			self.title = re.findall(r'dir="ltr" title="(.+?)"', i)[0]
-			self.date = re.findall(r'</li><li>(.+?)</li>', i)[0]
-			self.view = re.findall(r'class="yt-lockup-meta-info"><li>(.+?)\ views', i)[0].replace(',', '')
-			self.data_file = [self.date_convert(), '000000']
+			self.url			= re.findall(r'href="/watch\?v=(.{11})"', i)[0]
+			self.url_channel	= self.id
+			self.title			= re.findall(r'dir="ltr" title="(.+?)"', i)[0]
+			date				= re.findall(r'</li><li>(.+?)</li>', i)[0]
+			self.date			= self.date_convert(date)
+			self.view			= re.findall(r'class="yt-lockup-meta-info"><li>(.+?)\ views', i)[0].replace(',', '')
 		else: #Playlist
-			self.url = re.findall(r'data-video-id="(.{11})"', i)[0]
-			self.title = re.findall(r'data-video-title="(.+?)"', i)[0]
-			self.channel = re.findall(r'data-video-username="(.+?)"', i)[0]
-			self.url_channel = 'results?sp=EgIQAkIECAESAA%253D%253D&search_query=' + self.channel.replace(' ', '+')
-			self.data_file = ['0000000000', '000000']
+			self.url			= re.findall(r'data-video-id="(.{11})"', i)[0]
+			self.title			= re.findall(r'data-video-title="(.+?)"', i)[0]
+			self.channel		= re.findall(r'data-video-username="(.+?)"', i)[0]
+			self.url_channel	= 'results?sp=EgIQAkIECAESAA%253D%253D&search_query=' + self.channel.replace(' ', '+')
+			self.date			= datetime.now()
 
 	def info_rss(self, i):
 		"""Recover the informations of a rss page"""
-		self.url = re.findall(r'<yt:videoId>(.{11})</yt:videoId>', i)[0]
-		self.url_channel = re.findall(r'<yt:channelId>(.*)</yt:channelId>', i)[0]
-		self.title = re.findall(r'<media:title>(.*)</media:title>', i)[0]
-		self.channel = re.findall(r'<name>(.*)</name>', i)[0]
-		self.data_file = re.findall(r'<published>(.*)\+', i)[0].replace(':', '').split('T')
-		self.date = self.data_file[0]
-		self.view = re.findall(r'views="(.+?)"', i)[0].replace(',', '')
-		self.data_file[0] = self.data_file[0].replace('-', '')
+		self.url			= re.findall(r'<yt:videoId>(.{11})</yt:videoId>', i)[0]
+		self.url_channel	= re.findall(r'<yt:channelId>(.*)</yt:channelId>', i)[0]
+		self.title			= re.findall(r'<media:title>(.*)</media:title>', i)[0]
+		self.channel		= re.findall(r'<name>(.*)</name>', i)[0]
+		date				= re.findall(r'<published>(.*)\+', i)[0]
+		self.date			= datetime.strptime(date, '%Y-%m-%dT%H:%M:%S')
+		self.view			= re.findall(r'views="(.+?)"', i)[0].replace(',', '')
 
 	def _view(self, i):
 		""" Return the views of a videos"""
@@ -251,30 +249,13 @@ class Youtube_Analyzer(Thread, Analyzer):
 			url_channel = 'https://youtube.com/user/' + url_channel
 		return url_channel
 
-	def date_convert(self):
-		""" Convert the date which are recover in the html page
-		in a date we can easily sort.
-		like this: '2 day' --> '20180525'
-		           '2 months' --> '20180300'
-		           '2 years' --> '20160000' """
-		sdate = self.date.split(' ')
-		if 'year' in sdate[1]:
-			day = 365*int(sdate[0])
-			return since(day)[:4] + '0000'
-		elif 'month' in sdate[1]:
-			day = 31*int(sdate[0])
-			return since(day)[:6] + '00'
-		elif 'week' in sdate[1]:
-			day = 7*int(sdate[0])
-		elif 'day' in sdate[1]:
-			day = int(sdate[0])
-		elif 'hour' in sdate[1]:
-			day = 0
-		elif 'minute' in sdate[1]:
-			day = 0
-		else:
-			return '0'
-		return since(day)[:8]
+	def date_convert(self, date):
+		"""
+		Convert "2 day ago" -> datetime format
+		"""
+		value, unit, _ = string_delta.split()
+		delta = datetime.timedelta(**{unit: float(value)})
+		return datetime.now() - delta
 
 	def old(self, url, lcl):
 		linfo = download_xml(url)

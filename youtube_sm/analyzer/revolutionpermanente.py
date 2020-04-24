@@ -1,4 +1,5 @@
 import re
+from datetime		import datetime
 from threading		import Thread
 from .analyzer		import Analyzer
 from ..core.tools	import (
@@ -26,7 +27,6 @@ class RevolutionPermanente_Analyzer(Thread, Analyzer):
 		self.title		= ''
 		self.url		= ''
 		self.url_img	= ''
-		self.data_file	= ''
 		self.date		= ''
 		################
 		# The function #
@@ -47,23 +47,21 @@ class RevolutionPermanente_Analyzer(Thread, Analyzer):
 		return 'Revolution Permanente'
 
 	def write(self):
-		return self.file.write(
+		return self.file.add(
 			url=self.url,
 			title=self.title,
-			url_img=self.url_img,
-			channel='Revolution Permanente',
-			url_channel='https://www.revolutionpermanente.fr/',
+			image=self.url_img,
+			uploader='Revolution Permanente',
+			url_uploader='https://www.revolutionpermanente.fr/',
 			date=self.date,
-			data_file=self.data_file
 		)
 
 	def info_rss(self, ele):
-			self.title = re.findall('<title>(.*)</title>', ele)[0]
-			self.url = re.findall('<link>(.*)</link>', ele)[0]
-			self.url_img = re.findall("img class='spip_logo spip_logo_right spip_logos' .* src='(.+?)'", ele)[0]
-			date = re.findall('<dc:date>(.*)</dc:date>', ele)[0].replace('Z', '').split('T')
-			self.data_file = [date[0].replace('-', ''), date[1].replace(':', '')]
-			self.date = date[0]
+			self.title		= re.findall('<title>(.*)</title>', ele)[0]
+			self.url		= re.findall('<link>(.*)</link>', ele)[0]
+			self.url_img	= re.findall("img class='spip_logo spip_logo_right spip_logos' .* src='(.+?)'", ele)[0]
+			date			= re.findall('<dc:date>(.*)</dc:date>', ele)[0]
+			self.date		= datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
 
 	def analyzer_sub(self):
 		""" The main function wich retrieve the informations and and write it
@@ -72,7 +70,10 @@ class RevolutionPermanente_Analyzer(Thread, Analyzer):
 		if data == None:
 			return
 		for ele in data:
-			self.info_rss(ele)
+			try:
+				self.info_rss(ele)
+			except:
+				pass
 			self.write()
 
 	def old(self, url, lcl):

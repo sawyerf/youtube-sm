@@ -1,4 +1,5 @@
 import re
+from datetime		import datetime
 from threading		import Thread
 from .analyzer			import Analyzer
 from ..downloader.infoconcert	import (
@@ -10,7 +11,7 @@ from ..core.tools	import (
 
 class InfoConcert_Analyzer(Thread, Analyzer):
 	SITE='[infoconcert]'
-	URL_MATCH=r'(?:https://|)(?:www\.|)infoconcert\.com/artiste/(?P<ID>[a-z-]*[0-9]*)/.*\.html'
+	URL_MATCH=r'(?:https://|)(?:www\.|)infoconcert\.com/artiste/(?P<ID>[a-z0-9-]*-[0-9]*)'
 
 	def __init__(self, url_id='', min_date=0, mode='', method='0', file=None, prog=None):
 		######################
@@ -24,7 +25,6 @@ class InfoConcert_Analyzer(Thread, Analyzer):
 		# Init the video informations #
 		###############################
 		self.channel = ''
-		self.data_file = ''
 		self.date = ''
 		self.title = ''
 		self.url = ''
@@ -50,17 +50,17 @@ class InfoConcert_Analyzer(Thread, Analyzer):
 		return sub + '\t' + name
 
 	def write(self):
-		return self.file.write(
+		return self.file.add(
 			url=self.url,
 			title=self.title,
-			url_img='https://www.dailydot.com/wp-content/uploads/558/89/tdd-classical_music_emojis.jpg',
-			channel=self.location,
+			image='https://www.dailydot.com/wp-content/uploads/558/89/tdd-classical_music_emojis.jpg',
+			uploader=self.location,
 			date=self.date,
-			data_file=self.data_file)
+		)
 
 	def info_html(self, ele):
-			self.date		= re.findall(r'<time itemprop="startDate" datetime="(.+?)"', ele)[0].split('T')[0].replace('-', '/')
-			self.data_file	= [self.date.replace('/', ''), '000000']
+			date			= re.findall(r'<time itemprop="startDate" datetime="(.+?)"', ele)[0]
+			self.date		= datetime.strptime(date, '%Y-%m-%dT%H:%M:%S')
 			self.url		= 'https://www.infoconcert.com' + re.findall(r'itemprop="url"\n.*href="(.+?)"', ele)[0]
 			self.location	= re.findall(r'<span itemprop="name">(.+?)</span>', ele)[0]
 			self.location	+= ' - ' + re.findall(r'<span itemprop="locality">(.+?)</span>', ele)[0]

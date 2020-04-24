@@ -27,13 +27,11 @@ class Peertube_Analyzer(Thread, Analyzer):
 		# Init the video informations #
 		###############################
 		self.channel	 = ''
-		self.data_file	 = ''
 		self.date		 = ''
 		self.title		 = ''
 		self.url		 = ''
 		self.url_channel = ''
 		self.url_img	 = ''
-		self.view		 = ''
 		################
 		# The function #
 		################
@@ -78,15 +76,13 @@ class Peertube_Analyzer(Thread, Analyzer):
 
 	def write(self):
 		"""Write the information in a file"""
-		return self.file.write(
-			channel=self.channel,
-			data_file=self.data_file,
+		return self.file.add(
+			uploader=self.channel,
 			date=self.date,
 			title=self.title,
 			url=self.url,
-			url_channel=self.url_channel,
-			url_img=self.url_img,
-			view=self.view,
+			url_uploader=self.url_channel,
+			image=self.url_img,
 		)
 
 	def analyzer_sub(self):
@@ -106,14 +102,12 @@ class Peertube_Analyzer(Thread, Analyzer):
 
 	def info_rss(self, i):
 		self.url		= re.findall(r'<link>(.*)</link>', i)[0]
-		self.url_channel	= 'https://' + self.id.split(':')[0]
-		self.channel		= re.findall(r'<dc:creator>(.*)</dc:creator>', i)[0]
+		self.url_channel= 'https://' + self.id.split(':')[0]
+		self.channel	= re.findall(r'<dc:creator>(.*)</dc:creator>', i)[0]
 		self.title		= re.findall(r'<title><!\[CDATA\[(.*)\]\]></title>', i)[0]
-		self.url_img		= re.findall(r'<media:thumbnail url="(.*)"', i)[0]
-		self.date		= re.findall(r'<pubDate>(.*)</pubDate>', i)[0]
-		date			= datetime.strptime(self.date, '%a, %d %b %Y %H:%M:%S GMT')
-		self.date		= date.strftime("%Y-%m-%d")
-		self.data_file		= [date.strftime("%Y%m%d"), date.strftime("%H%M%S")]
+		self.url_img	= re.findall(r'<media:thumbnail url="(.*)"', i)[0]
+		date			= re.findall(r'<pubDate>(.*)</pubDate>', i)[0]
+		self.date		= datetime.strptime(date, '%a, %d %b %Y %H:%M:%S GMT')
 
 	def old(self, url, lcl):
 		""" The function wich is call with the option -o

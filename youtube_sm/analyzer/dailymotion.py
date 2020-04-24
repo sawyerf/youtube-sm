@@ -1,6 +1,6 @@
 import re
 
-from time			import strptime
+from time				import strptime
 from threading			import Thread
 from .analyzer			import Analyzer
 from ..core.tools		import log
@@ -22,7 +22,6 @@ class Dailymotion_Analyzer(Thread, Analyzer):
 		self.title	 = ""
 		self.channel	 = ""
 		self.date	 = ""
-		self.data_file	 = "" #The name of the file where stock the informations in data
 		# Function
 		self.prog = prog # True --> loading / False --> no loading
 		self.file = file
@@ -67,14 +66,13 @@ class Dailymotion_Analyzer(Thread, Analyzer):
 
 	def write(self):
 		"""Write the information in a file"""
-		return self.file.write(
-			channel=self.channel,
-			data_file=self.data_file,
+		return self.file.add(
+			uploader=self.channel,
 			date=self.date,
 			title=self.title,
 			url=self.url,
-			url_channel=self.url_channel,
-			url_img=self.url_img,
+			url_uploader=self.url_channel,
+			image=self.url_img,
 			view=self.view,
 		)
 
@@ -84,8 +82,8 @@ class Dailymotion_Analyzer(Thread, Analyzer):
 		self.title = re.findall(r'<media:title>(.+?)</media:title>', i)[0]
 		self.url_img = re.findall(r'<media:thumbnail\ url="(.+?)"', i)[0]
 		self.channel = self.id
-		self.date, x = self.convert_date(re.findall(r'<pubDate>.{5}(.*)\ \+', i)[0], True)
-		self.data_file = [self.date.replace('-', ''), str(x.tm_hour) + str(x.tm_min) + str(x.tm_sec)]
+		date = re.findall(r'<pubDate>.{5}(.*)\ \+', i)[0]
+		self.date = strptime(date, '%d %b %Y %H:%M:%S')
 		self.view = re.findall(r'<dm:views>(.+?)</dm:views>', i)[0].replace(',', '')
 
 	def convert_date(self, date, y=False):

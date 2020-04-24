@@ -113,13 +113,15 @@ https://www.youtube.com/watch?v={video_id}
 #### Json :
 ```json
 {
-	"title": "{title}",
-	"id": "{video_id}",
-	"idChannel": "{channel_id}",
-	"uploader": "{channel}",
-	"uploaded": "{date}",
-	"image": "{link_pic}",
-	"views": "{views}"
+	"url": {
+		"content": "https://www.youtube.com/watch?v=ID",
+		"image": "https://i.ytimg.com/vi/ID/mqdefault.jpg",
+		"uploader": "https://youtube.com/channel/ID"
+	},
+	"date": "2020-04-23 16:08:22",
+	"title": "Video Title",
+	"uploader": "Channel",
+	"views": "228283"
 }
 ```
 #### Html :
