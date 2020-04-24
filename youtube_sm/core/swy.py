@@ -135,7 +135,7 @@ def init_swy(path, arg):
 	if exists(path):
 		rmtree(path)
 	makedirs(path + 'data/')
-	self.Info('Data Folder Create')
+	log.Info('Data Folder Create')
 	if len(sys.argv) != arg + 1:
 		add_file = sys.argv[arg + 1]
 		if not exists(add_file):
@@ -164,7 +164,7 @@ def init_swy(path, arg):
 		if exists('subscription_manager'):
 			generate_swy('subscription_manager', path=path)
 		else:
-			self.Error('File Not Found (subscription_manager)')
+			log.Error('File Not Found (subscription_manager)')
 			exit()
 	log.Info('Done')
 	exit(0)

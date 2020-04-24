@@ -46,15 +46,15 @@ class Peertube_Analyzer(Analyzer):
 		try:
 			data = download_xml_peertube(sub, False)
 		except socket.gaierror:
-			self.Error("Wrong host ({})".format(sub), 1)
+			log.Error("Wrong host ({})".format(sub), 1)
 			return None
 		if data is None or '</rss>' not in data:
-			self.Error("This sub can't be add.", 1)
+			log.Error("This sub can't be add.", 1)
 			return None
 		data = re.match(r'<title>(.*)</title>', data)
 		if data:
 			return sub + '\t' + data.group(0)
-		self.Error("This sub can't be add.", 1)
+		log.Error("This sub can't be add.", 1)
 
 	def _download_page(self):
 		return download_xml_peertube(self.id)

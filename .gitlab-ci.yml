@@ -18,21 +18,21 @@ download:
         - wc -l sub.html
         - youtube-sm -v -m json --output test.json
         - wc -l test.json
-        - youtube-sm --html -l [youtube] UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list -t -1 --output test.list -r -v
+        - youtube-sm --html -l https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list -t -1 --output test.list -r -v
         - wc -l test.list
         - youtube-sm --html -l https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list -t -1 --output test.list -r -v
         - wc -l test.list
-        - youtube-sm --ultra-html -l [youtube] UCEcNXmr7DYq1XxpWHSxaN0w -m raw -t -1 -r --output test.raw -v
-        - wc -l test.raw
-        - youtube-sm -l [peertube] thinkerview.video:5 -m raw -t -1 -r --output test.raw -v
-        - wc -l test.raw
-        - youtube-sm -l [peertube] thinkerview.video -m raw -t -1 -r --output test.raw -v
+        - youtube-sm --ultra-html -l https://www.youtube.com/channel/UCEcNXmr7DYq1XxpWHSxaN0w -m raw -t -1 -r --output test.raw -v
         - wc -l test.raw
         - youtube-sm -l https://thinkerview.video/feeds/videos.xml?accountId=5 -m raw -t -1 -r --output test.raw -v
         - wc -l test.raw
-        - youtube-sm -l [infoconcert] salut-cest-cool-120538 -m raw -t -1 -r --output test.raw -v
+        - youtube-sm -l https://thinkerview.video/feeds/videos.xml?accountId=5 -m raw -t -1 -r --output test.raw -v
         - wc -l test.raw
-        - youtube-sm -l [test] test -m raw -t -1 -r --output test.raw -v
+        - youtube-sm -l https://thinkerview.video/feeds/videos.xml?accountId=5 -m raw -t -1 -r --output test.raw -v
+        - wc -l test.raw
+        - youtube-sm -l https://www.infoconcert.com/artiste/achab-175740/concerts.html -m raw -t -1 -r --output test.raw -v
+        - wc -l test.raw
+        - youtube-sm -l https://example.com/ -m raw -t -1 -r --output test.raw -v
         - curl -O https://sawyerf.gitlab.io/youtube_sm/test.swy
         - youtube-sm -v --init test.swy
         - youtube-sm -v -t -1 --output testall.html
@@ -47,11 +47,7 @@ commands:
         - youtube-sm -h
         - youtube-sm --css ""
         - youtube-sm --css
-        - youtube-sm -a [youtube] UC-lHJZR3Gqxm24_Vd_AJ5Yw -v
         - youtube-sm -a https://www.youtube.com/channel/UCyg3MF1KU3dUK0HJBBoRYOw -v
-        - youtube-sm -a [peertube] thinkerview.video:5 -v
         - youtube-sm -a https://thinkerview.video/feeds/videos.xml?accountId=5 -v
-        - youtube-sm -a [dailymotion] karimdebbache -v
         - youtube-sm -a https://dailymotion.com/karimdebbache -v
-        - youtube-sm -a [infoconcert] achab-175740 -v
         - youtube-sm -a https://www.infoconcert.com/artiste/achab-175740/concerts.html -v
