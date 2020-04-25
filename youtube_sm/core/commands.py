@@ -112,7 +112,6 @@ class Commands():
 			exit_debug('You forgot an argument after -l', 1)
 
 	def _r(self, arg):
-		self.analyze = False
 		del_data(self.path)
 
 	def __init(self, arg):
