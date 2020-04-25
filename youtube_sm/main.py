@@ -18,8 +18,6 @@ def getpath():
 
 
 def main():
-	# Init variable
-	# Path of the cache
 	try:
 		path = getpath()
 	except KeyError:

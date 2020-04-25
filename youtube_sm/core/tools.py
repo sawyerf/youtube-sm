@@ -58,7 +58,7 @@ def del_data(path):
 			pass
 		os.makedirs(path + 'data/')
 	else:
-		self.Warning('Data folder don\'t exist')
+		log.Warning('Data folder don\'t exist')
 
 
 def exit_debug(msg, i=0):

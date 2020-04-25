@@ -2,6 +2,7 @@ import re
 import time
 import os
 import sys
+import optparse
 
 from .write import (
 	Write_file,
@@ -54,17 +55,15 @@ class Commands():
 			'--ultra-html': {'func': self.__ultra_html, 'option': '',       'description': "An advanced version of --html."},
 			'--version':    {'func': self.__version,    'option': '',       'description': "Print version."},
 		}
-		self.url_data = []
-		self.analyze = False
-		self.analyze_only_one = False
-		self.loading = False
-		self.method = '0'
-		self.mode = 'html'
-		self.count = 7
-		self.all_time = False
-		self.output = ''
-		self.path = path
-		self.trun = time.time()
+		self.analyze  = True
+		self.count    = 7
+		self.loading  = False
+		self.method   = '0'
+		self.mode     = 'html'
+		self.output   = ''
+		self.path     = path
+		self.trun     = time.time()
+		self.url_data = {}
 
 	def _h(self):
 		print('Usage: youtube-sm [OPTIONS]')
@@ -76,19 +75,15 @@ class Commands():
 		exit()
 
 	def _m(self, arg):
-		self.analyze = True
 		if arg + 1 < len(sys.argv) and sys.argv[arg + 1] in ['html', 'raw', 'list', 'view', 'json']:
 			self.mode = sys.argv[arg + 1]
 		else:
 			exit_debug('Mode file invalid', 1)
 
 	def _t(self, arg):
-		self.analyze = True
 		if not re.match('(-|)[0-9]*$', sys.argv[arg + 1]):
 			exit_debug('Numbers of day invalid', 1)
 		self.count = int(sys.argv[arg + 1])
-		if self.count == -1:
-			self.all_time = True
 
 	def _a(self, arg):
 		if arg + 1 < len(sys.argv):
@@ -97,20 +92,20 @@ class Commands():
 			exit_debug('You Forgot An Argument (-a)', 1)
 
 	def _e(self, arg):
+		self.analyze = False
 		editor = os.getenv('EDITOR')
 		if editor is None:
-			self.RWarning('The variable `EDITOR` is not set. `vi` is use by default')
+			log.RWarning('The variable `EDITOR` is not set. `vi` is use by default')
 			editor = '/bin/vi'
 		os.system('{} {}sub.swy'.format(editor, self.path))
 
 	def _l(self, arg):
-		self.analyze = True
-		self.analyze_only_one = True
 		del_data(self.path)
-		if re.match(r'\[.*\]', sys.argv[arg+1]) and arg + 2 < len(sys.argv):
-			self.url_data = {sys.argv[arg+1]: [sys.argv[arg+2]]}
-		elif arg + 1 < len(sys.argv):
+		if arg + 1 < len(sys.argv):
 			analyzer = UrlToAnalyzer(sys.argv[arg+1])
+			if analyzer is None:
+				log.Error('URL does not match with any site')
+				exit()
 			self.url_data = {analyzer.SITE: [sys.argv[arg+1]]}
 		else:
 			exit_debug('You forgot an argument after -l', 1)
@@ -119,21 +114,25 @@ class Commands():
 		del_data(self.path)
 
 	def __init(self, arg):
+		self.analyze = False
 		init_swy(self.path, arg)
 
 	def __af(self, arg):
+		self.analyze = False
 		if arg + 1 < len(sys.argv) and os.path.exists(sys.argv[arg + 1]):
 			add_sub(open(sys.argv[arg + 1], 'r').read().split('\n'), self.path)
 		else:
 			exit_debug('File not found', 1)
 
 	def __ax(self, arg):
+		self.analyze = False
 		if arg + 1 < len(sys.argv) and os.path.exists(sys.argv[arg + 1]):
 			generate_swy(sys.argv[arg + 1], self.path)
 		else:
 			exit_debug('File not found', 1)
 
 	def __cat(self, arg):
+		self.analyze = False
 		if os.path.exists(self.path + 'sub.swy'):
 			with open(self.path + 'sub.swy', 'r') as file:
 				while True:
@@ -144,11 +143,11 @@ class Commands():
 
 	def __html(self, arg):
 		self.method = '1'
-		self.analyze = True
 
 	def __old(self, arg):
+		self.analyze = False
 		self.url_data = swy(self.path)
-		self.RInfo('[*]Start of analysis')
+		log.RInfo('[*]Start of analysis')
 		if re.match('[0-9]*$', sys.argv[arg + 1]):
 			min_tps = int(sys.argv[arg + 1])
 			old(self.url_data, min_tps)
@@ -156,11 +155,13 @@ class Commands():
 			old(self.url_data)
 
 	def __dead(self, arg):
+		self.analyze = False
 		self.url_data = swy(self.path)
-		self.RInfo('Start of analysis')
+		log.RInfo('Start of analysis')
 		dead(self.url_data)
 
 	def __css(self, arg):
+		self.analyze = False
 		try:
 			os.mkdir('css')
 		except:
@@ -172,35 +173,23 @@ class Commands():
 
 	def __ultra_html(self, arg):
 		self.method = '2'
-		self.analyze = True
 
 	def __loading(self, arg):
 		self.loading = True
-		self.analyze = True
 
 	def __output(self, arg):
 		if arg + 1 >= len(sys.argv):
 			exit_debug('You forgot an argument after --output', 1)
 		self.output = sys.argv[arg+1]
-		self.analyze = True
 
 	def __version(self, arg):
 		log.RInfo('Version: {}'.format(__version__))
-
-	def __default(self):
-		self.url_data = swy(self.path)
-		file = Write_file('sub.html', self.path, 'html', '0', 7)
-		Run_analyze(self.url_data, False, file, '0')
-		file.write()
-		write_log(sys.argv, self.path, self.trun)
 
 	def nothing(self, arg):
 		pass
 
 	def parser(self):
-		if sys.argv in [[], ['-v']]:  # Default command
-			self.__default()
-		elif sys.argv == ['-h'] or sys.argv == ['--help']:
+		if sys.argv == ['-h'] or sys.argv == ['--help']:
 			self._h()
 		else:
 			for arg in range(len(sys.argv)):
@@ -214,17 +203,8 @@ class Commands():
 
 	def router(self):
 		if self.analyze:
-			if not self.analyze_only_one:
+			if self.url_data == {}:
 				self.url_data = swy(self.path, 0)
-			if self.output == '':
-				if self.mode == 'html':
-					self.output = 'sub.html'
-				elif self.mode == 'list':
-					self.output = 'sub_list'
-				elif self.mode == 'raw':
-					self.output = 'sub_raw'
-				elif self.mode == 'json':
-					self.output = 'sub.json'
 			file = Write_file(self.output, self.path, self.mode, self.method, self.count)
 			Run_analyze(self.url_data, self.loading, file, self.method)
 			file.write()
