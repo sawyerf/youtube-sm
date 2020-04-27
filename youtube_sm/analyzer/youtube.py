@@ -18,7 +18,7 @@ class Youtube_Analyzer(Analyzer):
 	RE_PLAYLIST=r'PL[A-Za-z0-9_-]{32}'
 
 	def __init__(self, url_id='', method='0', file=None, prog=None):
-		self.id = self.extract_sub(url_id)
+		self.id = self.extract_id(url_id)
 		self.method = method
 		self.type = self._type_id(url_id)  # True --> chanel False -- > Playlist
 		# Init info videos
@@ -33,14 +33,8 @@ class Youtube_Analyzer(Analyzer):
 		self.prog = prog
 		self.file = file
 
-	def extract_sub(self, url):
-		match = self.match(url)
-		if match:
-			return match.group('ID')
-		return url
-
 	def add_sub(self, url):
-		sub = self.extract_sub(url)
+		sub = self.extract_id(url)
 		tid = self._type_id(sub)
 		data = download_xml(sub, type_id=tid, split=False)
 		if data is None:

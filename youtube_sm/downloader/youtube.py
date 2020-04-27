@@ -22,12 +22,13 @@ def download_xml(url_id, type_id=True, split=True):
 	RSS youtube page
 	"""
 	if type_id:  # Channel
-		url = b'/feeds/videos.xml?channel_id=' + url_id.encode()
+		url = '/feeds/videos.xml?channel_id=' + url_id
 	else:  # Playlist
-		url = b'/feeds/videos.xml?playlist_id=' + url_id.encode()
-	data = download_http(url)
-	if data is None:
+		url = '/feeds/videos.xml?playlist_id=' + url_id
+	site = download_http(url)
+	if site.status != '200':
 		return None
+	data = site.body
 	if split:
 		linfo = data.split("<entry>")
 		del linfo[0]
@@ -48,12 +49,16 @@ def download_html(url_id, type_id=True, split=True):
 		url = '/channel/' + url_id + '/videos'
 	else:
 		url = '/playlist?list=' + url_id
-		data = download_https(url)
+		site = download_https(url)
+		if site.status != '200':
+			return None
+		data = site.body
 		url = data.split('<a href="/watch?v')[1].split('"')[0]
 		url = '/watch?v' + url
-	data = download_https(url)
-	if data is None:
+	site = download_https(url)
+	if site.status != '200':
 		return None
+	data = site.body
 	if split:
 		if type_id:  # Channel
 			linfo = data.split('<div class="yt-lockup-content">')
@@ -100,10 +105,11 @@ def download_show_more(url, type_id=True):
 	and return the data and the next link to download
 	"""
 	if type_id:
-		data = download_https(url)
-		if data is None:
-			return None, None
+		site = download_https(url)
 		data = data.replace('\\n', '\n').replace('\\"', '"')
+		if site.status != '200':
+			return None
+		data = site.body
 		try:
 			next_link = data.split('data-uix-load-more-href="\\')[1].split('"')[0]
 		except:
@@ -112,9 +118,10 @@ def download_show_more(url, type_id=True):
 		del data[0]
 		return data, next_link
 	else:
-		data = download_https(url)
-		if data is None:
-			return None, None
+		site = download_https(url)
+		if site.status != '200':
+			return None
+		data = site.body
 		linfo = data.split('<li class="yt-uix-scroller-scroll-unit  vve-check"')
 		del linfo[0]
 		try:

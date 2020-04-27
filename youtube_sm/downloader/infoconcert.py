@@ -2,9 +2,10 @@ from ..core.sock import download_https
 
 
 def download_html_infoconcert(gid):
-	data = download_https('/artiste/{}/concerts.html'.format(gid), 'www.infoconcert.com')
-	if data is None:
+	site = download_https('/artiste/{}/concerts.html'.format(gid), 'www.infoconcert.com')
+	if site.status != '200':
 		return None
+	data = site.body
 	data = data.split('id="artiste-tab-archives"')[0]
 	sdat = data.split('panel panel-default date-line date-line-festival')
 	del sdat[0]

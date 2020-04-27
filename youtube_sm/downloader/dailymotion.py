@@ -2,9 +2,10 @@ from ..core.sock import download_https
 
 
 def download_xml_daily(url_id, split=True):
-	data = download_https('/rss/user/' + url_id, 'www.dailymotion.com')
-	if data is None:
+	site = download_https('/rss/user/' + url_id, 'www.dailymotion.com')
+	if site.status != '200':
 		return None
+	data = site.body
 	if split:
 		linfo = data.split('<item>')
 		del linfo[0]

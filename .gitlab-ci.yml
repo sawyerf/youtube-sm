@@ -32,6 +32,8 @@ download:
         - wc -l test.raw
         - youtube-sm -l https://www.infoconcert.com/artiste/achab-175740/concerts.html -m raw -t -1 -r --output test.raw -v
         - wc -l test.raw
+        - youtube-sm -l https://www.reddit.com/r/france -m raw -t -1 -r --output test.raw -v
+        - wc -l test.raw
         - youtube-sm -l https://example.com/ -m raw -t -1 -r --output test.raw -v
         - curl -O https://sawyerf.gitlab.io/youtube_sm/test.swy
         - youtube-sm -v --init test.swy
@@ -51,3 +53,4 @@ commands:
         - youtube-sm -a https://thinkerview.video/feeds/videos.xml?accountId=5 -v
         - youtube-sm -a https://dailymotion.com/karimdebbache -v
         - youtube-sm -a https://www.infoconcert.com/artiste/achab-175740/concerts.html -v
+        - youtube-sm -a https://www.reddit.com/r/france -v
