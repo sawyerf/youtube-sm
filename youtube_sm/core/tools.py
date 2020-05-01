@@ -96,7 +96,7 @@ class log:
 	def print(color, init, msgs, end, verbose_only):
 		date = '[{}]'.format(strftime("%H:%M:%S", gmtime(time() - TRUN)))
 		msg = log.Join(msgs)
-		if verbose_only and '-v' in sys.argv:
+		if (verbose_only and '-v' in sys.argv) or not verbose_only:
 			print(color, init, msg, "\033[00m", end=end, sep='')
 		if log.cache != '':
 			open(log.cache, 'a').write(date + init + str(msg) + '\n')
