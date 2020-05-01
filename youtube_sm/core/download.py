@@ -13,25 +13,18 @@ LANG='en'
 
 class Download():
 	def __init__(self, https, host, inter=0.1, timeout=3):
-		# Host
 		self.ssl  = https
 		self.host = host
-		# Request =
 		self.lang = LANG
 		self.useragent = USERAGENT
 		self.vhttp = VHTTP
-		# Timeout
 		self.inter = inter
 		self.timeout = timeout
-		# Response
 		self.response = ""
 		self.body = ""
 		self.headers = ""
 		self.status = ""
 
-	# ==================================================================== #
-	# Create Request                                                       #
-	# ==================================================================== #
 	def create_req(self, url, method, body, headers, useragent):
 		req = "{} {} HTTP/{}\n".format(method.upper(), url, self.vhttp)
 		req += "Host: {}\n".format(self.host)
@@ -138,7 +131,6 @@ class Download():
 		else:
 			self.recv_body(sock, data, dlen)
 
-		# Decode Body
 		if re.match('.*[Cc]ontent-[Ee]ncoding:[ \t]*gzip.*', self.headers, re.DOTALL):
 			try:
 				body = zlib.decompress(self.body, 16+zlib.MAX_WBITS).decode()

@@ -7,7 +7,7 @@ class Analyzer(Thread):
 	"""
 	Common Function to all Analyzers
 	"""
-	PIXEL_IMG='https://sawyerf.gitlab.io/youtube_sm/pixel.png'
+	NO_IMG='https://sawyerf.gitlab.io/youtube_sm/pixel.png'
 	def Thread(self):
 		Thread.__init__(self)
 

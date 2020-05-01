@@ -22,7 +22,7 @@
 - [Screenshots](#screenshots)
 
 ## Description
-Youtube_subscription_manager is an alternative to youtube.com to retrieve the videos of your subscriptions feed without requires an account *(You can also recover the videos of other platform).*
+Youtube_subscription_manager is an alternative to youtube.com to retrieve the videos of your subscriptions feed without requires an account [*(You can also recover the videos of other platform)*](#support-platforms).
 
 It can gather informations about every video in a playlist, a channel or your subsciptions feed and outputs it as a html page, a detailed list or a list of links.
 
@@ -75,6 +75,8 @@ youtube-sm [OPTIONS]
 - Dailymotion
 - Infoconcert
 - Peertube
+- Reddit
+- Revolution Permanente
 - Youtube
 
 ## Example

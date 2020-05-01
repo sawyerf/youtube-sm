@@ -42,12 +42,6 @@ class RevolutionPermanente_Analyzer(Analyzer):
 			date=self.date,
 		)
 
-	def info_rss(self, ele):
-			self.title   = re.findall('<title>(.*)</title>', ele)[0]
-			self.url     = re.findall('<link>(.*)</link>', ele)[0]
-			self.url_img = re.findall("img class='spip_logo spip_logo_right spip_logos' .* src='(.+?)'", ele)[0]
-			date         = re.findall('<dc:date>(.*)</dc:date>', ele)[0]
-			self.date    = datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
 
 	def real_analyzer(self):
 		""" The main function wich retrieve the informations and and write it
@@ -56,8 +50,11 @@ class RevolutionPermanente_Analyzer(Analyzer):
 		if data is None:
 			return
 		for ele in data:
-			try:
-				self.info_rss(ele)
-			except:
-				pass
-			self.write()
+			self.content = self.info(ele, {
+				'title':{'re':'<title>(.*)</title>'},
+				'url':{'re':'<link>(.*)</link>'},
+				'url_img':{'re':"img class='spip_logo spip_logo_right spip_logos' .* src='(.+?)'"},
+				'date':{'re':'<dc:date>(.*)</dc:date>','date':'%Y-%m-%dT%H:%M:%SZ'},
+			})
+			if self.content is not None:
+				self.write()

@@ -51,12 +51,11 @@ class Reddit_Analyzer(Analyzer):
 				'sub':     {'default': self.id},
 				'url_sub': {'default':'https://www.reddit.com/' + self.id},
 				'title':   {'re':'<title>(.+?)</title>'},
-				'image':   {'re':'img src=&quot;(.+?)&quot;', 'default': self.PIXEL_IMG},
+				'image':   {'re':'img src=&quot;(.+?)&quot;', 'default': self.NO_IMG},
 				'date':    {'re':'<updated>(.+?)\+00:00</updated>', 'date':'%Y-%m-%dT%H:%M:%S'},
 			})
 			if self.content is not None:
 				self.write()
-
 
 	def old(self, url, lcl):
 		""" The function wich is call with the option -o
