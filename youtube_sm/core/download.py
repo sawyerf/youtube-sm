@@ -12,6 +12,7 @@ class Download():
 	SETTIMEOUT = 0.1
 	TIMEOUT = 3
 	USERAGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:71.0) Gecko/20100101 Firefox/71.0'
+
 	def __init__(self, https, host):
 		self.ssl  = https
 		self.host = host
@@ -21,32 +22,29 @@ class Download():
 		self.status   = ''
 		self.headers  = ''
 		self.body     = ''
-		self.content_length = 0
 
-	def create_request(self, url, method, body, headers):
-		req = "{} {} HTTP/1.1\r\n".format(method, url)
-		req += "Host: {}\r\n".format(self.host)
+	def create_request(self, path, method, body, headers):
+		req = "{} {} HTTP/1.1\r\n".format(method, path)
 
 		default = {
+			'Host': self.host,
 			'User-Agent': self.USERAGENT,
 			'Accept': '*/*',
 			'Accept-Encoding': 'gzip',
 			'Accept-Language': self.LANGUAGE
 		}
-		for key in default:
-			if key not in headers:
-				headers[key] = default[key]
+		for key in headers:
+			default[key] = headers[key]
 		if body is not None:
-			headers["Content-Length"] = str(len(body))
-		for name in headers:
-			req += '{}: {}\r\n'.format(name, headers[name])
+			default["Content-Length"] = str(len(body))
+		for name in default:
+			req += '{}: {}\r\n'.format(name, default[name])
 		req += "\r\n"
 		if body is not None:
 			req += body
 		return req.encode()
 
 	def real_recv(self, sock):
-		raw_data = b''
 		try:
 			raw_data = sock.recv(100000)
 			return raw_data
@@ -54,7 +52,7 @@ class Download():
 			return b''
 		except Exception as e:
 			log.Error('Error Recv: {}'.format(e))
-			return None
+			return b''
 
 	def recv_headers(self, sock):
 		data = b''
@@ -65,79 +63,64 @@ class Download():
 				self.headers = data.split(b'\r\n\r\n')[0].decode()
 				len_headers = len(self.headers) + 4
 				self.status = re.findall(r'HTTP/1\.1 ([0-9]*)', self.headers)[0]
-				if self.status != '100':
-					return data[len_headers:]
-				trun = time()
 				data = data[len_headers:]
+				if self.status != '100':
+					return data
+				trun = time()
 			elif time() - trun > self.TIMEOUT:
-				self.headers = data.decode()
 				return None
 
 	def recv_body(self, sock, data, dlen):
 		trun = time()
 		while True:
 			data += self.real_recv(sock)
-			if ( dlen == -1 and time() - trun > self.TIMEOUT ) \
-				or ( dlen != -1 and dlen <= len(data) ):
-				self.body = data
-				return
+			if (dlen == -1 and time() - trun > self.TIMEOUT) \
+				or (dlen != -1 and dlen <= len(data)):
+				return data
 
-	def recv_chunk_body(self, sock, data):
-		trun = time()
+	def recv_chunk_body(self, sock, chunk):
 		dlen = 0
-		data = b'\r\n' + data
+		data = b''
+		chunk = b'\r\n' + chunk
 		while True:
-			data += self.real_recv(sock)
-			while dlen < len(data) and b'\r\n' in data[dlen + 2:]:
-				suite = data[dlen + 2:]
-				if suite == b'':
-					continue
-				str_dlen = suite.split(b'\r\n')[0].decode()
-				if not re.match('[0-9A-Fa-f]*$', str_dlen):
-					log.Warning('Chunk recv failed')
-					return self.recv_body(sock, data, -1)
-				if int(str_dlen, 16) == 0:
-					data = data[:dlen]
-					self.body = data
-					return
-				len_dlen = len(str_dlen) + 2
-				data = data[:dlen] + suite[len_dlen:]
-				dlen += int(str_dlen, 16)
+			while dlen + 2 < len(chunk) and b'\r\n' in chunk[dlen + 2:]:
+				data += chunk[:dlen]
+				chunk = chunk[dlen + 2:]
+				str_dlen = chunk.split(b'\r\n')[0].decode()
+				dlen = int(str_dlen, 16)
+				if dlen == 0:
+					return data
+				chunk = chunk[len(str_dlen) + 2:]
+			chunk += self.real_recv(sock)
 
-	def recv(self, sock, url):
+	def recv(self, sock):
 		body = self.recv_headers(sock)
 		if self.headers == '' or self.status == '204' or body is None:
 			return
-		if re.match('.*[Cc]ontent-[Ll]ength: .*', self.headers, re.DOTALL):
+		if re.match('.*[Cc]ontent-[Ll]ength:', self.headers, re.DOTALL):
 			dlen = int(re.findall('[Cc]ontent-[Ll]ength: (.*)\r', self.headers)[0])
-			self.recv_body(sock, body, dlen)
-		elif re.match('.*[Tt]ransfer-[Ee]ncoding:[ \t]*[Cc]hunked.*', self.headers, re.DOTALL):
-			self.recv_chunk_body(sock, body)
-			sock.settimeout(1)
+			body = self.recv_body(sock, body, dlen)
+		elif re.match('.*[Tt]ransfer-[Ee]ncoding:[ \t]*[Cc]hunked', self.headers, re.DOTALL):
+			body = self.recv_chunk_body(sock, body)
 		else:
-			self.recv_body(sock, body, -1)
+			body = self.recv_body(sock, body, -1)
 
-		if re.match('.*[Cc]ontent-[Ee]ncoding:[ \t]*gzip.*', self.headers, re.DOTALL):
-			try:
-				body = zlib.decompress(self.body, 16+zlib.MAX_WBITS).decode()
-				self.body = body
-			except Exception as e:
-				log.Error(e)
-		else:
-			try:
-				data = self.body.decode('utf8')
-				self.body = data
-			except Exception as e:
-				log.Error(e)
+		try:
+			if re.match('.*[Cc]ontent-[Ee]ncoding:[ \t]*gzip', self.headers, re.DOTALL):
+				self.body = zlib.decompress(body, 16+zlib.MAX_WBITS).decode()
+			else:
+				self.body = body.decode('utf8')
+		except Exception as e:
+			log.Error(e)
 
-	def http(self, url, headers):
+	def http(self, request):
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		sock.connect((self.host, 80))
 		sock.settimeout(self.SETTIMEOUT)
-		sock.send(headers)
-		self.recv(sock, url)
+		sock.send(request)
+		self.recv(sock)
 
-	def https(self, url, headers):
+	def https(self, request):
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		context = ssl._create_default_https_context()
 		context.check_hostname = self.host
@@ -148,23 +131,21 @@ class Download():
 			log.Error(str(e))
 			return None
 		sock.settimeout(self.SETTIMEOUT)
-		sock.write(headers)
-		self.recv(sock, url)
+		sock.write(request)
+		self.recv(sock)
 
 	def download(self, path, method="get", headers={}, body=""):
 		trun = time()
 		self.setvar()
 		method = method.upper()
 
-		data = self.create_request(path, method, body, headers)
+		request = self.create_request(path, method, body, headers)
 		if self.ssl:
 			protocol = 'https'
-			self.https(path, data)
+			self.https(request)
 		else:
 			protocol = 'http'
-			self.http(path, data)
-		if self.body is not None:
-			self.content_length = len(self.body)
+			self.http(request)
 
 		url = "{}://{}{}".format(protocol, self.host, path)
-		log.Info("{} {} {} {} {}".format(method, url, self.status, self.content_length, time() - trun))
+		log.Info("{} {} {} {} {}".format(method, url, self.status, len(self.body), time() - trun))
