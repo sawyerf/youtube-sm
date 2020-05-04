@@ -56,7 +56,10 @@ def add_suburl(url, path=''):
 		log.Error('The url {} is not support'.format(url))
 		return
 	data = analyzer.add_sub(url)
-	log.Info(data)
+	if data is None:
+		log.Error('Failed to add ', url)
+	else:
+		log.RInfo('Add: ', data)
 	if data is not None:
 		if analyzer.SITE in list_subs:
 			list_subs[analyzer.SITE].append(data)

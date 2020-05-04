@@ -44,9 +44,9 @@ class Download():
 			req += body
 		return req.encode()
 
-	def real_recv(self, sock):
+	def real_recv(self):
 		try:
-			raw_data = sock.recv(100000)
+			raw_data = self.sock.recv(100000)
 			return raw_data
 		except socket.timeout:
 			return b''
@@ -54,11 +54,11 @@ class Download():
 			log.Error('Error Recv: {}'.format(e))
 			return b''
 
-	def recv_headers(self, sock):
+	def recv_headers(self):
 		data = b''
 		trun = time()
 		while True:
-			data += self.real_recv(sock)
+			data += self.real_recv()
 			if b'\r\n\r\n' in data:
 				self.headers = data.split(b'\r\n\r\n')[0].decode()
 				len_headers = len(self.headers) + 4
@@ -70,15 +70,15 @@ class Download():
 			elif time() - trun > self.TIMEOUT:
 				return None
 
-	def recv_body(self, sock, data, dlen):
+	def recv_body(self, data, dlen):
 		trun = time()
 		while True:
-			data += self.real_recv(sock)
+			data += self.real_recv()
 			if (dlen == -1 and time() - trun > self.TIMEOUT) \
 				or (dlen != -1 and dlen <= len(data)):
 				return data
 
-	def recv_chunk_body(self, sock, chunk):
+	def recv_chunk_body(self, chunk):
 		dlen = 0
 		data = b''
 		chunk = b'\r\n' + chunk
@@ -91,19 +91,19 @@ class Download():
 				if dlen == 0:
 					return data
 				chunk = chunk[len(str_dlen) + 2:]
-			chunk += self.real_recv(sock)
+			chunk += self.real_recv()
 
-	def recv(self, sock):
-		body = self.recv_headers(sock)
+	def recv(self):
+		body = self.recv_headers()
 		if self.headers == '' or self.status == '204' or body is None:
 			return
 		if re.match('.*[Cc]ontent-[Ll]ength:', self.headers, re.DOTALL):
 			dlen = int(re.findall('[Cc]ontent-[Ll]ength: (.*)\r', self.headers)[0])
-			body = self.recv_body(sock, body, dlen)
+			body = self.recv_body(body, dlen)
 		elif re.match('.*[Tt]ransfer-[Ee]ncoding:[ \t]*[Cc]hunked', self.headers, re.DOTALL):
-			body = self.recv_chunk_body(sock, body)
+			body = self.recv_chunk_body(body)
 		else:
-			body = self.recv_body(sock, body, -1)
+			body = self.recv_body(body, -1)
 
 		try:
 			if re.match('.*[Cc]ontent-[Ee]ncoding:[ \t]*gzip', self.headers, re.DOTALL):
@@ -114,25 +114,21 @@ class Download():
 			log.Error(e)
 
 	def http(self, request):
-		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		sock.connect((self.host, 80))
-		sock.settimeout(self.SETTIMEOUT)
-		sock.send(request)
-		self.recv(sock)
+		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.sock.connect((self.host, 80))
+		self.sock.send(request)
 
 	def https(self, request):
-		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		context = ssl._create_default_https_context()
 		context.check_hostname = self.host
-		sock = context.wrap_socket(sock, server_hostname=self.host)
+		self.sock = context.wrap_socket(self.sock, server_hostname=self.host)
 		try:
-			sock.connect((self.host, 443))
+			self.sock.connect((self.host, 443))
 		except Exception as e:
 			log.Error(str(e))
 			return None
-		sock.settimeout(self.SETTIMEOUT)
-		sock.write(request)
-		self.recv(sock)
+		self.sock.write(request)
 
 	def download(self, path, method="get", headers={}, body=""):
 		trun = time()
@@ -146,6 +142,8 @@ class Download():
 		else:
 			protocol = 'http'
 			self.http(request)
+		self.sock.settimeout(self.SETTIMEOUT)
+		self.recv()
 
 		url = "{}://{}{}".format(protocol, self.host, path)
 		log.Info("{} {} {} {} {}".format(method, url, self.status, len(self.body), time() - trun))
