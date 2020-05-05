@@ -126,7 +126,7 @@ class Download():
 			self.sock = context.wrap_socket(self.sock, server_hostname=self.host)
 		self.sock.connect((self.host, self.port))
 
-	def download(self, path, method="get", headers={}, body=""):
+	def download(self, path, method="get", headers={}, body="", status='200'):
 		trun = time()
 		self.setvar()
 		method = method.upper()
@@ -142,4 +142,7 @@ class Download():
 		self.recv()
 
 		url = "{}://{}{}".format(self.protocol, self.host, path)
-		log.Info("{} {} {} {} {}".format(method, url, self.status, len(self.body), time() - trun))
+		if self.status == status:
+			log.Info("{} {} {} {} {}".format(method, url, self.status, len(self.body), time() - trun))
+		else:
+			log.Warning("{} {} {} {} {}".format(method, url, self.status, len(self.body), time() - trun))
