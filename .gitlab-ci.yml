@@ -18,7 +18,9 @@ download:
         - wc -l sub.html
         - youtube-sm -v -m json --output test.json
         - wc -l test.json
-        - youtube-sm --html -l https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list -t -1 --output test.list -r -v
+        - youtube-sm -l https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list -t -1 --output test.list -r -v
+        - wc -l test.list
+        - youtube-sm -l https://www.youtube.com/playlist?list=PLbIUqKI_s0s7RqBHY9_gxmVFBvkViWVHd -m list -t -1 --output test.list -r -v
         - wc -l test.list
         - youtube-sm --html -l https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list -t -1 --output test.list -r -v
         - wc -l test.list
@@ -26,13 +28,15 @@ download:
         - wc -l test.raw
         - youtube-sm -l https://thinkerview.video/feeds/videos.xml?accountId=5 -m raw -t -1 -r --output test.raw -v
         - wc -l test.raw
-        - youtube-sm -l https://thinkerview.video/feeds/videos.xml?accountId=5 -m raw -t -1 -r --output test.raw -v
-        - wc -l test.raw
-        - youtube-sm -l https://thinkerview.video/feeds/videos.xml?accountId=5 -m raw -t -1 -r --output test.raw -v
-        - wc -l test.raw
         - youtube-sm -l https://www.infoconcert.com/artiste/achab-175740/concerts.html -m raw -t -1 -r --output test.raw -v
         - wc -l test.raw
         - youtube-sm -l https://www.reddit.com/r/france -m raw -t -1 -r --output test.raw -v
+        - wc -l test.raw
+        - youtube-sm -l https://www.reddit.com/user/reddit -m raw -t -1 -r --output test.raw -v
+        - wc -l test.raw
+        - youtube-sm -l https://www.laquadrature.net/ -m raw -t -1 -r --output test.raw -v
+        - wc -l test.raw
+        - youtube-sm -l https://www.laquadrature.net/es -m raw -t -1 -r --output test.raw -v
         - wc -l test.raw
         - youtube-sm -l https://example.com/ -m raw -t -1 -r --output test.raw -v
         - curl -O https://sawyerf.gitlab.io/youtube_sm/test.swy
@@ -45,12 +49,16 @@ commands:
         stage: test
         script:
         - python3 setup.py install
-        - youtube-sm 
         - youtube-sm -h
         - youtube-sm --css ""
         - youtube-sm --css
         - youtube-sm -a https://www.youtube.com/channel/UCyg3MF1KU3dUK0HJBBoRYOw -v
+        - youtube-sm -a https://www.youtube.com/playlist?list=PLbIUqKI_s0s7RqBHY9_gxmVFBvkViWVHd -v
         - youtube-sm -a https://thinkerview.video/feeds/videos.xml?accountId=5 -v
         - youtube-sm -a https://dailymotion.com/karimdebbache -v
         - youtube-sm -a https://www.infoconcert.com/artiste/achab-175740/concerts.html -v
         - youtube-sm -a https://www.reddit.com/r/france -v
+        - youtube-sm -a https://www.reddit.com/user/reddit -v
+        - youtube-sm -a https://www.laquadrature.net/ -v
+        - youtube-sm -a https://www.laquadrature.net/fr -v
+        - youtube-sm -a https://www.laquadrature.net/en -v

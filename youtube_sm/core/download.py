@@ -17,6 +17,11 @@ class Download():
 		self.ssl  = https
 		self.host = host
 		self.setvar()
+		self.protocol = 'http'
+		self.port = 80
+		if self.ssl:
+			self.protocol = 'https'
+			self.port = 443
 
 	def setvar(self):
 		self.status   = ''
@@ -113,22 +118,13 @@ class Download():
 		except Exception as e:
 			log.Error(e)
 
-	def http(self, request):
+	def connect(self):
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.sock.connect((self.host, 80))
-		self.sock.send(request)
-
-	def https(self, request):
-		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		context = ssl._create_default_https_context()
-		context.check_hostname = self.host
-		self.sock = context.wrap_socket(self.sock, server_hostname=self.host)
-		try:
-			self.sock.connect((self.host, 443))
-		except Exception as e:
-			log.Error(str(e))
-			return None
-		self.sock.write(request)
+		if self.ssl:
+			context = ssl._create_default_https_context()
+			context.check_hostname = self.host
+			self.sock = context.wrap_socket(self.sock, server_hostname=self.host)
+		self.sock.connect((self.host, self.port))
 
 	def download(self, path, method="get", headers={}, body=""):
 		trun = time()
@@ -136,14 +132,14 @@ class Download():
 		method = method.upper()
 
 		request = self.create_request(path, method, body, headers)
-		if self.ssl:
-			protocol = 'https'
-			self.https(request)
-		else:
-			protocol = 'http'
-			self.http(request)
+		try:
+			self.connect()
+		except Exception as e:
+			log.Error(str(e))
+			return
+		self.sock.send(request)
 		self.sock.settimeout(self.SETTIMEOUT)
 		self.recv()
 
-		url = "{}://{}{}".format(protocol, self.host, path)
+		url = "{}://{}{}".format(self.protocol, self.host, path)
 		log.Info("{} {} {} {} {}".format(method, url, self.status, len(self.body), time() - trun))

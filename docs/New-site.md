@@ -15,6 +15,7 @@ git checkout -b name_of_the_platform
     *(All the function are required but if you can't or don't want write some function, define the function with the parameters and pass or return None)*
     ``` python
     from .analyzer	import Analyzer
+    import re
 
     class Platform_Analyzer(Analyzer):
     	SITE='[platform]'

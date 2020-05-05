@@ -74,6 +74,7 @@ youtube-sm [OPTIONS]
 ## Support Platforms
 - Dailymotion
 - Infoconcert
+- La Quadrature du Net
 - Peertube
 - Reddit
 - Revolution Permanente

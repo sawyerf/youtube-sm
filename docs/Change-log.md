@@ -1,4 +1,10 @@
-## 2019.4.24/25
+- Add: [laquadrature]
+
+## 2020.5.4
+- Add [reddit]
+- Upgrade download
+
+## 2020.4.24 & 2020.4.25
 - Add: Doc
 - Clean: write
   - Change stockage data by json file
@@ -7,7 +13,7 @@
   - Add: Thread in Analyzer class
 - Delete: stat
 
-## 2019.4.19
+## 2020.4.19
 - Add: [revolutionpermanente]
 
 ## 2.1.0
