@@ -13,11 +13,6 @@ download:
         stage: test
         script:
         - python3 setup.py install
-        - youtube-sm --init subscription_manager
-        - youtube-sm
-        - wc -l sub.html
-        - youtube-sm -v -m json --output test.json
-        - wc -l test.json
         - youtube-sm -l https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list -t -1 --output test.list -r -v
         - wc -l test.list
         - youtube-sm -l https://www.youtube.com/playlist?list=PLbIUqKI_s0s7RqBHY9_gxmVFBvkViWVHd -m list -t -1 --output test.list -r -v
