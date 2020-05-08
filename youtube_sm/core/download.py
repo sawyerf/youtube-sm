@@ -126,7 +126,7 @@ class Download():
 			self.sock = context.wrap_socket(self.sock, server_hostname=self.host)
 		self.sock.connect((self.host, self.port))
 
-	def download(self, path, method="get", headers={}, body="", status='200'):
+	def download(self, path, method="get", headers={}, body=None, status='200'):
 		trun = time()
 		self.setvar()
 		method = method.upper()

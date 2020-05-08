@@ -52,3 +52,9 @@ class Analyzer(Thread):
 					except:
 						return None
 		return content
+
+	def old(self, sub, since):
+		pass
+
+	def dead(self, sub):
+		pass

@@ -7,6 +7,13 @@ from ..downloader.reddit import download_rss_reddit
 class Reddit_Analyzer(Analyzer):
 	SITE='[reddit]'
 	URL_MATCH=r'(?:https://|)(?:www\.|)reddit\.com/(?P<ID>(?:r|user)/[A-z0-9_]*)'
+	TEST=[
+		'https://reddit.com/r/france',
+		'www.reddit.com/r/france',
+		'www.reddit.com/user/reddit',
+		'/user/reddit',
+		'/r/seddit',
+	]
 
 	def __init__(self, url_id='', method='0', file=None, prog=None):
 		######################

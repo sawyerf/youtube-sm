@@ -6,23 +6,24 @@ import json
 
 
 class Write_file():
-	def __init__(self, output='sub.html', path_cache='', mode='html', method='0', since=7):
-		if output != '':
-			self.output = output
-		else:
-			self.output = {
+	def __init__(self, output=None, path_cache='', mode='html', method='0', since=7):
+		if output is None:
+			output = {
 				'html': 'sub.html',
 				'json': 'sub.json',
 				'list': 'sub_list',
 				'raw':  'sub_raw',
 			}[mode]
-		self.file = open(self.output, 'w')
+		self.file = open(output, 'w')
 		self.mode = mode
-		self.method = method
 		self.contents = []
-		self.path_cache = path_cache
 		self.since = since
-		self.data_path = f'{self.path_cache}data/contents.{self.method}.json'
+		self.data_path = None
+		if path_cache is not None:
+			self.data_path = f'{path_cache}data/contents.{method}.json'
+			self.open_cache()
+
+	def open_cache(self):
 		if os.path.exists(self.data_path):
 			with open(self.data_path, 'r') as f:
 				self.contents = json.load(f)
@@ -57,10 +58,11 @@ class Write_file():
 			'json': self.json,
 		}
 		router[self.mode]()
-		self.file.close()
-		with open(self.data_path, 'w') as f:
-			json.dump(self.contents, f, indent='\t', default=str)
-			f.close()
+		# self.file.close()
+		if self.data_path is not None:
+			with open(self.data_path, 'w') as f:
+				json.dump(self.contents, f, indent='\t', default=str)
+				f.close()
 
 	def RangeContent(self):
 		self.contents = sorted(self.contents, key=lambda k: k['date'], reverse=True)
@@ -147,6 +149,8 @@ def write_css(arg):
 
 
 def write_log(arg, path, passe):
+	if path is None:
+		return
 	var = ''
 	for i in arg:
 		var += i + ' '

@@ -4,7 +4,7 @@ from ..core.sock import download_https
 
 
 def download_rss_reddit(sid):
-	site = download_https('/' + sid + '/.rss', 'www.reddit.com')
+	site = download_https('www.reddit.com', '/{}/.rss'.format(sid))
 	if site.status != '200':
 		return None
 	data = {}

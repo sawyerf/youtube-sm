@@ -48,31 +48,31 @@ youtube-sm [OPTIONS]
 ## Commands
 
 ```
-  -a           URL       Add a sub to your sub list.
-  -e                     Edit your sub list.
-  -h                     Print this help text and exit.
-  -l           URL       Analyze only one sub.
-  -m           MODE      Choose the type of the output file (html, json, raw, list, view).
-  -r                     Remove the cache.
-  -t           DAYS      Select how many DAYS ago the last content written to your file will be dated .
-  -v                     Verbose.
-  --af         FILE      Add a list of sub to your sub list.
-  --ax         FILE      Add a xml file in your sub list.
-  --cat                  View your subscriptions.
-  --css        STYLE     Export the css files (light, dark, switch).
-  --dead                 Show the dead channels + those who posted no videos.
-  --help                 Print this help text and exit.
-  --html                 Recover sub with html page instead of RSS. This method recover more video.
-  --init       FILE      Remove all your subs and add new.
-  --loading              Print a progress bar.
-  --old        MONTHS    Show channels who didn't post videos since MONTHS + dead channels.
-  --output     FILE      Write the output in FILE.
-  --ultra-html           An advanced version of --html.
-  --version              Print version.
+-a           URL       Add a sub to your sub list.
+-e                     Edit your sub list.
+-h                     Print this help text and exit.
+-l           URL       Analyze only one sub.
+-m           MODE      Choose the type of the output file (html, json, raw, list).
+-r                     Remove the cache.
+-t           DAYS      Select how many DAYS ago the last content written to your file will be dated .
+-v                     Verbose.
+--af         FILE      Add a list of sub to your sub list.
+--ax         FILE      Add a xml file in your sub list.
+--cat                  View your subscriptions.
+--css        STYLE     Export the css files (light, dark, switch).
+--dead                 Show the dead channels + those who posted no videos.
+--help                 Print this help text and exit.
+--html                 Recover sub with html page instead of RSS. This method recover more videos.
+--init       FILE      Remove all your subs and add new.
+--loading              Print a progress bar.
+--old                  Show channels who didn't post videos since DAYS.
+--output     FILE      Write the output in FILE.
+--version              Print version.
+--test                 
 ```
 
 ## Support Platforms
-- Dailymotion
+- ~~Dailymotion~~
 - Infoconcert
 - La Quadrature du Net
 - Peertube
@@ -155,25 +155,6 @@ https://www.youtube.com/watch?v={video_id}
 These 3 files are generated in:
 - Windows: `C:\Users\<name>\.youtube_sm\`.
 - Linux/MacOS:   `/home/<name>/.cache/youtube_sm/.`.
-
-## HTML & RSS
-With youtube-sm you can recover your subscriptions using two methods:
-- RSS (default): videos are recovered through an XML page.
-- HTML (with --html): videos are recovered through an HTML page.
-
-
-They are two choice because they cannot recover the same informations and don't require the same amount of time. 
-So the default method (the RSS method) is more adapted to recover only the newest videos, whereas the HTML method
-is more adapted to recover all the videos of a playlist or to recover its last 30 videos of a channel.
-
-|            | *ULTRA-HTML* | *ULTRA-HTML* |    *HTML*   |    *HTML*    |     *RSS*    |
-|:----------:|:------------:|:------------:|:-----------:|:------------:|:------------:|
-|            | **Channel**  | **Playlist** | **Channel** | **Playlist** |   **Both**   |
-|  Execution |**very** slow |**very** slow |     slow    |     slow     |     Fast     |
-|   Number   |    **all**   |    **all**   |  30 videos  |  100 videos  |   15 videos  |
-|    Date    |     **~**    |       ✖      |     **~**   |       ✖      |       ✔      |
-|  Like Rate |       ✖      |       ✖      |      ✖      |       ✖      |       ✔      |
-|    Views   |       ✔      |       ✖      |      ✔      |       ✖      |       ✔      |
 
 ## Requirements
 - Python 3

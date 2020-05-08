@@ -1,6 +1,9 @@
 from threading import Thread
 from ..analyzer.imports import return_Analyzer
-from .time import lcl_time
+from datetime import (
+	datetime,
+	timedelta,
+)
 from .tools import (
 	Progress,
 	Progress_loop,
@@ -28,7 +31,6 @@ def Run_analyze(urls, loading=False, file=None, method='0'):
 	elif method == '2':
 		max_thr = 5
 	# Run threads
-	log.Info('Start threads')
 	for site in urls:
 		analyzer = return_Analyzer(site)
 		if analyzer is None:
@@ -51,14 +53,13 @@ def Run_analyze(urls, loading=False, file=None, method='0'):
 		print()
 
 
-def old(subs, min_tps=12):
-	lcl = lcl_time(min_tps * 31)
+def old(subs, days=365):
+	since = datetime.now() - timedelta(days=days)
 	threads = []
-	log.Info('Start threads')
 	for site in subs:
 		analyzer = return_Analyzer(site)()
 		for url in subs[site]:
-			thr = Thread(target=analyzer.old, args=(url, lcl))
+			thr = Thread(target=analyzer.old, args=(url, since))
 			threads.append(thr)
 			thr.start()
 	for i in threads:
@@ -67,7 +68,6 @@ def old(subs, min_tps=12):
 
 def dead(subs):
 	threads = []
-	log.Info('Start threads')
 	for site in subs:
 		analyzer = return_Analyzer(site)()
 		for url in subs[site]:

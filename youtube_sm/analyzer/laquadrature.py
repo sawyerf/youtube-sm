@@ -6,6 +6,16 @@ class LaQuadrature_Analyzer(Analyzer):
 	SITE='[laquadrature]'
 	LANG_MATCH=r'fr|en|es'
 	URL_MATCH=r'(?:https://|)(?:www\.|)laquadrature\.net(?:/(?P<ID>%s)|)' % LANG_MATCH
+	TEST=[
+		'laquadrature.net/fr',
+		'https://laquadrature.net/',
+		'https://www.laquadrature.net/en',
+		'www.laquadrature.net/es',
+		'fr',
+		'en',
+		'es',
+	]
+
 	def __init__(self, url_id='', method='0', file=None, prog=None):
 		######################
 		# The basic variable #

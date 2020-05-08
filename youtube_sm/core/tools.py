@@ -51,6 +51,8 @@ def del_data(path):
 	"""
 	delete the data folder
 	"""
+	if path is None:
+		return
 	if os.path.exists(path + 'data'):
 		try:
 			rmtree(path + 'data')

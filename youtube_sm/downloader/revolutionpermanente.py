@@ -3,7 +3,7 @@ from ..core.sock import download_https
 
 
 def download_xml_revolutionpermanente(split=True):
-	site = download_https('/spip.php?page=backend', 'www.revolutionpermanente.fr')
+	site = download_https('www.revolutionpermanente.fr', '/spip.php?page=backend')
 	if site.status != '200':
 		return None
 	data = site.body

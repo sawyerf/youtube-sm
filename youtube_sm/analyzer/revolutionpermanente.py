@@ -8,6 +8,10 @@ from ..downloader.revolutionpermanente import download_xml_revolutionpermanente
 class RevolutionPermanente_Analyzer(Analyzer):
 	SITE='[revolutionpermanente]'
 	URL_MATCH=r'(?:https://|)(?:www\.|)revolutionpermanente\.fr.*'
+	TEST=[
+		'https://revolutionpermanente.fr/'
+		'www.revolutionpermanente.fr/'
+	]
 
 	def __init__(self, url_id='', method='0', file=None, prog=None):
 		######################
@@ -18,10 +22,6 @@ class RevolutionPermanente_Analyzer(Analyzer):
 		###############################
 		# Init the video informations #
 		###############################
-		self.title   = ''
-		self.url     = ''
-		self.url_img = ''
-		self.date    = ''
 		################
 		# The function #
 		################
@@ -32,17 +32,6 @@ class RevolutionPermanente_Analyzer(Analyzer):
 		""" This function return the informations wich are write in sub.swy ."""
 		return 'Revolution Permanente'
 
-	def write(self):
-		return self.file.add(
-			url=self.url,
-			title=self.title,
-			image=self.url_img,
-			uploader='Revolution Permanente',
-			url_uploader='https://www.revolutionpermanente.fr/',
-			date=self.date,
-		)
-
-
 	def real_analyzer(self):
 		""" The main function wich retrieve the informations and and write it
 		in a file"""
@@ -51,10 +40,12 @@ class RevolutionPermanente_Analyzer(Analyzer):
 			return
 		for ele in data:
 			self.content = self.info(ele, {
-				'title':{'re':'<title>(.*)</title>'},
 				'url':{'re':'<link>(.*)</link>'},
-				'url_img':{'re':"img class='spip_logo spip_logo_right spip_logos' .* src='(.+?)'"},
+				'title':{'re':'<title>(.*)</title>'},
+				'url_uploader':{'default':'https://www.revolutionpermanente.fr/'},
+				'uploader':{'default':'Revolution Permanente'},
+				'image':{'re':"img class='spip_logo spip_logo_right spip_logos' .* src='(.+?)'"},
 				'date':{'re':'<dc:date>(.*)</dc:date>','date':'%Y-%m-%dT%H:%M:%SZ'},
 			})
 			if self.content is not None:
-				self.write()
+				self.file.add(**self.content)

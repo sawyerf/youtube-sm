@@ -2,7 +2,7 @@ from ..core.sock import download_https
 
 
 def download_html_infoconcert(gid):
-	site = download_https('/artiste/{}/concerts.html'.format(gid), 'www.infoconcert.com')
+	site = download_https('www.infoconcert.com', '/artiste/{}/concerts.html'.format(gid))
 	if site.status != '200':
 		return None
 	data = site.body

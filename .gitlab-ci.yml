@@ -24,8 +24,6 @@ download:
         - wc -l test.list
         - youtube-sm --html -l https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw -m list -t -1 --output test.list -r -v
         - wc -l test.list
-        - youtube-sm --ultra-html -l https://www.youtube.com/channel/UCEcNXmr7DYq1XxpWHSxaN0w -m raw -t -1 -r --output test.raw -v
-        - wc -l test.raw
         - youtube-sm -l https://thinkerview.video/feeds/videos.xml?accountId=5 -m raw -t -1 -r --output test.raw -v
         - wc -l test.raw
         - youtube-sm -l https://www.infoconcert.com/artiste/achab-175740/concerts.html -m raw -t -1 -r --output test.raw -v
@@ -44,6 +42,7 @@ download:
         - youtube-sm -v -t -1 --output testall.html
         - wc -l testall.html
         - youtube-sm -v
+        - youtube-sm --test -v
 
 commands:
         stage: test
@@ -55,7 +54,6 @@ commands:
         - youtube-sm -a https://www.youtube.com/channel/UCyg3MF1KU3dUK0HJBBoRYOw -v
         - youtube-sm -a https://www.youtube.com/playlist?list=PLbIUqKI_s0s7RqBHY9_gxmVFBvkViWVHd -v
         - youtube-sm -a https://thinkerview.video/feeds/videos.xml?accountId=5 -v
-        - youtube-sm -a https://dailymotion.com/karimdebbache -v
         - youtube-sm -a https://www.infoconcert.com/artiste/achab-175740/concerts.html -v
         - youtube-sm -a https://www.reddit.com/r/france -v
         - youtube-sm -a https://www.reddit.com/user/reddit -v

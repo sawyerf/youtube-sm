@@ -20,20 +20,15 @@ git checkout -b name_of_the_platform
     class Platform_Analyzer(Analyzer):
     	SITE='[platform]'
     	URL_MATCH=r'(?:https://|)(?:www\.|)site\.com/(?P<ID>.*)'
+    	TEST=[
+    		'https://www.example.com/id',
+    	]
     	def __init__(self, url_id='', method='0', file=None, prog=None):
     		######################
     		# The basic variable #
     		######################
     		self.id = url_id
     		self.method = method
-    		###############################
-    		# Init the video informations #
-    		###############################
-    		self.url = ""
-    		self.url_channel = ""
-    		self.title = ""
-    		self.channel = ""
-    		self.date = ""
     		################
     		# The function #
     		################
@@ -48,7 +43,7 @@ git checkout -b name_of_the_platform
     		""" The main function  wich retrieve the informations and and write it
     		in a file"""
 
-    	def old(self, url, lcl):
+    	def old(self, url, since):
     		""" The function wich is call with the option -o
     		This function print the old channel or the dead channel."""
 

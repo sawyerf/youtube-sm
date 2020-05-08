@@ -10,6 +10,12 @@ from ..downloader.infoconcert import (
 class InfoConcert_Analyzer(Analyzer):
 	SITE='[infoconcert]'
 	URL_MATCH=r'(?:https://|)(?:www\.|)infoconcert\.com/artiste/(?P<ID>[a-z0-9-]*-[0-9]*)'
+	TEST=[
+        'https://www.infoconcert.com/artiste/achab-175740/concerts.html',
+		'https://www.infoconcert.com/artiste/pomme-139757/concerts.html',
+        'achab-175740',
+		'pomme-139757',
+	]
 
 	def __init__(self, url_id='', method='0', file=None, prog=None):
 		######################

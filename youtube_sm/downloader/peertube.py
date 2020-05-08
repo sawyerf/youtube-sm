@@ -10,9 +10,9 @@ def ptube_crtlink(info, type_file):
 
 def download_xml_peertube(url_id, split=True):
 	info = url_id.split(':')
-	site = download_https(ptube_crtlink(info, 'xml'), info[0])
+	site = download_https(info[0], ptube_crtlink(info, 'xml'))
 	if site.status != '200':
-		site = download_https(ptube_crtlink(info, 'xml').replace('accountId', 'videoChannelId'), info[0])
+		site = download_https(info[0], ptube_crtlink(info, 'xml').replace('accountId', 'videoChannelId'))
 		if site.status != '200':
 			log.Error('Failed to download ({})'.format(info))
 			return None

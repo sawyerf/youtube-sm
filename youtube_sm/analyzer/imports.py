@@ -1,5 +1,4 @@
 from ..core.tools import log
-from .dailymotion import Dailymotion_Analyzer
 from .infoconcert import InfoConcert_Analyzer
 from .laquadrature import LaQuadrature_Analyzer
 from .peertube    import Peertube_Analyzer
@@ -8,7 +7,6 @@ from .revolutionpermanente import RevolutionPermanente_Analyzer
 from .youtube     import Youtube_Analyzer
 
 analyzers = [
-	Dailymotion_Analyzer,
 	InfoConcert_Analyzer,
 	Peertube_Analyzer,
 	Reddit_Analyzer,

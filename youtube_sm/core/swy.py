@@ -84,7 +84,10 @@ def add_sub(subs, path=''):
 			continue
 		for sub in subs[site]:
 			data = analyzer.add_sub(sub)
-			if data is not None:
+			if data is None:
+				log.Error('Failed to add ', sub)
+			else:
+				log.Info('Add: ', data)
 				if site in list_subs:
 					list_subs[site].append(data)
 				else:

@@ -1,4 +1,9 @@
 - Add: [laquadrature]
+- Del: [dailymotion]
+- Fix: old & dead
+- Add: Test
+- Fix: -l
+- Del: ultra-html
 
 ## 2020.5.4
 - Add [reddit]
