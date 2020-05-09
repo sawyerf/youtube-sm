@@ -16,21 +16,15 @@ class LaQuadrature_Analyzer(Analyzer):
 		'es',
 	]
 
-	def __init__(self, url_id='', method='0', file=None, prog=None):
+	def __init__(self, url_id=''):
 		######################
 		# The basic variable #
 		######################
 		self.id = self.extract_id(url_id)
-		self.method = method
 		###############################
 		# Init the video informations #
 		###############################
 		self.content = {}
-		################
-		# The function #
-		################
-		self.prog = prog
-		self.file = file
 
 	def extract_id(self, url):
 		match = re.match(self.URL_MATCH, url)

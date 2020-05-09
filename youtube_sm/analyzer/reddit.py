@@ -15,18 +15,12 @@ class Reddit_Analyzer(Analyzer):
 		'/r/seddit',
 	]
 
-	def __init__(self, url_id='', method='0', file=None, prog=None):
+	def __init__(self, url_id=''):
 		######################
 		# The basic variable #
 		######################
 		self.id     = self.extract_id(url_id)
-		self.method = method
 		self.conten = {}
-		################
-		# The function #
-		################
-		self.prog = prog
-		self.file = file
 
 	def add_sub(self, sub):
 		""" This function return the informations wich are write in sub.swy ."""

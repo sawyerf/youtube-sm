@@ -18,12 +18,11 @@ class Peertube_Analyzer(Analyzer):
 		'peertube.mastodon.host:37295',
 	]
 
-	def __init__(self, url_id='', method='0', file=None, prog=None):
+	def __init__(self, url_id=''):
 		######################
 		# The basic variable #
 		######################
 		self.id      = self.extract_sub(url_id)
-		self.method  = method
 		###############################
 		# Init the video informations #
 		###############################
@@ -33,11 +32,6 @@ class Peertube_Analyzer(Analyzer):
 		self.url         = ''
 		self.url_channel = ''
 		self.url_img     = ''
-		################
-		# The function #
-		################
-		self.prog = prog
-		self.file = file
 
 	def extract_sub(self, url):
 		match = self.match(url)

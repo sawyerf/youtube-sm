@@ -13,20 +13,8 @@ class RevolutionPermanente_Analyzer(Analyzer):
 		'www.revolutionpermanente.fr/'
 	]
 
-	def __init__(self, url_id='', method='0', file=None, prog=None):
-		######################
-		# The basic variable #
-		######################
+	def __init__(self, url_id=''):
 		self.id = url_id
-		self.method = method
-		###############################
-		# Init the video informations #
-		###############################
-		################
-		# The function #
-		################
-		self.prog = prog
-		self.file = file
 
 	def add_sub(self, url):
 		""" This function return the informations wich are write in sub.swy ."""

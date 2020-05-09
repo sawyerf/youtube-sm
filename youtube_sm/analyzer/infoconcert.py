@@ -17,12 +17,11 @@ class InfoConcert_Analyzer(Analyzer):
 		'pomme-139757',
 	]
 
-	def __init__(self, url_id='', method='0', file=None, prog=None):
+	def __init__(self, url_id=''):
 		######################
 		# The basic variable #
 		######################
 		self.id = self.extract_id(url_id)
-		self.method = method
 		###############################
 		# Init the video informations #
 		###############################
@@ -31,11 +30,6 @@ class InfoConcert_Analyzer(Analyzer):
 		self.title = ''
 		self.url = ''
 		self.url_img = ''
-		################
-		# The function #
-		################
-		self.prog = prog
-		self.file = file
 
 	def add_sub(self, url):
 		""" This function return the informations wich are write in sub.swy ."""

@@ -10,7 +10,7 @@ import zlib
 class Download():
 	LANGUAGE = 'en'
 	SETTIMEOUT = 0.1
-	TIMEOUT = 3
+	TIMEOUT = 10
 	USERAGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:71.0) Gecko/20100101 Firefox/71.0'
 
 	def __init__(self, https, host):

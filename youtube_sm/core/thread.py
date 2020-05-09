@@ -36,7 +36,8 @@ def Run_analyze(urls, loading=False, file=None, method='0'):
 		if analyzer is None:
 			continue
 		for i in range(len(urls[site])):
-			thr = analyzer(urls[site][i], method, file, prog)
+			thr = analyzer(urls[site][i])
+			thr.initialize(method, file, prog)
 			thr.Thread()
 			threads.append(thr)
 			log.Info("Thread start ({}{})".format(site, urls[site][i]))
@@ -57,7 +58,10 @@ def old(subs, days=365):
 	since = datetime.now() - timedelta(days=days)
 	threads = []
 	for site in subs:
-		analyzer = return_Analyzer(site)()
+		Analyzer = return_Analyzer(site)
+		if Analyzer is None:
+			continue
+		analyzer = Analyzer()
 		for url in subs[site]:
 			thr = Thread(target=analyzer.old, args=(url, since))
 			threads.append(thr)
@@ -69,7 +73,10 @@ def old(subs, days=365):
 def dead(subs):
 	threads = []
 	for site in subs:
-		analyzer = return_Analyzer(site)()
+		Analyzer = return_Analyzer(site)
+		if Analyzer is None:
+			continue
+		analyzer = Analyzer()
 		for url in subs[site]:
 			thr = Thread(target=analyzer.dead, args=(url,))
 			threads.append(thr)

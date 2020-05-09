@@ -40,7 +40,7 @@ def download_html(url_id, type_id=True, split=True):
 			return None
 		url = re.findall('<a href="(/watch\?v.+?)"', site.body)
 		if url == []:
-			self.Error('Fail to parse html page')
+			log.Error('Fail to parse html page')
 			return None
 		url = url[0]
 	site = download_https('www.youtube.com', url, useragent='youtube-sm')

@@ -23,14 +23,10 @@ class Youtube_Analyzer(Analyzer):
 		'UCDlLfadiQHJuFkJnSBBnQsQ',
 	]
 
-	def __init__(self, url_id='', method='0', file=None, prog=None):
+	def __init__(self, url_id=''):
 		self.id = self.extract_id(url_id)
-		self.method = method
 		self.type = self._type_id(self.id)  # True --> chanel False -- > Playlist
 		self.content = None
-		# Function
-		self.prog = prog
-		self.file = file
 
 	def add_sub(self, url):
 		sub = self.extract_id(url)
@@ -48,7 +44,10 @@ class Youtube_Analyzer(Analyzer):
 	def real_analyzer(self):
 		"""Recover all the videos of a channel or a playlist
 		and add the informations in $HOME/.cache/youtube_sm/data/."""
-		linfo = self._download_page()
+		if self.method == '0':
+			linfo = download_xml(self.id, self.type)
+		elif self.method == '1':
+			linfo = download_html(self.id, self.type)
 		if linfo is None:
 			return
 		info = self.info_rss
@@ -59,28 +58,13 @@ class Youtube_Analyzer(Analyzer):
 				del linfo[0]
 		for i in linfo:
 			info(i)
-			self.write()
-
-	def _download_page(self):
-		""" To download a page with the id of a channel/Playlist """
-		if self.method == '0':
-			return download_xml(self.id, self.type)
-		elif self.method == '1':
-			return download_html(self.id, self.type)
-		else:
-			return None
+			if self.content is not None:
+				self.write()
 
 	def _full_url(self):
 		if self.type:
 			return 'https://www.youtube.com/channel/' + self.id
 		return 'https://www.youtube.com/playlist?list=' + self.id
-
-	def write(self):
-		"""Write the information in a file"""
-		self.content['image'] = 'https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.content['url'])
-		self.content['url'] = 'https://www.youtube.com/watch?v=' + self.content['url']
-		self.content['url_uploader'] = self._full_url(),
-		self.file.add(**self.content)
 
 	def info_html(self, i):
 		"""Recover the informations of the html page"""
@@ -88,12 +72,10 @@ class Youtube_Analyzer(Analyzer):
 			self.content = self.info(i, {
 				'url': {'re': r'href="/watch\?v=(.{11})"'},
 				'title': {'re': r'dir="ltr" title="(.+?)"'},
-				'date': {'re': r'</li><li>(.+?)</li>'},
+				'date': {'re': r'</li><li>(.+?)</li>', 'func': self.date_convert},
 				'uploader': {'default': self.channel},
 				'view': {'re': r'class="yt-lockup-meta-info"><li>(.+?)\ views'},
 			})
-			if self.content is not None:
-				self.content['date'] = self.date_convert(self.content['date'])
 		else:  # Playlist
 			self.content = self.info(i, {
 				'url': {'re':r'data-video-id="(.{11})"'},
@@ -113,6 +95,13 @@ class Youtube_Analyzer(Analyzer):
 		})
 		if self.content is not None:
 			self.content['view'] = self.content['view'].replace(',', '')
+
+	def write(self):
+		"""Write the information in a file"""
+		self.content['image'] = 'https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.content['url'])
+		self.content['url'] = 'https://www.youtube.com/watch?v=' + self.content['url']
+		self.content['url_uploader'] = self._full_url(),
+		self.file.add(**self.content)
 
 	def _type_id(self, id):
 		"""True = Channel; False = Playlist"""
@@ -144,9 +133,9 @@ class Youtube_Analyzer(Analyzer):
 		sub = self.extract_id(sub)
 		data = download_xml(sub, self._type_id(sub))
 		if data is None:
-			log.Error('[channel dead]', sub)
+			self.subis(sub, self.ISDEAD)
 		elif data == []:
-			log.Error('[  no video  ]', sub)
+			self.subis(sub, self.ISEMPTY)
 		else:
 			content = self.info(data[0], {
 				'date': {'re': '<published>(.*)\+', 'date':'%Y-%m-%dT%H:%M:%S'},
@@ -156,17 +145,17 @@ class Youtube_Analyzer(Analyzer):
 				log.Error('Fail to parse the rss feed')
 			else:
 				if since > content['date']:
-					log.RWarning('[ {} ] {}'.format(content['date'].strftime('%Y-%m-%d'), content['name']))
+					self.subis(content['name'], content['date'])
 				else:
-					log.RInfo('[     OK     ] {}'.format(content['name']))
+					self.subis(content['name'], self.ISOK)
 
 	def dead(self, sub):
 		""" Print the dead channel """
 		sub = self.extract_id(sub)
 		linfo = download_xml(sub, self._type_id(sub))
 		if linfo is None:
-			log.Error('[channel dead]\t', sub)
+			self.subis(sub, self.ISDEAD)
 		elif linfo is []:
-			log.Error('[  no video  ]\t', sub)
+			self.subis(sub, self.ISEMPTY)
 		else:
-			log.RInfo('[     OK     ] {}'.format(sub))
+			self.subis(sub, self.ISOK)
