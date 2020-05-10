@@ -100,7 +100,7 @@ class Youtube_Analyzer(Analyzer):
 		"""Write the information in a file"""
 		self.content['image'] = 'https://i.ytimg.com/vi/{}/mqdefault.jpg'.format(self.content['url'])
 		self.content['url'] = 'https://www.youtube.com/watch?v=' + self.content['url']
-		self.content['url_uploader'] = self._full_url(),
+		self.content['url_uploader'] = self._full_url()
 		self.file.add(**self.content)
 
 	def _type_id(self, id):
