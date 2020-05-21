@@ -66,7 +66,7 @@ class Download():
 			data += self.real_recv()
 			if b'\r\n\r\n' in data:
 				self.headers = data.split(b'\r\n\r\n')[0].decode() + '\r\n\r\n'
-				len_headers = len(self.headers) + 4
+				len_headers = len(self.headers)
 				self.status = re.findall(r'HTTP/1\.1 ([0-9]*)', self.headers)[0]
 				data = data[len_headers:]
 				if self.status != '100':
