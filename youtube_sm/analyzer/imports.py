@@ -5,6 +5,7 @@ from .peertube    import Peertube_Analyzer
 from .reddit      import Reddit_Analyzer
 from .revolutionpermanente import RevolutionPermanente_Analyzer
 from .youtube     import Youtube_Analyzer
+from .twitter     import Twitter_Analyzer
 
 analyzers = [
 	InfoConcert_Analyzer,
@@ -13,6 +14,7 @@ analyzers = [
 	RevolutionPermanente_Analyzer,
 	Youtube_Analyzer,
 	LaQuadrature_Analyzer,
+	Twitter_Analyzer,
 ]
 
 

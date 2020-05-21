@@ -24,9 +24,9 @@ class Download():
 			self.port = 443
 
 	def setvar(self):
-		self.status   = ''
-		self.headers  = ''
-		self.body     = ''
+		self.status  = ''
+		self.headers = ''
+		self.body    = ''
 
 	def create_request(self, path, method, body, headers):
 		req = "{} {} HTTP/1.1\r\n".format(method, path)
@@ -65,7 +65,7 @@ class Download():
 		while True:
 			data += self.real_recv()
 			if b'\r\n\r\n' in data:
-				self.headers = data.split(b'\r\n\r\n')[0].decode()
+				self.headers = data.split(b'\r\n\r\n')[0].decode() + '\r\n\r\n'
 				len_headers = len(self.headers) + 4
 				self.status = re.findall(r'HTTP/1\.1 ([0-9]*)', self.headers)[0]
 				data = data[len_headers:]
@@ -103,7 +103,7 @@ class Download():
 		if self.headers == '' or self.status == '204' or body is None:
 			return
 		if re.match('.*[Cc]ontent-[Ll]ength:', self.headers, re.DOTALL):
-			dlen = int(re.findall('[Cc]ontent-[Ll]ength: (.*)\r', self.headers)[0])
+			dlen = int(re.findall('[Cc]ontent-[Ll]ength: ([0-9]*)', self.headers)[0])
 			body = self.recv_body(body, dlen)
 		elif re.match('.*[Tt]ransfer-[Ee]ncoding:[ \t]*[Cc]hunked', self.headers, re.DOTALL):
 			body = self.recv_chunk_body(body)
