@@ -6,5 +6,6 @@
 - Reddit:sub
 - Reddit:user
 - Revolution Permanente
+- Twitter
 - Youtube:channel
 - Youtube:playlist

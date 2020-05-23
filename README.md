@@ -78,6 +78,7 @@ youtube-sm [OPTIONS]
 - Peertube
 - Reddit
 - Revolution Permanente
+- Twitter
 - Youtube
 
 ## Example

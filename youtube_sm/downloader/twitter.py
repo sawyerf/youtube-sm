@@ -47,6 +47,9 @@ def download_twitter(name):
 		},
 		status='200'
 	)
+	if api.status == '403':
+		data = json.loads(api.body)
+		log.Error(name, ': ', data['errors'])
 	if api.status != '200':
 		return None
 	return json.loads(api.body)

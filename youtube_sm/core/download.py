@@ -124,6 +124,7 @@ class Download():
 			context = ssl._create_default_https_context()
 			context.check_hostname = self.host
 			self.sock = context.wrap_socket(self.sock, server_hostname=self.host)
+		self.sock.settimeout(3)
 		self.sock.connect((self.host, self.port))
 
 	def download(self, path, method="get", headers={}, body=None, status='200'):
@@ -138,7 +139,6 @@ class Download():
 			log.Error(str(e))
 			return
 		self.sock.send(request)
-		self.sock.settimeout(self.SETTIMEOUT)
 		self.recv()
 
 		url = "{}://{}{}".format(self.protocol, self.host, path)

@@ -7,16 +7,21 @@ import re
 
 class Twitter_Analyzer(Analyzer):
 	SITE='[twitter]'
-	URL_MATCH=r'(?:https://|)(?:www\.|)twitter\.com/(?P<ID>[A-Za-z0-9]*)'
+	URL_MATCH=r'(?:https://|)(?:www\.|)twitter\.com/(?P<ID>[A-Za-z0-9_-]*)'
 	TEST=[
 		'https://twitter.com/UsulduFutur',
+		'https://twitter.com/notweet4ever',
+		'https://twitter.com/NoTweet',
 	]
 
 	def __init__(self, sub=''):
 		self.id = self.extract_id(sub)
 
 	def add_sub(self, sub):
-		return self.extract_id(sub) + '\t '
+		uid = self.extract_id(sub)
+		if download_twitter(uid) is None:
+			return None
+		return uid + '\t '
 
 	def real_analyzer(self):
 		data = download_twitter(self.id)
@@ -39,7 +44,26 @@ class Twitter_Analyzer(Analyzer):
 			self.file.add(**content)
 
 	def old(self, url, since):
-		pass
+		sub = self.extract_id(url)
+		data = download_twitter(sub)
+		if data is None:
+			self.subis(sub, self.ISDEAD)
+		elif data['globalObjects']['tweets'] == {}:
+			self.subis(sub, self.ISEMPTY)
+		else:
+			first = list(data['globalObjects']['tweets'].values())[0]
+			date = datetime.strptime(first['created_at'], '%a %b %d %H:%M:%S +0000 %Y')
+			if since > date:
+				self.subis(sub, date)
+			else:
+				self.subis(sub, self.ISOK)
 
 	def dead(self, url):
-		pass
+		sub = self.extract_id(url)
+		data = download_twitter(sub)
+		if data is None:
+			self.subis(sub, self.ISDEAD)
+		elif data['globalObjects']['tweets'] == {}:
+			self.subis(sub, self.ISEMPTY)
+		else:
+			self.subis(sub, self.ISOK)

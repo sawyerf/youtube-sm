@@ -1,4 +1,5 @@
-
+- Add: [reddit]
+- Add: peertube old & dead
 
 ## 2020.5.8
 - Add: [laquadrature]
