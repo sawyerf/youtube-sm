@@ -12,6 +12,9 @@ class Twitter_Analyzer(Analyzer):
 		'https://twitter.com/UsulduFutur',
 		'https://twitter.com/notweet4ever',
 		'https://twitter.com/NoTweet',
+		'UsulduFutur',
+		'notweet4ever',
+		'NoTweet',
 	]
 
 	def __init__(self, sub=''):

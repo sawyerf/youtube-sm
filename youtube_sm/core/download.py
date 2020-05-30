@@ -139,6 +139,7 @@ class Download():
 			log.Error(str(e))
 			return
 		self.sock.send(request)
+		self.sock.settimeout(self.SETTIMEOUT)
 		self.recv()
 
 		url = "{}://{}{}".format(self.protocol, self.host, path)

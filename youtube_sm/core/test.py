@@ -21,7 +21,6 @@ def TestAnalyzer(path):
 				for mode in ['html', 'json', 'list', 'raw']:
 					file.mode = mode
 					file.write()
-				break;
 	log.RInfo('Start Old and Dead')
 	for anal in analyzers:
 		for since in [1, 365]:
