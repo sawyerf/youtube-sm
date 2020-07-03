@@ -16,7 +16,6 @@
 - [Example](#example)
 - [Type of File](#type-of-file)
 - [Cache](#cache)
-- [HTML & RSS](#html--rss)
 - [Requirements](#requirements)
 - [Compatible](#compatible)
 - [Screenshots](#screenshots)
