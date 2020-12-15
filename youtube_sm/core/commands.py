@@ -36,6 +36,7 @@ class Commands():
 		self.params = {
 			'-a':           {'func': self._a,           'option': 'URL',    'description': "Add a sub to your sub list."},
 			'-e':           {'func': self._e,           'option': '',       'description': "Edit your sub list."},
+			'-c':		{'func': self._c,           'option': 'NAME',   'description': "Custom Feed"},
 			'-h':           {'func': self._h,           'option': '',       'description': "Print this help text and exit."},
 			'-l':           {'func': self._l,           'option': 'URL',    'description': "Analyze only one sub."},
 			'-m':           {'func': self._m,           'option': 'MODE',   'description': "Choose the type of the output file (html, json, raw, list)."},
@@ -65,6 +66,7 @@ class Commands():
 		self.path     = path
 		self.trun     = time.time()
 		self.url_data = None
+		self.feed     = 'sub'
 
 	def _h(self, arg):
 		print('Usage: youtube-sm [OPTIONS]')
@@ -89,17 +91,25 @@ class Commands():
 	def _a(self, arg):
 		self.exec = None
 		if arg + 1 < len(sys.argv):
-			add_suburl(sys.argv[arg+1], self.path)
+			add_suburl(sys.argv[arg+1], self.path, self.feed)
 		else:
 			exit_debug('You Forgot An Argument (-a)', 1)
 
+	def _c(self, arg):
+		if not re.match(r'^[a-zA-Z_-]*$', sys.argv[arg+1]):
+			exit_debug('Wrong Format of Feed Name (-c)', 1)
+		self.feed = sys.argv[arg+1]
+		log.Info('Feed: ' + self.feed)
+		if not os.path.exists(self.path + self.feed + '.swy'):
+			log.Warning('`{}` Feed do not exist'.format(self.feed), 1)
+		
 	def _e(self, arg):
 		self.exec = None
 		editor = os.getenv('EDITOR')
 		if editor is None:
 			log.RWarning('The variable `EDITOR` is not set. `vi` is use by default')
 			editor = '/bin/vi'
-		os.system('{} {}sub.swy'.format(editor, self.path))
+		os.system('{} {}{}.swy'.format(editor, self.path, self.feed))
 
 	def _l(self, arg):
 		del_data(self.path)
@@ -118,26 +128,26 @@ class Commands():
 
 	def __init(self, arg):
 		self.exec = None
-		init_swy(self.path, arg)
+		init_swy(self.path, arg, self.feed)
 
 	def __af(self, arg):
 		self.exec = None
 		if arg + 1 < len(sys.argv) and os.path.exists(sys.argv[arg + 1]):
-			add_sub(open(sys.argv[arg + 1], 'r').read().split('\n'), self.path)
+			add_sub(open(sys.argv[arg + 1], 'r').read().split('\n'), self.path, self.feed)
 		else:
 			exit_debug('File not found', 1)
 
 	def __ax(self, arg):
 		self.exec = None
 		if arg + 1 < len(sys.argv) and os.path.exists(sys.argv[arg + 1]):
-			generate_swy(sys.argv[arg + 1], self.path)
+			generate_swy(sys.argv[arg + 1], self.path, self.feed)
 		else:
 			exit_debug('File not found', 1)
 
 	def __cat(self, arg):
 		self.exec = None
-		if os.path.exists(self.path + 'sub.swy'):
-			with open(self.path + 'sub.swy', 'r') as file:
+		if os.path.exists(self.path + self.feed + '.swy'):
+			with open(self.path + self.feed + '.swy', 'r') as file:
 				while True:
 					line = file.readline()
 					if line == '':
@@ -193,11 +203,11 @@ class Commands():
 
 	def router(self):
 		if self.url_data is None:
-			self.url_data = swy(self.path, 0)
+			self.url_data = swy(self.path, 0, self.feed)
 		if self.exec == 'analyze':
 			if self.since is None:
 				self.since = 7
-			file = Write_file(self.output, self.path, self.mode, self.method, self.since)
+			file = Write_file(self.output, self.path, self.mode, self.method, self.since, self.feed)
 			Run_analyze(self.url_data, self.loading, file, self.method)
 			file.write()
 			write_log(sys.argv, self.path, self.trun)

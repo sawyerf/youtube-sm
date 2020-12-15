@@ -34,9 +34,11 @@ download:
         - youtube-sm -l https://example.com/ -m raw -t -1 -r --output test.raw -v
         - curl -O https://sawyerf.gitlab.io/youtube_sm/test.swy
         - youtube-sm -v --init test.swy
+        - youtube-sm -v -c --init test.swy
         - youtube-sm -v -t -1 --output testall.html
         - wc -l testall.html
         - youtube-sm -v
+        - youtube-sm -v -c lol
         - youtube-sm --test -v
 
 commands:
@@ -55,3 +57,4 @@ commands:
         - youtube-sm -a https://www.laquadrature.net/ -v
         - youtube-sm -a https://www.laquadrature.net/fr -v
         - youtube-sm -a https://www.laquadrature.net/en -v
+        - youtube-sm -c lol -a https://www.youtube.com/channel/UCyg3MF1KU3dUK0HJBBoRYOw -v

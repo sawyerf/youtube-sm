@@ -6,7 +6,7 @@ import json
 
 
 class Write_file():
-	def __init__(self, output=None, path_cache='', mode='html', method='0', since=7):
+	def __init__(self, output=None, path_cache='', mode='html', method='0', since=7, feed='sub'):
 		if output is None:
 			output = {
 				'html': 'sub.html',
@@ -20,7 +20,7 @@ class Write_file():
 		self.since = since
 		self.data_path = None
 		if path_cache is not None:
-			self.data_path = f'{path_cache}data/contents.{method}.json'
+			self.data_path = f'{path_cache}data/{feed}.{method}.json'
 			self.open_cache()
 
 	def open_cache(self):

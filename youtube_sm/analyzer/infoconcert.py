@@ -5,15 +5,16 @@ from .analyzer import Analyzer
 from ..downloader.infoconcert import (
 	download_html_infoconcert
 )
+from ..core.tools import log
 
 
 class InfoConcert_Analyzer(Analyzer):
 	SITE='[infoconcert]'
 	URL_MATCH=r'(?:https://|)(?:www\.|)infoconcert\.com/artiste/(?P<ID>[a-z0-9-]*-[0-9]*)'
 	TEST=[
-        'https://www.infoconcert.com/artiste/achab-175740/concerts.html',
+		'https://www.infoconcert.com/artiste/achab-175740/concerts.html',
 		'https://www.infoconcert.com/artiste/pomme-139757/concerts.html',
-        'achab-175740',
+		'achab-175740',
 		'pomme-139757',
 	]
 
@@ -63,8 +64,11 @@ class InfoConcert_Analyzer(Analyzer):
 		if data is None:
 			return
 		for ele in data:
-			self.info_html(ele)
-			self.write()
+			try:
+				self.info_html(ele)
+				self.write()
+			except:
+				log.Warning('Fail To Parse the content of ({})'.format(self.id))
 
 	def old(self, url, lcl):
 		""" The function wich is call with the option -o
