@@ -59,6 +59,7 @@ class Commands():
 		}
 		self.exec     = 'analyze'
 		self.since    = None
+		self.after    = 7
 		self.loading  = False
 		self.method   = '0'
 		self.mode     = 'html'
@@ -66,6 +67,7 @@ class Commands():
 		self.path     = path
 		self.trun     = time.time()
 		self.url_data = None
+		self.isarg    = False
 		self.feed     = 'sub'
 
 	def _h(self, arg):
@@ -80,18 +82,27 @@ class Commands():
 	def _m(self, arg):
 		if arg + 1 < len(sys.argv) and sys.argv[arg + 1] in ['html', 'raw', 'list', 'view', 'json']:
 			self.mode = sys.argv[arg + 1]
+			self.isarg = True
 		else:
 			exit_debug('Mode file invalid', 1)
 
 	def _t(self, arg):
-		if not re.match('(-|)[0-9]*$', sys.argv[arg + 1]):
+		if re.match('(-|)[0-9]*$', sys.argv[arg + 1]):
+			self.since = int(sys.argv[arg + 1])
+			self.after = self.since
+		elif re.match('(-|)[0-9]*,(-|)[0-9]*$', sys.argv[arg + 1]):
+			i = sys.argv[arg + 1].split(',')
+			self.since = int(i[0])
+			self.after = int(i[1])
+		else:
 			exit_debug('Numbers of day invalid', 1)
-		self.since = int(sys.argv[arg + 1])
+		self.isarg = True
 
 	def _a(self, arg):
 		self.exec = None
 		if arg + 1 < len(sys.argv):
 			add_suburl(sys.argv[arg+1], self.path, self.feed)
+			self.isarg = True
 		else:
 			exit_debug('You Forgot An Argument (-a)', 1)
 
@@ -99,6 +110,7 @@ class Commands():
 		if not re.match(r'^[a-zA-Z_-]*$', sys.argv[arg+1]):
 			exit_debug('Wrong Format of Feed Name (-c)', 1)
 		self.feed = sys.argv[arg+1]
+		self.isarg = True
 		log.Info('Feed: ' + self.feed)
 		if not os.path.exists(self.path + self.feed + '.swy'):
 			log.Warning('`{}` Feed do not exist'.format(self.feed), 1)
@@ -120,6 +132,7 @@ class Commands():
 				exit()
 			self.url_data = {analyzer.SITE: [sys.argv[arg+1]]}
 			self.path = None
+			self.isarg = True
 		else:
 			exit_debug('You forgot an argument after -l', 1)
 
@@ -134,6 +147,7 @@ class Commands():
 		self.exec = None
 		if arg + 1 < len(sys.argv) and os.path.exists(sys.argv[arg + 1]):
 			add_sub(open(sys.argv[arg + 1], 'r').read().split('\n'), self.path, self.feed)
+			self.isarg = True
 		else:
 			exit_debug('File not found', 1)
 
@@ -141,6 +155,7 @@ class Commands():
 		self.exec = None
 		if arg + 1 < len(sys.argv) and os.path.exists(sys.argv[arg + 1]):
 			generate_swy(sys.argv[arg + 1], self.path, self.feed)
+			self.isarg = True
 		else:
 			exit_debug('File not found', 1)
 
@@ -171,6 +186,7 @@ class Commands():
 			log.Error('CSS folder already exist or can\'t be created')
 		if len(sys.argv) != arg + 1:
 			write_css(sys.argv[arg+1])
+			self.isarg = True
 		else:
 			write_css('')
 
@@ -181,6 +197,7 @@ class Commands():
 		if arg + 1 >= len(sys.argv):
 			exit_debug('You forgot an argument after --output', 1)
 		self.output = sys.argv[arg+1]
+		self.isarg = True
 
 	def __test(self, arg):
 		self.exec = 'test'
@@ -193,13 +210,12 @@ class Commands():
 
 	def parser(self):
 		for arg in range(len(sys.argv)):
-			if len(sys.argv[arg]) == 0 or sys.argv[arg][0] != '-' or sys.argv[arg] == '-1':
-				continue
-			elif len(sys.argv[arg]) > 1:
-				if sys.argv[arg] in self.params:
-					self.params[sys.argv[arg]]['func'](arg)
-				else:
-					exit_debug("No such option: {}".format(sys.argv[arg]), 1)
+			if self.isarg:
+				self.isarg = False
+			elif sys.argv[arg] in self.params:
+				self.params[sys.argv[arg]]['func'](arg)
+			else:
+				exit_debug("No such option: `{}`".format(sys.argv[arg]), 1)
 
 	def router(self):
 		if self.url_data is None:
@@ -207,7 +223,7 @@ class Commands():
 		if self.exec == 'analyze':
 			if self.since is None:
 				self.since = 7
-			file = Write_file(self.output, self.path, self.mode, self.method, self.since, self.feed)
+			file = Write_file(self.output, self.path, self.mode, self.method, self.since, self.after, self.feed)
 			Run_analyze(self.url_data, self.loading, file, self.method)
 			file.write()
 			write_log(sys.argv, self.path, self.trun)

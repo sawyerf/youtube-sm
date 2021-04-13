@@ -6,7 +6,7 @@ import json
 
 
 class Write_file():
-	def __init__(self, output=None, path_cache='', mode='html', method='0', since=7, feed='sub'):
+	def __init__(self, output=None, path_cache='', mode='html', method='0', since=7, after=3, feed='sub'):
 		if output is None:
 			output = {
 				'html': 'sub.html',
@@ -18,6 +18,7 @@ class Write_file():
 		self.mode = mode
 		self.contents = []
 		self.since = since
+		self.after = after
 		self.data_path = None
 		if path_cache is not None:
 			self.data_path = f'{path_cache}data/{feed}.{method}.json'
@@ -66,13 +67,20 @@ class Write_file():
 
 	def RangeContent(self):
 		self.contents = sorted(self.contents, key=lambda k: k['date'], reverse=True)
-		if self.since == -1:
+		if self.since == -1 and self.after == -1:
 			return self.contents
-		now = datetime.now() + timedelta(days=3)
-		since = datetime.now() - timedelta(days=self.since)
+		else:
+			if self.since == -1:
+				since = datetime(1, 1, 1)
+			else:
+				since = datetime.now() - timedelta(days=self.since)
+			if self.after == -1:
+				after = datetime(3000, 1 , 1)
+			else:
+				after = datetime.now() + timedelta(days=self.after)
 		ncontents = []
 		for content in self.contents:
-			if since < content['date'] and content['date'] < now:
+			if since < content['date'] and content['date'] < after:
 				ncontents.append(content)
 		return ncontents
 
