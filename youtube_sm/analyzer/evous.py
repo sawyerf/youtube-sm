@@ -1,8 +1,9 @@
 import re
 import locale
 
-from .analyzer	import Analyzer
+from ..core.tools import log
 from ..downloader.evous import download_html_evous
+from .analyzer	import Analyzer
 
 class Evous_Analyzer(Analyzer):
 	SITE='[evous]'
@@ -28,7 +29,11 @@ class Evous_Analyzer(Analyzer):
 		"""
 		infos = download_html_evous()
 		loc = locale.getlocale()
-		locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
+		try:
+			locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
+		except locale.Error as e:
+			log.Error("Evous: ", e, ": You need to add `fr_FR.UTF-8`")
+			return
 		for i in infos:
 			self.content = self.info(i, {
 				'url': {'re':'<a href="(.*)" class'},
