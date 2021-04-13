@@ -16,11 +16,8 @@ class Reddit_Analyzer(Analyzer):
 	]
 
 	def __init__(self, url_id=''):
-		######################
-		# The basic variable #
-		######################
 		self.id     = self.extract_id(url_id)
-		self.conten = {}
+		self.content = {}
 
 	def add_sub(self, sub):
 		""" This function return the informations wich are write in sub.swy ."""

@@ -72,6 +72,7 @@ youtube-sm [OPTIONS]
 
 ## Support Platforms
 - ~~Dailymotion~~
+- Evous Manifestation
 - Infoconcert
 - La Quadrature du Net
 - Peertube
