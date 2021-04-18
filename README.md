@@ -20,6 +20,8 @@
 - [Compatible](#compatible)
 - [Screenshots](#screenshots)
 
+*If you have a problem, create an issue rather than sending me an email otherwise the response time will be longer, Thanks.*
+
 ## Description
 Youtube_subscription_manager is an alternative to youtube.com to retrieve the videos of your subscriptions feed without requires an account [*(You can also recover the videos of other platform)*](#support-platforms).
 
