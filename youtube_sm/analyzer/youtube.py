@@ -59,6 +59,7 @@ class Youtube_Analyzer(Analyzer):
 			with open('lil.json', 'w') as fi:
 				json.dump(linfo, fi)
 		for i in linfo:
+			self.content = None
 			info(i)
 			if self.content is not None:
 				self.write()
