@@ -45,6 +45,7 @@ class Download():
 		for name in default:
 			req += '{}: {}\r\n'.format(name, default[name])
 		req += "\r\n"
+		print(req)
 		if body is not None:
 			req += body
 		return req.encode()

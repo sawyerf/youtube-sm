@@ -1,10 +1,12 @@
 import re
+import json
 
 from ..core.tools import log
 from ..core.sock  import (
 	download_http,
 	download_https
 )
+from ..core.download  import Download
 
 def download_xml(url_id, type_id=True, split=True):
 	"""
@@ -43,22 +45,17 @@ def download_html(url_id, type_id=True, split=True):
 			log.Error('Fail to parse html page')
 			return None
 		url = url[0]
-	site = download_https('www.youtube.com', url, useragent='youtube-sm')
+	site = Download(True, 'www.youtube.com')
+	site.download(url, headers={'Cookie': 'CONSENT=YES+cb.20210413-13-p0.fr+FX+878', 'Referer': 'https://consent.youtube.com/'})
 	if site.status != '200':
+		print(site.headers)
 		return None
 	data = site.body
 	if split:
 		if type_id:  # Channel
-			linfo = data.split('<div class="yt-lockup-content">')
-			if len(linfo) <= 1:
-				log.Warning('No videos ({})'.format(url_id))
-				return None
-		else:  # Playlist
-			linfo = data.split('<li class="yt-uix-scroller-scroll-unit  vve-check"')
-			del linfo[0]
-			if linfo == []:
-				log.Warning('No videos ({})'.format(url_id))
-				return None
-		return linfo
+			lol = re.findall(">var ytInitialData = (\{.*});</script>", data)[0]
+			#open('lol', 'w').write(lol)
+			jso = json.loads(lol)
+			return jso
 	else:
 		return data

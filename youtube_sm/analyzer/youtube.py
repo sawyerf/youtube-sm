@@ -1,4 +1,5 @@
 import re
+import json
 
 from datetime     import datetime, timedelta
 from ..core.tools import log
@@ -54,8 +55,9 @@ class Youtube_Analyzer(Analyzer):
 		if self.method == '1':
 			info = self.info_html
 			if self.type:  # Channel
-				self.channel = re.findall('<title>(.*)', linfo[0])
-				del linfo[0]
+				linfo = linfo["contents"]["twoColumnBrowseResultsRenderer"]["tabs"][1]["tabRenderer"]["content"]["sectionListRenderer"]["contents"][0]["itemSectionRenderer"]["contents"][0]["gridRenderer"]["items"]
+			with open('lil.json', 'w') as fi:
+				json.dump(linfo, fi)
 		for i in linfo:
 			info(i)
 			if self.content is not None:
@@ -69,13 +71,16 @@ class Youtube_Analyzer(Analyzer):
 	def info_html(self, i):
 		"""Recover the informations of the html page"""
 		if self.type:  # Channel
-			self.content = self.info(i, {
-				'url': {'re': r'href="/watch\?v=(.{11})"'},
-				'title': {'re': r'dir="ltr" title="(.+?)"'},
-				'date': {'re': r'</li><li>(.+?)</li>', 'func': self.date_convert},
-				'uploader': {'default': self.channel},
-				'view': {'re': r'class="yt-lockup-meta-info"><li>(.+?)\ views'},
-			})
+			if "gridVideoRenderer" not in i:
+				return 
+			i = i["gridVideoRenderer"]
+			self.content = {
+				'url': i["videoId"],
+				'title': i["title"]["runs"][0]["text"],
+				'date': self.date_convert(i["publishedTimeText"]["simpleText"].replace('Streamed', '')),
+				'uploader': re.findall('.* by (.+?) \d* \w* ago.*', i["title"]["accessibility"]["accessibilityData"]["label"])[0],
+				'view': i["viewCountText"]["simpleText"],
+			}
 		else:  # Playlist
 			self.content = self.info(i, {
 				'url': {'re':r'data-video-id="(.{11})"'},
