@@ -56,8 +56,6 @@ class Youtube_Analyzer(Analyzer):
 			info = self.info_html
 			if self.type:  # Channel
 				linfo = linfo["contents"]["twoColumnBrowseResultsRenderer"]["tabs"][1]["tabRenderer"]["content"]["sectionListRenderer"]["contents"][0]["itemSectionRenderer"]["contents"][0]["gridRenderer"]["items"]
-			with open('lil.json', 'w') as fi:
-				json.dump(linfo, fi)
 		for i in linfo:
 			self.content = None
 			info(i)

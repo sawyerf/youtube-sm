@@ -48,7 +48,6 @@ def download_html(url_id, type_id=True, split=True):
 	site = Download(True, 'www.youtube.com')
 	site.download(url, headers={'Cookie': 'CONSENT=YES+cb.20210413-13-p0.fr+FX+878', 'Referer': 'https://consent.youtube.com/'})
 	if site.status != '200':
-		print(site.headers)
 		return None
 	data = site.body
 	if split:
