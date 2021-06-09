@@ -36,13 +36,15 @@ class Evous_Analyzer(Analyzer):
 			return
 		for i in infos:
 			self.content = self.info(i, {
-				'url': {'re':'<a href="(.*)" class'},
-				'title': {'re':'<strong>(.*)</strong>'},
+				'url': {'re':'<a href="(.+?)" class'},
+				'title': {'re':'<strong>(.+?)</strong>'},
 				'url_uploader': {'default':'https://www.evous.fr/Les-Manifestations-a-Paris-la-semaine-1176044.html'},
 				'uploader': {'default':'Evous'},
 				'image': {'default':"http://img.over-blog-kiwi.com/1/49/25/24/20160318/ob_bac2c2_code19.jpg"},
 				'date': {'re':'</strong> le (\w* \d{1,2} \w* \d{4})', 'date':'%A %d %B %Y'},
 			})
 			if self.content is not None:
+				if re.match(r'<a .*>.+?</a>', self.content['title']):
+					self.content['title'] = re.findall(r'<a .*>(.+?)</a>', self.content['title'])[0]
 				self.file.add(**self.content)
 		locale.setlocale(locale.LC_ALL, loc)
