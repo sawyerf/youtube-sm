@@ -12,13 +12,14 @@ from ..downloader.youtube import (
 
 class Youtube_Analyzer(Analyzer):
 	SITE='[youtube]'
-	URL_MATCH=r'(?:https://|)(?:www\.|)youtube\.com/(?P<type>channel/|user/|playlist\?list=)(?P<ID>[a-zA-Z0-9_-]*)'
+	URL_MATCH=r'(?:https://|)(?:www\.|m.|)youtube\.com/(?P<type>channel/|user/|playlist\?list=)(?P<ID>[a-zA-Z0-9_-]*)'
 	RE_CHANNEL=r'UC[A-Za-z0-9_-]{22}$'
 	RE_PLAYLIST=r'PL[A-Za-z0-9_-]{32}$'
 	TEST=[
 		'https://www.youtube.com/channel/UCyg3MF1KU3dUK0HJBBoRYOw',
 		'https://www.youtube.com/playlist?list=PL0H7ONNEUnnt59niYAZ07dFTi99u2L2n_',
 		'https://www.youtube.com/channel/UCDlLfadiQHJuFkJnSBBnQsQ',
+		'https://m.youtube.com/channel/UCDlLfadiQHJuFkJnSBBnQsQ',
 		'UCyg3MF1KU3dUK0HJBBoRYOw',
 		'PL0H7ONNEUnnt59niYAZ07dFTi99u2L2n_',
 		'UCDlLfadiQHJuFkJnSBBnQsQ',
@@ -78,7 +79,7 @@ class Youtube_Analyzer(Analyzer):
 				'title': i["title"]["runs"][0]["text"],
 				'date': self.date_convert(i["publishedTimeText"]["simpleText"].replace('Streamed', '')),
 				'uploader': re.findall('.* by (.+?) \d* \w* ago.*', i["title"]["accessibility"]["accessibilityData"]["label"])[0],
-				'view': i["viewCountText"]["simpleText"],
+				# 'view': i["viewCountText"]["simpleText"],
 			}
 		else:  # Playlist
 			self.content = self.info(i, {

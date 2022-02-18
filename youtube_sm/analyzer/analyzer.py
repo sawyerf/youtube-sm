@@ -1,6 +1,7 @@
 import re
 from datetime  import datetime
 from threading import Thread
+from time      import time
 from ..core.tools import log
 
 
@@ -23,9 +24,16 @@ class Analyzer(Thread):
 		Thread.__init__(self)
 
 	def run(self):
+		start = time()
 		self.real_analyzer()
 		if self.prog is not None:
 			self.prog.add()
+		diff = time() - start
+		if diff > 5:
+			if hasattr(self, 'id'):
+				log.RWarning(self.SITE, ' `', self.id, '`: This sub took {:.2} seconds to complete'.format(diff))
+			else:
+				log.RWarning(self.SITE, ' This sub took {:.2} seconds to complete'.format(diff))
 
 	def match(self, url):
 		return re.match(self.URL_MATCH, url)

@@ -13,9 +13,9 @@ class Peertube_Analyzer(Analyzer):
 	#'
 	URL_MATCH=r'(?:http[s]?://|)(?P<Host>%s)/feeds/videos\.xml\?(?:accountId|videoChannelId)=(?P<ID>[0-9]*)' % INSTANCES
 	TEST=[
-		'https://thinkerview.video/feeds/videos.xml?accountId=5',
-		'thinkerview.video:2',
-		'peertube.mastodon.host:37295',
+		# 'https://thinkerview.video/feeds/videos.xml?accountId=5',
+		# 'thinkerview.video:2',
+		# 'peertube.mastodon.host:37295',
 	]
 
 	def __init__(self, url_id=''):

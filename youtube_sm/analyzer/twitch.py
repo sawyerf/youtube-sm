@@ -22,7 +22,7 @@ class Twitch_Analyzer(Analyzer):
 		id = self.extract_id(sub)
 		if id is None:
 			return None
-		return id + '\t' + CHANNEL
+		return id + '\t' + id
 
 	def real_analyzer(self):
 		"""
@@ -43,6 +43,5 @@ class Twitch_Analyzer(Analyzer):
 				'view':         element['interactionStatistic']['userInteractionCount'],
 				'date':         datetime.strptime(element['uploadDate'], '%Y-%m-%dT%H:%M:%SZ'),
 			}
-			print(content['url'])
 			if content is not None and re.match('https://www.twitch.tv/.*', content['url']):
 				self.file.add(**content)
