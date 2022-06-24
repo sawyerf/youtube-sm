@@ -8,7 +8,7 @@ def download_html_evous(split=True):
 		return None
 	data = site.body
 	if split:
-			linfo = re.findall('<br\ \/>-&nbsp;(<strong>.+?)\n', data, re.DOTALL)
+			linfo = re.finditer('<strong>(?P<date>[A-Za-z]+? [0-9]+? [a-z]+? [0-9]{4})<\/strong>\n(?P<manifs>.+?)<p class="land-see-hero-caption', data, re.DOTALL)
 			if linfo == []:
 					return None
 			return linfo

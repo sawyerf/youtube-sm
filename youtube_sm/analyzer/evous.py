@@ -1,5 +1,6 @@
 import re
 import locale
+from datetime  import datetime
 
 from ..core.tools import log
 from ..downloader.evous import download_html_evous
@@ -34,19 +35,24 @@ class Evous_Analyzer(Analyzer):
 		except locale.Error as e:
 			log.Error("Evous: ", e, ": You need to add `fr_FR.UTF-8`")
 			return
-		for i in infos:
-			self.content = self.info(i, {
-				'url': {'re':'<a href="(.+?)" class'},
-				'title': {'re':'<strong>(.+?)</strong>'},
-				'url_uploader': {'default':'https://www.evous.fr/Les-Manifestations-a-Paris-la-semaine-1176044.html'},
-				'uploader': {'default':'Evous'},
-				'image': {'default':"http://img.over-blog-kiwi.com/1/49/25/24/20160318/ob_bac2c2_code19.jpg"},
-				'date': {'re':'</strong> le (\w* \d{1,2} \w* \d{4})', 'date':'%A %d %B %Y'},
-			})
-			if self.content is not None:
-				if re.match(r'<a .*>.+?</a>', self.content['title']):
-					self.content['title'] = re.findall(r'<a .*>(.+?)</a>', self.content['title'])[0]
-				if re.match(r'^/.*', self.content['url']):
-					self.content['url'] = 'https://www.evous.fr' + self.content['url']
-				self.file.add(**self.content)
+		for day in infos:
+			manifs = re.findall(r'(?:<br\ \/>.+?\n)', day.group('manifs'))
+			dateManif = datetime.strptime(day.group('date'), '%A %d %B %Y')
+			for manif in manifs:
+				self.content = self.info(manif, {
+					'url': {'re':'<a href="(.+?)" class', 'default': ''},
+					'title': {'re':'<strong>(.+?)</strong>'},
+					'url_uploader': {'default':'https://www.evous.fr/Les-Manifestations-a-Paris-la-semaine-1176044.html'},
+					'uploader': {'default':'Evous'},
+					'image': {'default':"http://img.over-blog-kiwi.com/1/49/25/24/20160318/ob_bac2c2_code19.jpg"},
+					# 'date': {'re':'</strong> le (\w* \d{1,2} \w* \d{4})', 'date':'%A %d %B %Y', 'default': dateManif},
+					'date': {'default': dateManif},
+				})
+				if self.content is not None:
+					print(dateManif, self.content['title'])
+					if re.match(r'<a .*>.+?</a>', self.content['title']):
+						self.content['title'] = re.findall(r'<a .*>(.+?)</a>', self.content['title'])[0]
+					if re.match(r'^/.*', self.content['url']):
+						self.content['url'] = 'https://www.evous.fr' + self.content['url']
+					self.file.add(**self.content)
 		locale.setlocale(locale.LC_ALL, loc)
