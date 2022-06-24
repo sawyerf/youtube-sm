@@ -49,7 +49,6 @@ class Evous_Analyzer(Analyzer):
 					'date': {'default': dateManif},
 				})
 				if self.content is not None:
-					print(dateManif, self.content['title'])
 					if re.match(r'<a .*>.+?</a>', self.content['title']):
 						self.content['title'] = re.findall(r'<a .*>(.+?)</a>', self.content['title'])[0]
 					if re.match(r'^/.*', self.content['url']):

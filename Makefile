@@ -23,6 +23,11 @@ upload: fclean
 dev: 
 	./dev.sh
 
+check:
+	git grep 'print(' youtube_sm/analyzer/ youtube_sm/downloader/
+	git diff | grep 'print('
+	echo 'youtube-sm --test'
+
 re: fclean all
 
 .PHONY: all clean fclean re
