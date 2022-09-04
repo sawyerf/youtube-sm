@@ -8,11 +8,17 @@ from ..downloader.youtube import (
 	download_xml,
 	download_html,
 )
+from ..core.sock  import (
+	download_https
+)
+from ..core.download  import Download
+
+
 
 
 class Youtube_Analyzer(Analyzer):
 	SITE='[youtube]'
-	URL_MATCH=r'(?:https://|)(?:www\.|m.|)youtube\.com/(?P<type>channel/|user/|playlist\?list=)(?P<ID>[a-zA-Z0-9_-]*)'
+	URL_MATCH=r'(?:https://|)(?:www\.|m.|)youtube\.com/(?P<type>c/|channel/|user/|playlist\?list=)(?P<ID>[a-zA-Z0-9_-]*)'
 	RE_CHANNEL=r'UC[A-Za-z0-9_-]{22}$'
 	RE_PLAYLIST=r'PL[A-Za-z0-9_-]{32}$'
 	TEST=[
@@ -29,6 +35,23 @@ class Youtube_Analyzer(Analyzer):
 		self.id = self.extract_id(url_id)
 		self.type = self._type_id(self.id)  # True --> chanel False -- > Playlist
 		self.content = None
+
+	def extract_id(self, url):
+		if url == '':
+			return ''
+		match = self.match(url)
+		if not match:
+			return url
+		if match.group('type') == 'c/':
+			site = Download(True, 'www.youtube.com')
+			site.download('/c/' + match.group('ID'), headers={'Cookie': 'CONSENT=YES+cb.20210413-13-p0.fr+FX+878', 'Referer': 'https://consent.youtube.com/'})
+			if site.status != '200':
+				return None
+			newUrl = re.findall(r'www.youtube.com/channel/(?P<ID>[a-zA-Z0-9_-]*)', site.body)
+			if len(newUrl) > 0:
+				return newUrl[0]
+			return None
+		return match.group('ID')
 
 	def add_sub(self, url):
 		sub = self.extract_id(url)
