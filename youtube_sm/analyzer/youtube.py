@@ -26,6 +26,8 @@ class Youtube_Analyzer(Analyzer):
 		'https://www.youtube.com/playlist?list=PL0H7ONNEUnnt59niYAZ07dFTi99u2L2n_',
 		'https://www.youtube.com/channel/UCDlLfadiQHJuFkJnSBBnQsQ',
 		'https://m.youtube.com/channel/UCDlLfadiQHJuFkJnSBBnQsQ',
+		'https://www.youtube.com/c/RapidsCrew',
+		'https://www.youtube.com/c/RestezChezVous',
 		'UCyg3MF1KU3dUK0HJBBoRYOw',
 		'PL0H7ONNEUnnt59niYAZ07dFTi99u2L2n_',
 		'UCDlLfadiQHJuFkJnSBBnQsQ',
@@ -47,7 +49,7 @@ class Youtube_Analyzer(Analyzer):
 			site.download('/c/' + match.group('ID'), headers={'Cookie': 'CONSENT=YES+cb.20210413-13-p0.fr+FX+878', 'Referer': 'https://consent.youtube.com/'})
 			if site.status != '200':
 				return None
-			newUrl = re.findall(r'www.youtube.com/channel/(?P<ID>[a-zA-Z0-9_-]*)', site.body)
+			newUrl = re.findall(r'channelUrl\"\:\"https://www.youtube.com/channel/(?P<ID>UC[A-Za-z0-9_-]{22})', site.body)
 			if len(newUrl) > 0:
 				return newUrl[0]
 			return None
