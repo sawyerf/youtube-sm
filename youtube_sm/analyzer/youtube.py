@@ -18,7 +18,7 @@ from ..core.download  import Download
 
 class Youtube_Analyzer(Analyzer):
 	SITE='[youtube]'
-	URL_MATCH=r'(?:https://|)(?:www\.|m.|)youtube\.com/(?P<type>c/|channel/|user/|playlist\?list=)(?P<ID>[a-zA-Z0-9_-]*)'
+	URL_MATCH=r'(?:https://|)(?:www\.|m.|)youtube\.com/(?P<type>c/|channel/|user/|playlist\?list=|@)(?P<ID>[a-zA-Z0-9_-]*)'
 	RE_CHANNEL=r'UC[A-Za-z0-9_-]{22}$'
 	RE_PLAYLIST=r'PL[A-Za-z0-9_-]{32}$'
 	TEST=[
@@ -44,15 +44,18 @@ class Youtube_Analyzer(Analyzer):
 		match = self.match(url)
 		if not match:
 			return url
-		if match.group('type') == 'c/':
+		if not re.match(self.RE_CHANNEL, match.group('ID')) and not re.match(self.RE_PLAYLIST, match.group('ID')):
 			site = Download(True, 'www.youtube.com')
-			site.download('/c/' + match.group('ID'), headers={'Cookie': 'CONSENT=YES+cb.20210413-13-p0.fr+FX+878', 'Referer': 'https://consent.youtube.com/'})
-			if site.status != '200':
-				return None
-			newUrl = re.findall(r'channelUrl\"\:\"https://www.youtube.com/channel/(?P<ID>UC[A-Za-z0-9_-]{22})', site.body)
-			if len(newUrl) > 0:
-				return newUrl[0]
-			return None
+			path = re.findall('youtube.com(/.*)$', url)[0]
+			site.download(path, headers={'Cookie': 'SOCS=CAESNQgDEitib3FfaWRlbnRpdHlmcm9udGVuZHVpc2VydmVyXzIwMjMwOTI2LjA1X3AwGgJmciACGgYIgITTqAY', 'Referer': 'https://consent.youtube.com/'})
+			ids = re.findall(r'(UC[A-Za-z0-9_-]{22})', site.body)
+			dup_uids = {}
+			for uid in ids:
+				if uid not in dup_uids:
+					dup_uids[uid] = 1
+				else:
+					dup_uids[uid] += 1
+			return max(dup_uids, key=dup_uids.get)
 		return match.group('ID')
 
 	def add_sub(self, url):
